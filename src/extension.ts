@@ -10,25 +10,29 @@ import { mapper } from './mapper_ts';
 
 function get_favorites_items(): MapInfo {
 
-    let document = vscode.window.activeTextEditor.document.fileName;
+    try {
 
-    // return { sourceFile: document, items: [
-    //     "class Printer       :1",
-    //     "    Name()          :2",
-    //     "class Driver        :3",
-    //     "    Index()         :4",
-    //     "    class Driver    :5",
-    //     "        Name()      :6",
-    //     "    Start()         :7",
-    //     "class Printer       :8",
-    //     "    Name()          :10",
-    //     "    Print()         :11"
-    // ] };
+        let document = vscode.window.activeTextEditor.document.fileName;
+        
+        // return { sourceFile: document, items: [
+        //     "class Printer       :1",
+        //     " Name()             :2",
+        //     " Name2()             :2",
+        //     "class Driver        :3",
+        //     " Index()            :4",
+        //     " class Nested       :5",
+        //     "  Name()            :6",
+        //     "  Start()           :7",
+        //     "class Printer       :8",
+        //     " Name()             :10",
+        //     " Print()            :11"
+        // ] };
 
-    if (document && fs.existsSync(document))
-        return { sourceFile: document, items: mapper.generate(document) };
-    else
-        return { sourceFile: document, items: [] };
+        if (document && fs.existsSync(document))
+            return { sourceFile: document, items: mapper.generate(document) };
+    } catch (error) {
+        return { sourceFile: null, items: [] };
+    }
 }
 
 function navigate_to(sourceFile: string, line: number) {

@@ -55,10 +55,14 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
 	getChildren(element?: MapItem): Thenable<MapItem[]> {
 		return new Promise(resolve => {
 			if (element) {
-				// resolve(element.children);
-				resolve([]);
+				let items = element.children;
+				items.forEach(x => x.updateState());
+				resolve(items);
+				// resolve([]);
 			} else {
-				resolve(this.getScriptItems());
+				let items = this.getScriptItems()
+				items.forEach(x => x.updateState());
+				resolve(items);
 			}
 		});
 	}
@@ -66,14 +70,20 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
 	private getScriptItems(): MapItem[] {
 
 		let nodes = [];
-		
+
 		// let refsNode = new MapItem('References', vscode.TreeItemCollapsibleState.Collapsed, 0, null, 'assembly_group');
 		// nodes.push(refsNode);
 
 		let info = this.aggregateItems();
+
+		if (info.items.length == 0 )
+			return nodes;
+
 		let items = info.items;
 
 		let prev_node: MapItem = null;
+
+		let plainTextMode = true;
 
 		items.forEach(item => {
 			if (item != '') {
@@ -101,9 +111,9 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
 				let non_whitespace_empty_char = ' ';
 
 				let node = new MapItem(
-					non_whitespace_empty_char.repeat(nesting_level) + title,
+					title,
+					vscode.TreeItemCollapsibleState.Expanded,
 					nesting_level,
-					vscode.TreeItemCollapsibleState.Collapsed,
 					{
 						command: 'codemap.navigate_to',
 						title: '',
@@ -113,29 +123,44 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
 					null
 				);
 
-				nodes.push(node);
-				// if (prev_node) {
-				// 	if (nesting_level == 0) {
-				// 		nodes.push(node);
-				// 	}
-				// 	else if (prev_node.nesting_level == nesting_level) {
-				// 		prev_node.parent.children.push(node);
-				// 	}
-				// 	else if (prev_node.nesting_level < nesting_level) {
-				// 		prev_node.children.push(node);
-				// 	}
-				// 	else if (prev_node.nesting_level > nesting_level) {
-				// 		let dif = prev_node.nesting_level - nesting_level;
-				// 		for (let i = 0; i < dif; i++) {
-				// 			prev_node = prev_node.parent
-				// 		}
-				// 		prev_node.children.push(node);
-				// 	}
-				// }
-				// else {
-				// 	nodes.push(node);
-				// }
-				// prev_node = node;
+				if (plainTextMode){
+					node.collapsibleState = vscode.TreeItemCollapsibleState.None;
+					node.label = non_whitespace_empty_char.repeat(nesting_level) + title;
+					nodes.push(node);
+				}
+				else {
+					if (prev_node) {
+						if (nesting_level == 0) {
+							nodes.push(node);
+						}
+						else if (prev_node.nesting_level == nesting_level) {
+							if (prev_node.parent) {
+								prev_node.parent.children.push(node);
+								node.parent = prev_node;
+							}
+							else {
+								nodes.push(node);
+							}
+						}
+						else if (prev_node.nesting_level < nesting_level) {
+							prev_node.children.push(node);
+							node.parent = prev_node;
+						}
+						else if (prev_node.nesting_level > nesting_level) {
+							let dif = prev_node.nesting_level - nesting_level;
+							for (let i = 0; i < dif; i++) {
+								prev_node = prev_node.parent
+							}
+							prev_node.children.push(node);
+							node.parent = prev_node;
+						}
+					}
+					else {
+						nodes.push(node);
+
+					}
+					prev_node = node;
+				}
 			}
 		});
 
@@ -146,13 +171,13 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
 export class MapItem extends vscode.TreeItem {
 
 	constructor(
-		public readonly label: string,
-		public readonly collapsibleState: vscode.TreeItemCollapsibleState,
+		public readonly title: string,
+		public readonly state: vscode.TreeItemCollapsibleState,
 		public readonly nesting_level: number,
 		public readonly command?: vscode.Command,
 		public readonly context?: string,
 	) {
-		super(label, collapsibleState);
+		super(title, state);
 	}
 
 	public children: MapItem[] = [];
@@ -161,6 +186,9 @@ export class MapItem extends vscode.TreeItem {
 	// 	light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'document.svg'),
 	// 	dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'document.svg')
 	// };
-
+	public updateState(): void {
+		if (this.children.length == 0)
+			this.collapsibleState = vscode.TreeItemCollapsibleState.None;
+	}
 	contextValue = 'file';
 }

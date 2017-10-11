@@ -1,4 +1,4 @@
-# Favorites - VSCode Extension
+# CodeMap - VSCode Extension
 
 Manage and quickly access frequently used files. 
 <hr/>

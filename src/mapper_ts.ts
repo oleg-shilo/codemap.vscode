@@ -8,13 +8,7 @@ export class mapper {
 
 	public static generate(file: string): string[] {
 
-		// def str_of(count, char):
-		// 	text = ''
-		// 	for i in range(count):
-		// 		text = text + char
-		// 	return text
-
-		// # Pasrse
+		// # Parse
 		let item_max_length = 0;
 		let members = [];
 
@@ -42,16 +36,21 @@ export class mapper {
 						if (code_line.startsWith('export ' + keyword + ' '))
 							line = line.replace('export ' + keyword + ' ', keyword + ' ');
 
-						let display_line = line.split('implements')[0];
-						if (!display_line)
+						let display_line = line
+							.split('implements')[0]
+							.split('extends')[0];
+						
+							if (!display_line)
 							display_line = line.split('{')[0];
 						if (!display_line)
 							display_line = line.trimEnd();
+						if (display_line)
+							display_line = display_line.replace(/{+$/, "");
 
 						// class CSScriptHoverProvider implements HoverProvider {     
 						info = [line_num,
 							keyword,
-							display_line.split('(')[0].split(':')[0].trimEnd() + ' {}', // suffix brackets make it valid TS syntax
+							display_line.split('(')[0].split(':')[0].trimEnd(),
 							indent_level]
 						return info
 					}
@@ -97,7 +96,7 @@ export class mapper {
 				}
 			});
 		} catch (error) {
-			// members.clear()
+			members = [];
 		}
 
 		// format
@@ -122,7 +121,9 @@ export class mapper {
 			let prefix = ' '.repeat(indent);
 			let lean_content = content.slice(indent);
 			let suffix = ' '.repeat(item_max_length - content.length);
-			lean_content = lean_content.replace('function ', '');
+			lean_content = lean_content.replace('function ', '')
+				.replace('static ', '')
+				.replace('export ', '');
 			map = map + extra_line + prefix + lean_content + suffix + ' :' + String(line) + '\n';
 
 			last_indent = indent;
