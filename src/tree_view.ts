@@ -118,7 +118,7 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
 					vscode.TreeItemCollapsibleState.Expanded,
 					nesting_level,
 					{
-						command: 'extension.navigate_to',
+						command: 'codemap.navigate_to',
 						title: '',
 						// tooltip: file,
 						arguments: [source_file, lineNumber],
