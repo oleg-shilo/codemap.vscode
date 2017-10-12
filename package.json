@@ -1,7 +1,7 @@
 {
 	"name": "codemap",
 	"displayName": "CodeMap",
-	"description": "Manage and quickly access frequently used documents",
+	"description": "Interactive code map for quick visualization and navigation within code DOM objects (e.g. classes, members).",
 	"version": "1.0.1",
 	"publisher": "oleg-shilo",
 	"engines": {
@@ -26,7 +26,7 @@
 		"onView:codemap"
 	],
 	"main": "./out/src/extension",
-	"icon": "media/fav.png",
+	"icon": "media/logo.png",
 	"contributes": {
 		"views": {
 			"explorer": [
@@ -38,12 +38,12 @@
 		},
 		"commands": [
 			{
-				"command": "codemap.remove",
-				"title": "Remove selected document"
+				"command": "codemap.navigate_to_selected",
+				"title": "Navigate to selected member"
 			},
 			{
 				"command": "codemap.refresh",
-				"title": "Reload CodeMap",
+				"title": "Refresh CodeMap",
 				"icon": {
 					"light": "resources/light/refresh.svg",
 					"dark": "resources/dark/refresh.svg"
@@ -60,7 +60,7 @@
 			],
 			"view/item/context": [
 				{
-					"command": "codemap.remove",
+					"command": "codemap.navigate_to_selected",
 					"when": "view == codemap && viewItem == file"
 				}
 			]

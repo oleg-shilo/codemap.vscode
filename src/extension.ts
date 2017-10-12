@@ -8,7 +8,7 @@ import { FavoritesTreeProvider, MapItem, MapInfo } from './tree_view';
 import { Uri, commands } from 'vscode';
 import { mapper } from './mapper_ts';
 
-function get_favorites_items(): MapInfo {
+function get_map_items(): MapInfo {
 
     try {
 
@@ -55,28 +55,36 @@ function navigate_to(sourceFile: string, line: number) {
     }
 }
 
-function remove(element: MapItem) {
-    let lines: string[] = [];
-
-    // Utils.read_all_lines(Utils.fav_file)
-    //     .forEach(x => {
-    //         if (x != element.context)
-    //             lines.push(x);
-    //     });
-
-    // Utils.write_all_lines(Utils.fav_file, lines);
-
-    // commands.executeCommand('favorites.refresh');
+function navigate_to_selected(element: MapItem) {
+    // source_file + '|' + lineNumber
+    let items = element.context.split('|')
+    let sourceFile = items[0];
+    let line = Number(items[1]);
+    
+    if (sourceFile != null) {
+        vscode.workspace.openTextDocument(Uri.file(sourceFile))
+            .then(document => vscode.window.showTextDocument(document))
+            .then(editor =>
+                vscode.commands.executeCommand('revealLine', { lineNumber: Math.floor(line), at: 'center' })
+                    .then(() => editor))
+            .then(editor => {
+                if (editor) {
+                    editor.selection = new vscode.Selection(
+                        new vscode.Position(Math.floor(line), 0),
+                        new vscode.Position(Math.floor(line), 0));
+                }
+            });
+    }
 }
 
 export function activate(context: vscode.ExtensionContext) {
 
-    const treeViewProvider = new FavoritesTreeProvider(get_favorites_items);
+    const treeViewProvider = new FavoritesTreeProvider(get_map_items);
 
     vscode.window.registerTreeDataProvider('codemap', treeViewProvider);
 
     vscode.commands.registerCommand('codemap.refresh', () => treeViewProvider.refresh());
-    vscode.commands.registerCommand('codemap.remove', remove);
+    vscode.commands.registerCommand('codemap.navigate_to_selected', navigate_to_selected);
     vscode.commands.registerCommand('codemap.navigate_to', navigate_to);
 }
 

@@ -76,13 +76,16 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
 
 		let info = this.aggregateItems();
 
-		if (info.items.length == 0 )
+		if (info == null || info.items.length == 0)
 			return nodes;
 
 		let items = info.items;
 
 		let prev_node: MapItem = null;
 
+		// https://github.com/Microsoft/vscode/issues/34130: TreeDataProvider: allow selecting a TreeItem without affecting its collapsibleState
+		// https://github.com/patrys/vscode-code-outline/issues/24: Is it possible to disable expand/collapse on click
+		// Until above items are fixed need to go with the plain text.
 		let plainTextMode = true;
 
 		items.forEach(item => {
@@ -115,15 +118,15 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
 					vscode.TreeItemCollapsibleState.Expanded,
 					nesting_level,
 					{
-						command: 'codemap.navigate_to',
+						command: 'extension.navigate_to',
 						title: '',
 						// tooltip: file,
 						arguments: [source_file, lineNumber],
 					},
-					null
+					source_file + '|' + lineNumber
 				);
 
-				if (plainTextMode){
+				if (plainTextMode) {
 					node.collapsibleState = vscode.TreeItemCollapsibleState.None;
 					node.label = non_whitespace_empty_char.repeat(nesting_level) + title;
 					nodes.push(node);

@@ -1,19 +1,22 @@
 # CodeMap - VSCode Extension
 
-Manage and quickly access frequently used files. 
+Interactive code map for quick visualization and navigation within code DOM objects (e.g. classes, members).
 <hr/>
 
-This simple extension allows in adding, removing and managing documents in the globally maintained "Favorites" list. The functionality is self explanatory and includes the following:
+This simple extension visualizes the cod DOM objects defined in the active document. This extension is a por of the popular plugin that is available for:
+* Sublime Text 3 - [Sublime CodeMap](https://github.com/oleg-shilo/sublime-codemap/blob/master/README.md)
+* Notepad++ - [Part of CS-Script.Npp](https://github.com/oleg-shilo/cs-script.npp/blob/master/README.md)
+* Visual Studio - [PyMap (python flavour)](https://marketplace.visualstudio.com/items?itemName=OlegShilo.PyMap)
 
-* Open document by clicking the item in the _Favorites_ list.
-* Add active document to _Favorites_ via the dedicated toolbar button.
-* Remove active document from _Favorites_ via the item context menu.
-* Refresh (reload) _Favorites_ via the dedicated toolbar button.
-* Manage (edit) _Favorites_ list directly in _VSCode_. Once the _Favorites_ list definition is edited and saved the changes are automatically reflected in the _Favorites_ panel.
+The extension functionality is stright forward. Just click the code map item and it will trigger the navigation to the document where the corresponding code element is defined in the document.
 
-![image](https://raw.githubusercontent.com/oleg-shilo/Favorites.vscode/master/resources/images/favorites_vscode.gif)
+Currently only TypeScript syntax is supported but the mappers to Python and C# will also be ported very soon. At this moment the mappers are to embedded in the extension itself but support for user defined mappers is also in the pipeline:
 
-Note: by default VSCode opens any file clicked from the  _Favorites_ list in the so called "preview mode". Thus the document tabs are reused and every new file is opened in the same tab. If you prefer to open a clicked _Favorites_ document in ane tab then you need to disable document the previewMode is the settings:
-1. Use _Command Palette_ to open your settings file ("Preferences: Open User Settings")
-2. Add the "workbench.editor.enablePreview" property, and set it's value to _false_. 
+* Auto-refreshing code map on document change.
+* Navigation to code fragment associated with the clicked code map node.
+* refreshing on demand via "Refresh" toolbar button a and VSCode command.
+
+![image](https://raw.githubusercontent.com/oleg-shilo/codemap.vscode/master/resources/images/codemap_vscode.gif)
+
+
 
