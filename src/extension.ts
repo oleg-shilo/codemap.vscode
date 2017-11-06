@@ -6,33 +6,38 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { FavoritesTreeProvider, MapItem, MapInfo } from './tree_view';
 import { Uri, commands } from 'vscode';
-import { mapper } from './mapper_ts';
+import * as ts from './mapper_ts';
+import * as py from './mapper_generic';
+import { SyntaxMapping } from './mapper_generic';
 
 function get_map_items(): MapInfo {
+    
+    let result = { sourceFile: null, items: [] };
 
     try {
 
+        let config = vscode.workspace.getConfiguration("codemap");
+        
         let document = vscode.window.activeTextEditor.document.fileName;
         
-        // return { sourceFile: document, items: [
-        //     "class Printer       :1",
-        //     " Name()             :2",
-        //     " Name2()             :2",
-        //     "class Driver        :3",
-        //     " Index()            :4",
-        //     " class Nested       :5",
-        //     "  Name()            :6",
-        //     "  Start()           :7",
-        //     "class Printer       :8",
-        //     " Name()             :10",
-        //     " Print()            :11"
-        // ] };
+        if (document && fs.existsSync(document)) {
+            
+            let extension = path.extname(document.toLowerCase());
+            
+            if (extension)
+            {
+                // Trim starting dot: '.py' vs 'py'
+                let mappings: SyntaxMapping[] = config.get(extension.substring(1), null); 
+                if (mappings)
+                    return { sourceFile: document, items: py.mapper.generate(document, mappings) };
+            }
 
-        if (document && fs.existsSync(document))
-            return { sourceFile: document, items: mapper.generate(document) };
+            if (document.toLowerCase().endsWith('.ts'))
+                return { sourceFile: document, items: ts.mapper.generate(document) };
+        }
     } catch (error) {
-        return { sourceFile: null, items: [] };
     }
+    return result;
 }
 
 function navigate_to(sourceFile: string, line: number) {
@@ -60,7 +65,7 @@ function navigate_to_selected(element: MapItem) {
     let items = element.context.split('|')
     let sourceFile = items[0];
     let line = Number(items[1]);
-    
+
     if (sourceFile != null) {
         vscode.workspace.openTextDocument(Uri.file(sourceFile))
             .then(document => vscode.window.showTextDocument(document))

@@ -17,8 +17,8 @@ Currently only TypeScript syntax is supported but the mappers to Python and C# w
 * Refreshing on demand via "Refresh" toolbar button a and VSCode command.
 
 Coming soon:
-* Support for universal Python syntax
-* Support for universal C# syntax
+* Support for Python syntax
+* Support for C# syntax
 * Support for universal RegEx based mapper
 * Support for custom user-defined mappers (to allow integration with even the most exotic languages) 
 

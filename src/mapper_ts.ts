@@ -27,6 +27,7 @@ export class mapper {
 				let code_line = line.trimStart();
 
 				let info = null;
+				let icon = '';
 				let indent_level = line.length - code_line.length;
 
 				function parse_as_class(keyword: string, line: string): any {
@@ -39,19 +40,25 @@ export class mapper {
 						let display_line = line
 							.split('implements')[0]
 							.split('extends')[0];
-						
-							if (!display_line)
+
+						if (!display_line)
 							display_line = line.split('{')[0];
 						if (!display_line)
 							display_line = line.trimEnd();
 						if (display_line)
 							display_line = display_line.replace(/{+$/, "");
 
+						if (display_line.startsWith('class'))
+							icon = 'class';
+						else if (display_line.startsWith('interface'))
+							icon = 'interface';
+
 						// class CSScriptHoverProvider implements HoverProvider {     
 						info = [line_num,
 							keyword,
 							display_line.split('(')[0].split(':')[0].trimEnd(),
-							indent_level]
+							indent_level,
+							icon]
 						return info
 					}
 				}
@@ -76,16 +83,26 @@ export class mapper {
 					info = [line_num,
 						'function',
 						line.split('(')[0].trimEnd() + '()',
-						indent_level]
+						indent_level,
+						'function']
 				}
 
 				else if (code_line.startsWith('public ')) {
 					last_type = 'public ';
 					last_indent = indent_level;
+					let content = line.replace('public ', '').split('(')[0].trimEnd();
+					let icon = "property";
+
+					if (code_line.indexOf('(') != -1) {
+						icon = "function";
+						content += '()';
+					}
+
 					info = [line_num,
 						'public ',
-						line.replace('public ', '').split('(')[0].trimEnd() + '()',
-						indent_level]
+						content,
+						indent_level,
+						icon]
 				}
 
 				if (info) {
@@ -103,12 +120,15 @@ export class mapper {
 		let map = '';
 		let last_indent = 0;
 		let last_type = '';
+		// default is empty (non-white space) character U+00A0; to avoid trimming by treeview renderer
+		let levelUnit = vscode.workspace.getConfiguration("codemap").get('textModeLevelPrefix', ' ');
 
 		members.forEach(item => {
 			let line = item[0];
 			let content_type = item[1];
 			let content = item[2];
 			let indent = item[3];
+			let icon = item[4];
 			let extra_line = '';
 
 			if (indent == last_indent) {
@@ -118,13 +138,14 @@ export class mapper {
 			else if (content_type == 'class' || content_type == 'interface')
 				extra_line = '\n';
 
-			let prefix = ' '.repeat(indent);
-			let lean_content = content.slice(indent);
-			let suffix = ' '.repeat(item_max_length - content.length);
+			let prefix = levelUnit.repeat(indent);
+			let lean_content = content.trimStart();
+			let suffix = ' '.repeat(item_max_length - content.length);
 			lean_content = lean_content.replace('function ', '')
 				.replace('static ', '')
 				.replace('export ', '');
-			map = map + extra_line + prefix + lean_content + suffix + ' :' + String(line) + '\n';
+
+			map = map + extra_line + prefix + lean_content + suffix + '|' + String(line) + '|' + icon + '\n';
 
 			last_indent = indent;
 			last_type = content_type;

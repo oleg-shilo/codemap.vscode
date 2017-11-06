@@ -68,7 +68,6 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
 	}
 
 	private getScriptItems(): MapItem[] {
-
 		let nodes = [];
 
 		// let refsNode = new MapItem('References', vscode.TreeItemCollapsibleState.Collapsed, 0, null, 'assembly_group');
@@ -79,31 +78,45 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
 		if (info == null || info.items.length == 0)
 			return nodes;
 
-		let items = info.items;
+		return FavoritesTreeProvider.parseScriptItems(info.items, info.sourceFile);
+	}
 
+	public static parseScriptItems(items: string[], sourceFile: string): MapItem[] {
+
+		let nodes = [];
 		let prev_node: MapItem = null;
 
 		// https://github.com/Microsoft/vscode/issues/34130: TreeDataProvider: allow selecting a TreeItem without affecting its collapsibleState
 		// https://github.com/patrys/vscode-code-outline/issues/24: Is it possible to disable expand/collapse on click
 		// Until above items are fixed need to go with the plain text.
-		let plainTextMode = true;
+		let plainTextMode = vscode.workspace.getConfiguration("codemap").get('textMode', false);
+
+		let levelUnit = null;
+		let map: { [index: number]: MapItem; } = {};
 
 		items.forEach(item => {
+
 			if (item != '') {
-				let source_file = info.sourceFile;
-				let tokens = item.split(':');
+				let source_file = sourceFile;
+				let tokens = item.split('|');
 				let lineNumber = 0;
+				let icon = 'document';
 
 				let title: string = item;
 
 				let nesting_level = item.length - item.trimStart().length;
 
+				if (nesting_level != 0) {
+					if (!levelUnit)
+						levelUnit = nesting_level;
+					nesting_level = nesting_level / levelUnit;
+				}
+
 				if (tokens.length > 1) {
 					try {
-						let positionStr = tokens.slice(-1)[0];
-						lineNumber = Number(positionStr) - 1;
-						title = item.slice(0, -(positionStr.length + 1)).replace(/ +$/, "");
-
+						title = tokens[0];
+						lineNumber = Number(tokens[1]) - 1;
+						icon = tokens[2];
 					} catch (error) {
 					}
 				}
@@ -112,6 +125,9 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
 
 				// the normal space s are collapsed by the tree item renderer 
 				let non_whitespace_empty_char = ' ';
+
+				if (!plainTextMode)
+					title = title.trimStart();
 
 				let node = new MapItem(
 					title,
@@ -132,38 +148,24 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
 					nodes.push(node);
 				}
 				else {
-					if (prev_node) {
-						if (nesting_level == 0) {
-							nodes.push(node);
-						}
-						else if (prev_node.nesting_level == nesting_level) {
-							if (prev_node.parent) {
-								prev_node.parent.children.push(node);
-								node.parent = prev_node;
-							}
-							else {
-								nodes.push(node);
-							}
-						}
-						else if (prev_node.nesting_level < nesting_level) {
-							prev_node.children.push(node);
-							node.parent = prev_node;
-						}
-						else if (prev_node.nesting_level > nesting_level) {
-							let dif = prev_node.nesting_level - nesting_level;
-							for (let i = 0; i < dif; i++) {
-								prev_node = prev_node.parent
-							}
-							prev_node.children.push(node);
-							node.parent = prev_node;
-						}
+					if (nesting_level == 0) {
+						nodes.push(node);
 					}
 					else {
-						nodes.push(node);
-
+						let parent = map[node.nesting_level - 1];
+						parent.children.push(node);
+						node.parent = parent;
 					}
-					prev_node = node;
 				}
+
+				let iconName = icon+".svg";
+
+				node.iconPath = {
+					light: path.join(__filename, '..', '..', '..', 'resources', 'light', iconName),
+					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', iconName)
+				};
+
+				map[node.nesting_level] = node;
 			}
 		});
 
