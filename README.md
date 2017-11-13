@@ -12,6 +12,10 @@ This simple extension visualizes the cod DOM objects defined in the active docum
 The extension functionality is straight forward. Just click the code map item and it will trigger the navigation to the document where the corresponding code element is defined in the document.
 
 _Features_:
+* Supported syntaxes:
+  * TypeScript
+  * Python
+  * Markdown
 * Customization by adding support for new syntaxes via:
   * set of Regex expressions in user settings
   * dedicated simple mapper JS script file.
@@ -24,46 +28,38 @@ The plugin comes with support for TypeScript, Python and Markdown syntax. C# sup
 ![](https://raw.githubusercontent.com/oleg-shilo/codemap.vscode/master/resources/images/codemap_vscode.gif)
 
 ## Adding custom mappers
-The most intriguing plugin's feature is the possibility to extend it to support new even most exotic syntaxes. 
+The most intriguing plugin's feature is the possibility to extend it to support new even most exotic syntaxes. Read more about the technique in this Wiki page. 
 
-There are two way of achieving this: with a dedicated mapper script or by using generic mapper with the syntax specific Regex definitions in the user settings. 
+If you create mapping rules or dedicated mapper and want to share it with others. Create a pull request or just log the corresponding issue on this project and I will consider including your mapper into the plugin package. 
 
-Both mappers produce a map definition - collection of strings/lines where every line describes a _code map_ item with a very simple format :
-```
-[indent]<name>|<line>|<icon>
-```
-`indent` - the whitespace indent is optional and is used to express code nesting.</br> 
-`name` - display name of the navigatable code member</br>
-`line` - line number to navigate to</br>
-`action` - name of the predefined icons:
-- class
-- interface
-- function
-- property
-- document
-- level1
-- level2
-- level3
+## Limitations
 
-Below is a sample map definition produced by the built-in Python mapper:
-```
-def settings()|1|function
-class NavigateCodeMap|4|class
-    def highlight_line()|6|function
-    def keep_going_down()|9|function
-        def indented()|11|function
-    def keep_going_up()|16|function
-        def indented()|18|function
-        def up()|23|function
-def down()|26|function
-```
-And this is the 
+* The main objective of this plugin is not to provide the most accurate CodeDOM (code tree)  presentation but rather to assist with the navigation to the most important points in your code. Thus the default mappers deliberately avoid high resolution code parsing (e.g. local variables). 
+
+* Currently VSCode has a defect associate with the expandable nodes selection:<br>
+   https://github.com/Microsoft/vscode/issues/34130<br>
+   https://github.com/patrys/vscode-code-outline/issues/24
+   
+   This defect makes it impossible to select a node (and consequently trigger the navigation) without toggling node's expanded state. While being cosmetic this defect can become quite annoying and affecting the overall User Experience.
+   
+   CodeMap offers a work around. You can enable the plugin `textMode` in the user setting:
+   ```JASON
+   "codemap.textMode": true
+   ```
+   In this mode the all nodes are made non-expandable and nesting is expressed via node text indent.
+
+   _textMode disabled_<br>
+   ![](https://raw.githubusercontent.com/oleg-shilo/codemap.vscode/master/resources/images/tree_mode.png)
+
+   _textMode enabled_<br>
+   ![](https://raw.githubusercontent.com/oleg-shilo/codemap.vscode/master/resources/images/text_mode.png)
+   
+
+
 
 ## Roadmap
 Coming soon:
 * Support for C# syntax
-* Support for universal RegEx based mapper
-
 
 
 
