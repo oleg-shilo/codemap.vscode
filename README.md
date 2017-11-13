@@ -16,7 +16,8 @@ _Features_:
   * TypeScript
   * Python
   * Markdown
-* Customization by adding support for new syntaxes via:
+* [Customization by adding support for new syntaxes via](https://github.com/oleg-shilo/codemap.vscode/wiki/Adding-custom-mappers). 
+:
   * set of Regex expressions in user settings
   * dedicated simple mapper JS script file.
 * Auto-refreshing code map on document change.
@@ -28,13 +29,13 @@ The plugin comes with support for TypeScript, Python and Markdown syntax. C# sup
 ![](https://raw.githubusercontent.com/oleg-shilo/codemap.vscode/master/resources/images/codemap_vscode.gif)
 
 ## Adding custom mappers
-The most intriguing plugin's feature is the possibility to extend it to support new even most exotic syntaxes. Read more about the technique in this Wiki page. 
+The most intriguing plugin's feature is the possibility to extend it to support new even most exotic syntaxes. Read more about the technique in this [Wiki page](https://github.com/oleg-shilo/codemap.vscode/wiki/Adding-custom-mappers). 
 
 If you create mapping rules or dedicated mapper and want to share it with others. Create a pull request or just log the corresponding issue on this project and I will consider including your mapper into the plugin package. 
 
 ## Limitations
 
-* The main objective of this plugin is not to provide the most accurate CodeDOM (code tree)  presentation but rather to assist with the navigation to the most important points in your code. Thus the default mappers deliberately avoid high resolution code parsing (e.g. local variables). 
+* The main objective of this plugin is not to provide the most accurate CodeDOM (syntax tree)  presentation but rather to assist with the navigation to the most important points in your code. Thus the default mappers deliberately avoid high resolution code parsing (e.g. local variables). 
 
 * Currently VSCode has a defect associate with the expandable nodes selection:<br>
    https://github.com/Microsoft/vscode/issues/34130<br>

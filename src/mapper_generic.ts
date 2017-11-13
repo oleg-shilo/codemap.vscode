@@ -105,7 +105,3 @@ export class mapper {
 		return map.trim().lines();
 	}
 }
-
-class universal_mapper {
-	static rx: string[] = ["^(class |def ).*$", "[(:].*$"];
-}
