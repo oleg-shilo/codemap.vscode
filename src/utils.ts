@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
+import * as os from 'os';
 import * as path from 'path';
 import { Uri, commands } from "vscode";
 
@@ -52,5 +53,23 @@ export class Utils {
 
     public static write_all_lines(file: string, lines: string[]): void {
         fs.writeFileSync(file, lines.join('\n'), { encoding: 'utf8' });
+    }
+
+    public static init(): void {
+
+        // vscode:
+        // Windows %appdata%\Code\User\settings.json
+        // Mac $HOME/Library/Application Support/Code/User/settings.json
+        // Linux $HOME/.config/Code/User/settings.json
+
+        if (os.platform() == 'win32') {
+            process.env.VSCODE_USER = path.join(process.env.APPDATA, 'Code', 'User');
+        }
+        else if (os.platform() == 'darwin') {
+            process.env.VSCODE_USER = path.join(process.env.HOME, 'Library', 'Application Support', 'Code', 'User');
+        }
+        else {
+            process.env.VSCODE_USER = path.join(process.env.HOME, '.config', 'Code', 'User');
+        }
     }
 }

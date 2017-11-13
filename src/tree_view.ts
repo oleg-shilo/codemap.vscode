@@ -91,6 +91,9 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
 		// Until above items are fixed need to go with the plain text.
 		let plainTextMode = vscode.workspace.getConfiguration("codemap").get('textMode', false);
 
+		// default is empty (non-white space) character U+00A0; to avoid trimming by treeview renderer
+		let levelUnitChar = vscode.workspace.getConfiguration("codemap").get('textModeLevelPrefix', '   ');
+
 		let levelUnit = null;
 		let map: { [index: number]: MapItem; } = {};
 
@@ -123,8 +126,8 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
 				else
 					source_file = null;
 
-				// the normal space s are collapsed by the tree item renderer 
-				let non_whitespace_empty_char = ' ';
+				// the normal spaces are collapsed by the tree item renderer 
+				let non_whitespace_empty_char = levelUnitChar;
 
 				if (!plainTextMode)
 					title = title.trimStart();
@@ -158,7 +161,7 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
 					}
 				}
 
-				let iconName = icon+".svg";
+				let iconName = icon + ".svg";
 
 				node.iconPath = {
 					light: path.join(__filename, '..', '..', '..', 'resources', 'light', iconName),

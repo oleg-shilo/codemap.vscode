@@ -31,6 +31,7 @@ export class mapper {
 			let line_num = 0;
 			let last_type = '';
 			let last_indent = 0;
+			let nestingLevel = vscode.workspace.getConfiguration("codemap").get('nestingLevel', 3);
 
 			lines.forEach(line => {
 
@@ -76,9 +77,6 @@ export class mapper {
 		let last_indent = 0;
 		let last_type = '';
 
-		// default is empty (non-white space) character U+00A0; to avoid trimming by treeview renderer
-		let levelUnit = vscode.workspace.getConfiguration("codemap").get('textModeLevelPrefix', ' ');
-
 		members.forEach(item => {
 			try {
 				let line = item[0];
@@ -91,8 +89,7 @@ export class mapper {
 				if (indent == last_indent && content_type != last_type)
 					extra_line = '\n';
 
-
-				let prefix = levelUnit.repeat(indent);
+				let prefix = ' '.repeat(indent);
 				let lean_content = content.trimStart();
 
 				map = map + extra_line + prefix + lean_content + '|' + String(line) + '|' + icon + '\n';
