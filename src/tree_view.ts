@@ -2,7 +2,6 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Uri, commands } from "vscode";
-// import { Utils } from './utils';
 
 export interface MapInfo {
 	sourceFile: string;
