@@ -63,16 +63,42 @@ export class mapper {
 					}
 				}
 
+				function parse_as_class_member(accessor: string): void {
+					let accessor_name = accessor + ' ';
+					last_type = accessor_name;
+					last_indent = indent_level;
+					let content = line.replace(accessor_name, '').split('(')[0].trimEnd();
+					let icon = "property";
+
+					if (code_line.indexOf('(') != -1) {
+						icon = "function";
+						content += '()';
+					}
+
+					info = [line_num,
+						accessor_name,
+						content,
+						indent_level,
+						icon]
+				}
+
 				info = parse_as_class('class', line);
+
+				let includePrivateMembers = false;
+
 
 				if (!info)
 					info = parse_as_class('interface', line);
 
 				if (info) {
 				}
+
 				else if (code_line.startsWith('function ') || code_line.startsWith('export function ')) {
-					if (last_type == 'function' && indent_level > last_indent)
-						return; // private class functions
+					if (last_type == 'function' && indent_level > last_indent) {
+						if (!includePrivateMembers)
+							return; // private class functions
+					}
+
 					last_type = 'function';
 					last_indent = indent_level;
 					info = [line_num,
@@ -83,21 +109,11 @@ export class mapper {
 				}
 
 				else if (code_line.startsWith('public ')) {
-					last_type = 'public ';
-					last_indent = indent_level;
-					let content = line.replace('public ', '').split('(')[0].trimEnd();
-					let icon = "property";
-
-					if (code_line.indexOf('(') != -1) {
-						icon = "function";
-						content += '()';
-					}
-
-					info = [line_num,
-						'public ',
-						content,
-						indent_level,
-						icon]
+					parse_as_class_member('public');
+				}
+				
+				else if (code_line.startsWith('private ') && includePrivateMembers) {
+					parse_as_class_member('private');
 				}
 
 				if (info) {
