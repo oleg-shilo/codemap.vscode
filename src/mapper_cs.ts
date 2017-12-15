@@ -1,13 +1,27 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as os from 'os';
 import * as net from "net";
+import * as mkdirp from "mkdirp";
 import * as process from "process";
+import * as child_process from "child_process"
 import { Uri, commands } from "vscode";
 import { Utils } from './utils';
 
+let exec = require('child_process').exec;
 let map = "";
-let map_last_source  = "";
+let map_last_source = "";
+
+let VERSION = "1.0.0.0";
+
+let SEVER = ""; // will be set at the end of this file
+let HOST = '127.0.0.1';
+let PORT = 18002;
+
+function startServer():void{
+	child_process.execFile("mono", [SEVER, "-port:" + PORT, "-listen", "-client:" + process.pid, "-timeout:60000"]);
+}
 
 export class mapper {
 
@@ -16,35 +30,35 @@ export class mapper {
 		var stats = fs.statSync(file);
 		var map_source = file + stats.mtime;
 
-		if(map_source != map_last_source){
+		if (map_source != map_last_source) {
 			map_last_source = map_source;
 			map = "";
 		}
 
 		// 18000 - Subline Text 3
 		// 18001 - Notepad++
-		// var net = require('net');
-
-		var HOST = '127.0.0.1';
-		var PORT = 18001;
-		
-		var SEVER_CMD = "-port:18001 -listen -timeout:60000";
+		// 18002 - VSCode
 
 		if (map == "") {
 			var client = new net.Socket();
 			client.connect(PORT, HOST, function () {
-				// let request = "-client:" + process.pid + "\n-op:codemap\n-rich\n-script:" + file;
 				let request = "-client:" + process.pid + "\n-op:codemap_vscode\n-script:" + file;
 				client.write(request);
 			});
 
 			client.on('error', function (error) {
-			 console.log("error");
+				if (fs.existsSync(SEVER)) { // may not be deployed yet
+					// child_process.execFile(SEVER, SEVER_CMD);
+					startServer();
+					setTimeout(() => vscode.commands.executeCommand('codemap.refresh'), 500);
+				}
+				else
+					setTimeout(() => vscode.commands.executeCommand('codemap.refresh'), 3000);
 			});
 
 			client.on('data', function (data) {
 				map = data.toString()
-				// add()|12|function
+				// https://github.com/oleg-shilo/codemap.vscode/wiki/Adding-custom-mappers
 				// [indent]<name>|<line>|<icon>
 				vscode.commands.executeCommand('codemap.refresh')
 				client.destroy();
@@ -52,153 +66,58 @@ export class mapper {
 		}
 		return map.lines();
 	}
+}
 
-	public static generate_old(file: string): string[] {
+function DeploySyntaxer() {
 
-		// # Parse
-		let item_max_length = 0;
-		let members = [];
+	function create_dir(dir: string): void {
+		// fs.mkdirSync can only create the top level dir but mkdirp creates all child sub-dirs that do not exist  
+		const allRWEPermissions = parseInt("0777", 8);
+		mkdirp.sync(dir, allRWEPermissions);
+	}
 
-		try {
+	function user_dir(): string {
+		// ext_context.storagePath cannot be used as it is undefined if no workspace loaded
 
-			let lines = Utils.read_all_lines(file);
+		// vscode:
+		// Windows %appdata%\Code\User\settings.json
+		// Mac $HOME/Library/Application Support/Code/User/settings.json
+		// Linux $HOME/.config/Code/User/settings.json
 
-			let line_num = 0;
-			let last_type = '';
-			let last_indent = 0;
-
-			lines.forEach(line => {
-
-				line = line.replace('\t', '    ');
-				line_num = line_num + 1;
-				let code_line = line.trimStart();
-
-				let info = null;
-				let icon = '';
-				let indent_level = line.length - code_line.length;
-
-				function parse_as_class(keyword: string, line: string): any {
-					if (code_line.startsWith(keyword + ' ') || code_line.startsWith('export ' + keyword + ' ')) {
-						last_type = keyword;
-						last_indent = indent_level
-						if (code_line.startsWith('export ' + keyword + ' '))
-							line = line.replace('export ' + keyword + ' ', keyword + ' ');
-
-						let display_line = line
-							.split('implements')[0]
-							.split('extends')[0];
-
-						if (!display_line)
-							display_line = line.split('{')[0];
-						if (!display_line)
-							display_line = line.trimEnd();
-						if (display_line)
-							display_line = display_line.replace(/{+$/, "");
-
-						if (display_line.startsWith('class'))
-							icon = 'class';
-						else if (display_line.startsWith('interface'))
-							icon = 'interface';
-
-						// class CSScriptHoverProvider implements HoverProvider {     
-						info = [line_num,
-							keyword,
-							display_line.split('(')[0].split(':')[0].trimEnd(),
-							indent_level,
-							icon]
-						return info
-					}
-				}
-
-				function parse_as_class_member(accessor: string): void {
-					let accessor_name = accessor + ' ';
-					last_type = accessor_name;
-					last_indent = indent_level;
-					let content = line.replace(accessor_name, '').split('(')[0].trimEnd();
-					let icon = "property";
-
-					if (code_line.indexOf('(') != -1) {
-						icon = "function";
-						content += '()';
-					}
-
-					info = [line_num,
-						accessor_name,
-						content,
-						indent_level,
-						icon]
-				}
-
-				info = parse_as_class('class', line);
-
-				let includePrivateMembers = false;
-
-
-				if (!info)
-					info = parse_as_class('interface', line);
-
-				if (info) {
-				}
-
-				else if (code_line.startsWith('function ') || code_line.startsWith('export function ')) {
-					if (last_type == 'function' && indent_level > last_indent) {
-						if (!includePrivateMembers)
-							return; // private class functions
-					}
-
-					last_type = 'function';
-					last_indent = indent_level;
-					info = [line_num,
-						'function',
-						line.split('(')[0].trimEnd() + '()',
-						indent_level,
-						'function']
-				}
-
-				else if (code_line.startsWith('public ')) {
-					parse_as_class_member('public');
-				}
-
-				else if (code_line.startsWith('private ') && includePrivateMembers) {
-					parse_as_class_member('private');
-				}
-
-				if (info) {
-					let length = info[2].length;
-					if (item_max_length < length)
-						item_max_length = length;
-					members.push(info)
-				}
-			});
-		} catch (error) {
-			members = [];
+		if (os.platform() == 'win32') {
+			return path.join(process.env.APPDATA, 'Code', 'User', 'codemep.user');
 		}
+		else if (os.platform() == 'darwin') {
+			return path.join(process.env.HOME, 'Library', 'Application Support', 'Code', 'User', 'codemep.user');
+		}
+		else {
+			return path.join(process.env.HOME, '.config', 'Code', 'User', 'codemep.user');
+		}
+	}
 
-		// format
-		let map = '';
-		let last_indent = 0;
-		let last_type = '';
+	const fse = require('fs-extra')
 
-		members.forEach(item => {
-			let line = item[0];
-			let content_type = item[1]; // not in use yet
-			let content = item[2];
-			let indent = item[3];
-			let icon = item[4];
+	let fileName = "syntaxer.exe";
+	let ext_dir = path.join(__dirname, "..", "..");
+	let sourceDir = path.join(ext_dir, 'bin');
+	let destDir = path.join(user_dir(), 'syntaxer', VERSION);
 
-			let prefix = ' '.repeat(indent);
-			let lean_content = content.trimStart();
-			let suffix = ' '.repeat(item_max_length - content.length);
-			lean_content = lean_content.replace('function ', '')
-				.replace('static ', '')
-				.replace('export ', '');
+	SEVER = path.join(destDir, fileName);
 
-			map = map + prefix + lean_content + suffix + '|' + String(line) + '|' + icon + '\n';
+	if (fs.existsSync(SEVER)) {
+		startServer();
+	}
+	else {
+		create_dir(destDir);
 
-			last_indent = indent;
-			last_type = content_type;
-		});
-
-		return map.trim().lines();
+		fse.copy(path.join(sourceDir, fileName), path.join(destDir, fileName))
+			.then(() => {
+				startServer();
+			})
+			.catch(err => {
+				console.error(err);
+			})
 	}
 }
+
+DeploySyntaxer();

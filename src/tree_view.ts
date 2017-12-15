@@ -131,12 +131,16 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
 				if (!plainTextMode)
 					title = title.trimStart();
 
+				let on_click_command = 'codemap.navigate_to';
+				if(lineNumber == -1)
+					on_click_command = "";
+
 				let node = new MapItem(
 					title,
 					vscode.TreeItemCollapsibleState.Expanded,
 					nesting_level,
 					{
-						command: 'codemap.navigate_to',
+						command: on_click_command,
 						title: '',
 						// tooltip: file,
 						arguments: [source_file, lineNumber],
