@@ -13,6 +13,7 @@ The extension functionality is straight forward. Just click the code map item an
 
 _Features_:
 * Supported syntaxes:
+  * C#
   * TypeScript
   * Python
   * Markdown
@@ -56,11 +57,6 @@ If you create mapping rules or dedicated mapper and want to share it with others
    ![](https://raw.githubusercontent.com/oleg-shilo/codemap.vscode/master/resources/images/text_mode.png)
    
 
-
-
-## Roadmap
-Coming soon:
-* Support for C# syntax
 
 
 

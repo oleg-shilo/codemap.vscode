@@ -13,7 +13,7 @@ let exec = require('child_process').exec;
 let map = "";
 let map_last_source = "";
 
-let VERSION = "1.0.0.0";
+let SYNTAXER_VERSION = "1.2.1.0";
 
 let SEVER = ""; // will be set at the end of this file
 let HOST = '127.0.0.1';
@@ -37,7 +37,7 @@ export class mapper {
 
 		// 18000 - Subline Text 3
 		// 18001 - Notepad++
-		// 18002 - VSCode
+		// 18002 - VSCode.CodeMap
 
 		if (map == "") {
 			var client = new net.Socket();
@@ -71,7 +71,7 @@ export class mapper {
 function DeploySyntaxer() {
 
 	function create_dir(dir: string): void {
-		// fs.mkdirSync can only create the top level dir but mkdirp creates all child sub-dirs that do not exist  
+		// fs.mkdirSync can only create the top level dir but mkdirp creates all child sub-dirs that do not exist
 		const allRWEPermissions = parseInt("0777", 8);
 		mkdirp.sync(dir, allRWEPermissions);
 	}
@@ -85,13 +85,13 @@ function DeploySyntaxer() {
 		// Linux $HOME/.config/Code/User/settings.json
 
 		if (os.platform() == 'win32') {
-			return path.join(process.env.APPDATA, 'Code', 'User', 'codemep.user');
+			return path.join(process.env.APPDATA, 'Code', 'User', 'codemap.user');
 		}
 		else if (os.platform() == 'darwin') {
-			return path.join(process.env.HOME, 'Library', 'Application Support', 'Code', 'User', 'codemep.user');
+			return path.join(process.env.HOME, 'Library', 'Application Support', 'Code', 'User', 'codemap.user');
 		}
 		else {
-			return path.join(process.env.HOME, '.config', 'Code', 'User', 'codemep.user');
+			return path.join(process.env.HOME, '.config', 'Code', 'User', 'codemap.user');
 		}
 	}
 
@@ -100,7 +100,8 @@ function DeploySyntaxer() {
 	let fileName = "syntaxer.exe";
 	let ext_dir = path.join(__dirname, "..", "..");
 	let sourceDir = path.join(ext_dir, 'bin');
-	let destDir = path.join(user_dir(), 'syntaxer', VERSION);
+	let destDir = path.join(user_dir(), 'syntaxer', SYNTAXER_VERSION);
+	// let destDir = path.join(user_dir(), '..', 'cs-script.common', 'syntaxer', SYNTAXER_VERSION);
 
 	SEVER = path.join(destDir, fileName);
 
