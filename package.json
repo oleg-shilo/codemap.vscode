@@ -54,7 +54,7 @@
                     "type": "array",
                     "default": [
                         {
-                            "pattern": "\\s\\\"\\w*\": {",
+                            "pattern": "\\s\\\"[\\w.]*\":\\s{",
                             "clear": "{|:|",
                             "prefix": "",
                             "icon": "level2"
