@@ -4,19 +4,20 @@ Interactive code map for quick visualization and navigation within code DOM obje
 <hr/>
 
 ## Overview
-This simple extension visualizes the cod DOM objects defined in the active document. This extension is a por of the popular plugin that is available for:
+This simple extension visualizes the cod DOM objects defined in the active document. This extension is a for of the popular plugin that is available for:
 * Sublime Text 3 - [Sublime CodeMap plugin](https://github.com/oleg-shilo/sublime-codemap/blob/master/README.md)
 * Notepad++ - [Part of CS-Script.Npp plugin](https://github.com/oleg-shilo/cs-script.npp/blob/master/README.md)
-* Visual Studio - [PyMap (python flavour) extension](https://marketplace.visualstudio.com/items?itemName=OlegShilo.PyMap)
+* Visual Studio - [PyMap (python flavor extension](https://marketplace.visualstudio.com/items?itemName=OlegShilo.PyMap)
 
 The extension functionality is straight forward. Just click the code map item and it will trigger the navigation to the document where the corresponding code element is defined in the document.
 
 _Features_:
 * Supported syntaxes:
   * C#
-  * TypeScript
+  * TypeScript/JavaScript
   * Python
   * Markdown
+  * JSON
 * [Customization by adding support for new syntaxes via](https://github.com/oleg-shilo/codemap.vscode/wiki/Adding-custom-mappers). 
 :
   * set of Regex expressions in user settings

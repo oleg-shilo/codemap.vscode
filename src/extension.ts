@@ -8,6 +8,7 @@ import { FavoritesTreeProvider, MapItem, MapInfo } from './tree_view';
 import { Uri, commands } from 'vscode';
 import * as ts from './mapper_ts';
 import * as cs from './mapper_cs';
+import * as js from './mapper_js';
 import * as py from './mapper_generic';
 import * as md from './mapper_md';
 import { SyntaxMapping } from './mapper_generic';
@@ -32,7 +33,7 @@ function get_map_items(): MapInfo {
                 let mapper = config.get(extension.substring(1), null);
                 if (mapper) {
                     if (typeof mapper == "string") { // custom dedicated mapper
-                        process.env.VSCODE_USER
+                        // process.env.VSCODE_USER
                         var dynamic_mapper = require(mapper as string).mapper;
                         return { sourceFile: document, items: dynamic_mapper.generate(document) };
                     }
@@ -47,7 +48,12 @@ function get_map_items(): MapInfo {
                 // dedicated built-in mapper
                 return { sourceFile: document, items: ts.mapper.generate(document) };
             }
-            
+
+            if (document.toLowerCase().endsWith('.js')) {
+                // dedicated built-in mapper
+                return { sourceFile: document, items: js.mapper.generate(document) };
+            }
+
             if (document.toLowerCase().endsWith('.cs')) {
                 // dedicated built-in mapper
                 return { sourceFile: document, items: cs.mapper.generate(document) };
@@ -108,7 +114,7 @@ export function activate(context: vscode.ExtensionContext) {
     const treeViewProvider = new FavoritesTreeProvider(get_map_items);
 
     vscode.window.registerTreeDataProvider('codemap', treeViewProvider);
-    
+
     vscode.commands.registerCommand('codemap.refresh', () => treeViewProvider.refresh());
     vscode.commands.registerCommand('codemap.navigate_to_selected', navigate_to_selected);
     vscode.commands.registerCommand('codemap.navigate_to', navigate_to);

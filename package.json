@@ -2,7 +2,7 @@
     "name": "codemap",
     "displayName": "CodeMap",
     "description": "Interactive code map for quick visualization and navigation within code DOM objects (e.g. classes, members).",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "publisher": "oleg-shilo",
     "engines": {
         "vscode": "^1.13.0"
@@ -36,38 +36,9 @@
                 }
             ]
         },
-        "commands": [
-            {
-                "command": "codemap.navigate_to_selected",
-                "title": "Navigate to selected member"
-            },
-            {
-                "command": "codemap.refresh",
-                "title": "Refresh CodeMap",
-                "icon": {
-                    "light": "resources/light/refresh.svg",
-                    "dark": "resources/dark/refresh.svg"
-                }
-            }
-        ],
-        "menus": {
-            "view/title": [
-                {
-                    "command": "codemap.refresh",
-                    "when": "view == codemap",
-                    "group": "navigation@2"
-                }
-            ],
-            "view/item/context": [
-                {
-                    "command": "codemap.navigate_to_selected",
-                    "when": "view == codemap && viewItem == file"
-                }
-            ]
-        },
         "configuration": {
             "type": "object",
-            "title": "CS-Script configuration",
+            "title": "CodeMap configuration",
             "properties": {
                 "codemap.textMode": {
                     "type": "boolean",
@@ -78,6 +49,18 @@
                     "type": "string",
                     "default": "   ",
                     "description": "Required for improving user experience in 'codemap.textMode' since VSCode swallows all whitespace indent indicating nesting level. Default value is a string of 3 non-whitespace empty chars (char U+00A0)."
+                },
+                "codemap.json": {
+                    "type": "array",
+                    "default": [
+                        {
+                            "pattern": "\\s\\\"\\w*\": {",
+                            "clear": "{|:|",
+                            "prefix": "",
+                            "icon": "level2"
+                        }
+                    ],
+                    "description": "Regex-based definition of the mapping rules for JSON syntax."
                 },
                 "codemap.py": {
                     "type": "array",
@@ -136,6 +119,35 @@
                     "description": "Regex-based definition of the mapping rules for Markup syntax."
                 }
             }
+        },
+        "commands": [
+            {
+                "command": "codemap.navigate_to_selected",
+                "title": "Navigate to selected member"
+            },
+            {
+                "command": "codemap.refresh",
+                "title": "Refresh CodeMap",
+                "icon": {
+                    "light": "resources/light/refresh.svg",
+                    "dark": "resources/dark/refresh.svg"
+                }
+            }
+        ],
+        "menus": {
+            "view/title": [
+                {
+                    "command": "codemap.refresh",
+                    "when": "view == codemap",
+                    "group": "navigation@2"
+                }
+            ],
+            "view/item/context": [
+                {
+                    "command": "codemap.navigate_to_selected",
+                    "when": "view == codemap && viewItem == file"
+                }
+            ]
         }
     },
     "scripts": {
