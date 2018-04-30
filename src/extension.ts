@@ -8,8 +8,7 @@ import { FavoritesTreeProvider, MapItem, MapInfo } from './tree_view';
 import { Uri, commands } from 'vscode';
 import * as ts from './mapper_ts';
 import * as cs from './mapper_cs';
-import * as js from './mapper_js';
-import * as py from './mapper_generic';
+import * as generic from './mapper_generic';
 import * as md from './mapper_md';
 import { SyntaxMapping } from './mapper_generic';
 import { Utils } from './utils';
@@ -39,19 +38,14 @@ function get_map_items(): MapInfo {
                     }
                     else { // generic built-in mapper
                         let mapping_info = mapper as SyntaxMapping[];
-                        return { sourceFile: document, items: py.mapper.generate(document, mapping_info) };
+                        return { sourceFile: document, items: generic.mapper.generate(document, mapping_info) };
                     }
                 }
             }
 
-            if (document.toLowerCase().endsWith('.ts')) {
+            if (document.toLowerCase().endsWith('.ts') || document.toLowerCase().endsWith('.js')) {
                 // dedicated built-in mapper
                 return { sourceFile: document, items: ts.mapper.generate(document) };
-            }
-
-            if (document.toLowerCase().endsWith('.js')) {
-                // dedicated built-in mapper
-                return { sourceFile: document, items: js.mapper.generate(document) };
             }
 
             if (document.toLowerCase().endsWith('.cs')) {

@@ -9,6 +9,7 @@ declare global {
         // splitBy(separator: string): string;
         trimStart(): string;
         trimEnd(): string;
+        replaceAll(search: string, replacement: string): string;
         lines(limit?: number): string[];
     }
 
@@ -43,6 +44,10 @@ String.prototype.lines = function (limit?: number) {
     return this.split(/\r?\n/g, limit);
 }
 
+String.prototype.replaceAll = function (search, replacement) {
+    var target = this;
+    return target.replace(new RegExp(search, 'g'), replacement);
+};
 
 export class Utils {
 

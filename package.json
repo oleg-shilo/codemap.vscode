@@ -2,7 +2,7 @@
     "name": "codemap",
     "displayName": "CodeMap",
     "description": "Interactive code map for quick visualization and navigation within code DOM objects (e.g. classes, members).",
-    "version": "1.3.0",
+    "version": "1.3.1",
     "publisher": "oleg-shilo",
     "engines": {
         "vscode": "^1.13.0"
@@ -54,8 +54,8 @@
                     "type": "array",
                     "default": [
                         {
-                            "pattern": "\\s\\\"[\\w.]*\":\\s{",
-                            "clear": "{|:|",
+                            "pattern": "\\s\\\"[\\w.-]*\":\\s[{|[]",
+                            "clear": "{|:|\"|\\[",
                             "prefix": "",
                             "icon": "level2"
                         }

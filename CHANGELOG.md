@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.3.1
+
+- Improved JSON mapper
+- Fixed problem with "clear" (config values) being applied for the first occurrence of the value
+
 ## 1.3.0
 
 - Added JSON mapper

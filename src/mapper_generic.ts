@@ -31,7 +31,6 @@ export class mapper {
 			let line_num = 0;
 			let last_type = '';
 			let last_indent = 0;
-			let nestingLevel = vscode.workspace.getConfiguration("codemap").get('nestingLevel', 3);
 
 			lines.forEach(line => {
 
@@ -54,7 +53,12 @@ export class mapper {
 								item.clear
 									.split('|')
 									.forEach(text => {
-										match = match.replace(text, '');
+										try {
+											match = match.replaceAll(text, '');
+										}
+										catch (error) {
+											console.log(error);
+										}
 									});
 
 							if (item.suffix)
