@@ -13,6 +13,22 @@ import * as md from './mapper_md';
 import { SyntaxMapping } from './mapper_generic';
 import { Utils } from './utils';
 
+function get_actual_mapper(mapper: any): any {
+    if (typeof mapper == "string") {
+        let mapper_value = mapper as string;
+        if (mapper_value.startsWith("config:codemap.")) {
+            // console.log(mapper_value);
+
+            let config = vscode.workspace.getConfiguration("codemap");
+            let linked_config_value = mapper_value.replace("config:codemap.", "");
+            return config.get(linked_config_value, null);
+        }
+        return mapper;
+    }
+    else
+        return mapper;
+}
+
 function get_map_items(): MapInfo {
 
     let result = { sourceFile: null, items: [] };
@@ -30,6 +46,7 @@ function get_map_items(): MapInfo {
             if (extension) {
                 // Trim starting dot: '.py' vs 'py'
                 let mapper = config.get(extension.substring(1), null);
+                mapper = get_actual_mapper(mapper);
                 if (mapper) {
                     if (typeof mapper == "string") { // custom dedicated mapper
                         // process.env.VSCODE_USER

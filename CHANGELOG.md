@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.4.0
+
+- Added XML/SVG/XAML mapper
+- Added support for linked mappers: `"codemap.svg": "config:codemap.xml"`
+
 ## 1.3.1
 
 - Improved JSON mapper

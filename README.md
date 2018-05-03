@@ -3,7 +3,9 @@
 Interactive code map for quick visualization and navigation within code DOM objects (e.g. classes, members).
 <hr/>
 
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](http://www.csscript.net/Donation.html)
 ## Overview
+
 This simple extension visualizes the cod DOM objects defined in the active document. This extension is a for of the popular plugin that is available for:
 * Sublime Text 3 - [Sublime CodeMap plugin](https://github.com/oleg-shilo/sublime-codemap/blob/master/README.md)
 * Notepad++ - [Part of CS-Script.Npp plugin](https://github.com/oleg-shilo/cs-script.npp/blob/master/README.md)
@@ -18,8 +20,8 @@ _Features_:
   * Python
   * Markdown
   * JSON
-* [Customization by adding support for new syntaxes via](https://github.com/oleg-shilo/codemap.vscode/wiki/Adding-custom-mappers). 
-:
+  * XML/SVG/XAML
+* [Customization by adding support for new syntaxes via:](https://github.com/oleg-shilo/codemap.vscode/wiki/Adding-custom-mappers)
   * set of Regex expressions in user settings
   * dedicated simple mapper JS script file.
 * Auto-refreshing code map on document change.

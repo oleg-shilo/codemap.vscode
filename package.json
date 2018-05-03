@@ -2,7 +2,7 @@
     "name": "codemap",
     "displayName": "CodeMap",
     "description": "Interactive code map for quick visualization and navigation within code DOM objects (e.g. classes, members).",
-    "version": "1.3.1",
+    "version": "1.4.0",
     "publisher": "oleg-shilo",
     "engines": {
         "vscode": "^1.13.0"
@@ -81,6 +81,20 @@
                         }
                     ],
                     "description": "Regex-based definition of the mapping rules for Python syntax."
+                },
+                "codemap.svg": "config:codemap.xml",
+                "codemap.xaml": "config:codemap.xml",
+                "codemap.xml": {
+                    "type": "array",
+                    "default": [
+                        {
+                            "pattern": "\\s<[^\\/|^\\!][\\w:]*",
+                            "clear": "<",
+                            "prefix": "",
+                            "icon": "level3"
+                        }
+                    ],
+                    "description": "Regex-based definition of the mapping rules for XML syntax."
                 },
                 "codemap.md": {
                     "type": "array",
