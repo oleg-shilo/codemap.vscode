@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.4.1
+
+- Added work around for the VSCode failure to return config values defaults defined in `package.json` (VSCode issue #14500 is back)
+- Improved XML mapper to handle badly formatted XML in `codemap.textMode:false` mode
+
 ## 1.4.0
 
 - Added XML/SVG/XAML mapper

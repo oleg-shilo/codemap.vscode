@@ -11,7 +11,9 @@ import * as cs from './mapper_cs';
 import * as generic from './mapper_generic';
 import * as md from './mapper_md';
 import { SyntaxMapping } from './mapper_generic';
-import { Utils } from './utils';
+import { Utils, config_defaults } from './utils';
+
+const defaults = new config_defaults();
 
 function get_actual_mapper(mapper: any): any {
     if (typeof mapper == "string") {
@@ -21,7 +23,7 @@ function get_actual_mapper(mapper: any): any {
 
             let config = vscode.workspace.getConfiguration("codemap");
             let linked_config_value = mapper_value.replace("config:codemap.", "");
-            return config.get(linked_config_value, null);
+            return config.get(linked_config_value, defaults.get(linked_config_value));
         }
         return mapper;
     }
@@ -45,7 +47,8 @@ function get_map_items(): MapInfo {
 
             if (extension) {
                 // Trim starting dot: '.py' vs 'py'
-                let mapper = config.get(extension.substring(1), null);
+                let value_name = extension.substring(1);
+                let mapper = config.get(value_name, defaults.get(value_name));
                 mapper = get_actual_mapper(mapper);
                 if (mapper) {
                     if (typeof mapper == "string") { // custom dedicated mapper

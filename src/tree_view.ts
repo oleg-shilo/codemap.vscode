@@ -2,6 +2,9 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Uri, commands } from "vscode";
+import { config_defaults } from './utils';
+
+const defaults = new config_defaults();
 
 export interface MapInfo {
 	sourceFile: string;
@@ -15,7 +18,7 @@ declare global {
 	}
 }
 
-String.prototype.trimStart = function () {
+String.prototype.trimStart = function() {
 	if (this.length == 0)
 		return this;
 	let c = ' ';
@@ -24,7 +27,7 @@ String.prototype.trimStart = function () {
 	return this.substring(i);
 }
 
-String.prototype.trimEnd = function () {
+String.prototype.trimEnd = function() {
 	return this.replace(/ +$/, "");
 }
 
@@ -88,10 +91,10 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
 		// https://github.com/Microsoft/vscode/issues/34130: TreeDataProvider: allow selecting a TreeItem without affecting its collapsibleState
 		// https://github.com/patrys/vscode-code-outline/issues/24: Is it possible to disable expand/collapse on click
 		// Until above items are fixed need to go with the plain text.
-		let plainTextMode = vscode.workspace.getConfiguration("codemap").get('textMode', false);
+		let plainTextMode = vscode.workspace.getConfiguration("codemap").get('textMode', defaults.get('textMode'));
 
 		// default is empty (non-white space) character U+00A0; to avoid trimming by treeview renderer
-		let levelUnitChar = vscode.workspace.getConfiguration("codemap").get('textModeLevelPrefix', '   ');
+		let levelUnitChar = vscode.workspace.getConfiguration("codemap").get('textModeLevelPrefix', defaults.get('textModeLevelPrefix'));
 
 		let levelUnit = null;
 		let map: { [index: number]: MapItem; } = {};
@@ -132,7 +135,7 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
 					title = title.trimStart();
 
 				let on_click_command = 'codemap.navigate_to';
-				if(lineNumber == -1)
+				if (lineNumber == -1)
 					on_click_command = "";
 
 				let node = new MapItem(
@@ -159,6 +162,11 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
 					}
 					else {
 						let parent = map[node.nesting_level - 1];
+						if (!parent) {
+							for (let key in map) {
+								parent = map[key];
+							}
+						}
 						parent.children.push(node);
 						node.parent = parent;
 					}

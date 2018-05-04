@@ -27,7 +27,7 @@ declare global {
 //     return this.replace(/ +$/, "");
 // }
 
-String.prototype.trimStart = function () {
+String.prototype.trimStart = function() {
     if (this.length == 0)
         return this;
     let c = ' ';
@@ -36,18 +36,107 @@ String.prototype.trimStart = function () {
     return this.substring(i);
 }
 
-String.prototype.trimEnd = function () {
+String.prototype.trimEnd = function() {
     return this.replace(/ +$/, "");
 }
 
-String.prototype.lines = function (limit?: number) {
+String.prototype.lines = function(limit?: number) {
     return this.split(/\r?\n/g, limit);
 }
 
-String.prototype.replaceAll = function (search, replacement) {
+String.prototype.replaceAll = function(search, replacement) {
     var target = this;
     return target.replace(new RegExp(search, 'g'), replacement);
 };
+
+export class config_defaults {
+
+    // Currently (4 May 2018) VSCode has broken returning defaults from the contributes.configuration.properties 
+    // It looks like issue #14500 is back
+    // Thus implementing a poor man defaults
+
+    public textMode = true;
+    public textModeLevelPrefix = "   ";
+    public json = [
+        {
+            "pattern": "\\s\\\"[\\w.-]*\":\\s[{|[]",
+            "clear": "{|:|\"|\\[",
+            "prefix": "",
+            "icon": "level2"
+        }
+    ];
+    public py = [
+        {
+            "pattern": "class (.*?)[(|:]",
+            "clear": ":|(",
+            "prefix": "",
+            "role": "class",
+            "icon": "class"
+        },
+        {
+            "pattern": "def (.*?)[(|:]",
+            "clear": ":|(",
+            "suffix": "()",
+            "role": "function",
+            "icon": "function"
+        }
+    ];
+
+    public svg = "config:codemap.xml";
+    public xaml = "config:codemap.xml";
+    public xml = [
+        {
+            "pattern": "\\s?<[^\\/|^\\?|^\\!][\\w:]*",
+            "clear": "<",
+            "prefix": "",
+            "icon": "level3"
+        }
+    ];
+    public md = [
+        {
+            "pattern": "^(\\s*)### (.*)",
+            "clear": "###",
+            "prefix": " -",
+            "icon": "level3"
+        },
+        {
+            "pattern": "^(\\s*)## (.*)",
+            "clear": "##",
+            "prefix": " ",
+            "icon": "level2"
+        },
+        {
+            "pattern": "^(\\s*)# (.*)",
+            "clear": "#",
+            "prefix": "",
+            "icon": "level1"
+        },
+        {
+            "pattern": "!\\[image\\]",
+            "clear": "![image]",
+            "prefix": "<image>",
+            "icon": "none"
+        },
+        {
+            "pattern": "!\\[\\]",
+            "clear": "![]",
+            "prefix": "<image>",
+            "icon": "none"
+        }
+    ];
+
+    public get(name: string): any {
+        if (name == 'md') return this.md;
+        else if (name == 'xml') return this.xml;
+        else if (name == 'xaml') return this.xaml;
+        else if (name == 'svg') return this.svg;
+        else if (name == 'py') return this.py;
+        else if (name == 'json') return this.json;
+        else if (name == 'textModeLevelPrefix') return this.textModeLevelPrefix;
+        else if (name == 'textMode') return this.textMode;
+        else return null;
+    }
+}
 
 export class Utils {
 
