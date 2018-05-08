@@ -1,6 +1,6 @@
 # CodeMap - VSCode Extension
 
-Interactive code map for quick visualization and navigation within code DOM objects (e.g. classes, members).
+Interactive code map for quick visualization and navigation within  code DOM objects (e.g. classes, members).
 <hr/>
 
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](http://www.csscript.net/Donation.html)
