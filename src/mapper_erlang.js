@@ -6,7 +6,7 @@
  * 
  * @example         "codemap.erl": "/path/where/this/mapper/is/mapper_erlang.js"
  * @see             History
- *                  v0.1 (2015/05)
+ *                  v0.1 (2018/05)
  *                      - This mapper has started as a small test to get functions and defines set and
  *                        deal with Erlang files, syntax is pretty simple and mostly based on regexp.
  *                        Nothing fancy and works, contribute to expand it and let me know how it goes.
