@@ -18,6 +18,7 @@ _Features_:
   * C#
   * TypeScript/JavaScript
   * Python
+  * Erlang
   * Markdown
   * JSON
   * XML/SVG/XAML

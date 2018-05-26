@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.4.3
+
+* Added dedicated Erlang mapper (courtesy of @andreabenini).
+
 ## 1.4.2
 
 * Fixed badly formatted `configuration.properties` in the package.json. The defect can potentially affect whole "read config value" use-case.

@@ -2,7 +2,7 @@
     "name": "codemap",
     "displayName": "CodeMap",
     "description": "Interactive code map for quick visualization and navigation within code DOM objects (e.g. classes, members).",
-    "version": "1.4.2",
+    "version": "1.4.3",
     "publisher": "oleg-shilo",
     "engines": {
         "vscode": "^1.13.0"
@@ -49,6 +49,16 @@
                     "type": "string",
                     "default": "   ",
                     "description": "Required for improving user experience in 'codemap.textMode' since VSCode swallows all whitespace indent indicating nesting level. Default value is a string of 3 non-whitespace empty chars (char U+00A0)."
+                },
+                "codemap.erl": {
+                    "type": "string",
+                    "default": "./mapper_erlang.js",
+                    "description": "Dedicated mapper for Erlang syntax."
+                },
+                "codemap.hrl": {
+                    "type": "string",
+                    "default": "./mapper_erlang.js",
+                    "description": "Dedicated mapper for Erlang syntax."
                 },
                 "codemap.json": {
                     "type": "array",
