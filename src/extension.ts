@@ -86,6 +86,7 @@ function get_map_items(): MapInfo {
             };
           }
         }
+      }
 
       if (
         document.toLowerCase().endsWith(".ts") ||
