@@ -63,6 +63,29 @@ function get_map_items(): MapInfo {
             };
           }
         }
+      } else {
+        // Add bracket: 'Makefile' vs '(Makefile)'
+        let value_name = "(" + path.basename(document) + ")";
+        let mapper = config.get(value_name, defaults.get(value_name));
+        mapper = get_actual_mapper(mapper);
+        if (mapper) {
+          if (typeof mapper == "string") {
+            // custom dedicated mapper
+            // process.env.VSCODE_USER
+            var dynamic_mapper = require(mapper as string).mapper;
+            return {
+              sourceFile: document,
+              items: dynamic_mapper.generate(document)
+            };
+          } else {
+            // generic built-in mapper
+            let mapping_info = mapper as SyntaxMapping[];
+            return {
+              sourceFile: document,
+              items: generic.mapper.generate(document, mapping_info)
+            };
+          }
+        }
       }
 
       if (
