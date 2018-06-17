@@ -38,53 +38,37 @@ function get_map_items(): MapInfo {
     let document = vscode.window.activeTextEditor.document.fileName;
 
     if (document && fs.existsSync(document)) {
-      let extension = path.extname(document.toLowerCase());
 
+      let value_name = "";
+
+      let extension = path.extname(document.toLowerCase());
       if (extension) {
         // Trim starting dot: '.py' vs 'py'
-        let value_name = extension.substring(1);
-        let mapper = config.get(value_name, defaults.get(value_name));
-        mapper = get_actual_mapper(mapper);
-        if (mapper) {
-          if (typeof mapper == "string") {
-            // custom dedicated mapper
-            // process.env.VSCODE_USER
-            var dynamic_mapper = require(mapper as string).mapper;
-            return {
-              sourceFile: document,
-              items: dynamic_mapper.generate(document)
-            };
-          } else {
-            // generic built-in mapper
-            let mapping_info = mapper as SyntaxMapping[];
-            return {
-              sourceFile: document,
-              items: generic.mapper.generate(document, mapping_info)
-            };
-          }
-        }
-      } else {
+        value_name = extension.substring(1);
+      }
+      else {
         // Add bracket: 'Makefile' vs '(Makefile)'
-        let value_name = "(" + path.basename(document) + ")";
-        let mapper = config.get(value_name, defaults.get(value_name));
-        mapper = get_actual_mapper(mapper);
-        if (mapper) {
-          if (typeof mapper == "string") {
-            // custom dedicated mapper
-            // process.env.VSCODE_USER
-            var dynamic_mapper = require(mapper as string).mapper;
-            return {
-              sourceFile: document,
-              items: dynamic_mapper.generate(document)
-            };
-          } else {
-            // generic built-in mapper
-            let mapping_info = mapper as SyntaxMapping[];
-            return {
-              sourceFile: document,
-              items: generic.mapper.generate(document, mapping_info)
-            };
-          }
+        value_name = "(" + path.basename(document) + ")";
+      }
+
+      let mapper = config.get(value_name, defaults.get(value_name));
+      mapper = get_actual_mapper(mapper);
+      if (mapper) {
+        if (typeof mapper == "string") {
+          // custom dedicated mapper
+          // process.env.VSCODE_USER
+          var dynamic_mapper = require(mapper as string).mapper;
+          return {
+            sourceFile: document,
+            items: dynamic_mapper.generate(document)
+          };
+        } else {
+          // generic built-in mapper
+          let mapping_info = mapper as SyntaxMapping[];
+          return {
+            sourceFile: document,
+            items: generic.mapper.generate(document, mapping_info)
+          };
         }
       }
 
