@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.5.0
+
+* Added support for PowerShell (.ps1) syntax.
+
 ## 1.4.3
 
 * Added dedicated Erlang mapper (courtesy of @andreabenini).

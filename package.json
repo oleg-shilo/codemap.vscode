@@ -2,7 +2,7 @@
     "name": "codemap",
     "displayName": "CodeMap",
     "description": "Interactive code map for quick visualization and navigation within code DOM objects (e.g. classes, members).",
-    "version": "1.4.3",
+    "version": "1.5.0",
     "publisher": "oleg-shilo",
     "engines": {
         "vscode": "^1.13.0"
@@ -58,6 +58,24 @@
                 "codemap.hrl": {
                     "type": "string",
                     "default": "./mapper_erlang.js",
+                    "description": "Dedicated mapper for Erlang syntax."
+                },
+                "codemap.ps1": {
+                    "type": "array",
+                    "default": [
+                        {
+                            "pattern": "function \\w*",
+                            "clear": "function ",
+                            "suffix": "()",
+                            "icon": "function"
+                        },
+                        {
+                            "pattern": "param\\(\\w*",
+                            "clear": "(|{",
+                            "suffix": ")",
+                            "icon": "function"
+                        }
+                    ],
                     "description": "Dedicated mapper for Erlang syntax."
                 },
                 "codemap.json": {
