@@ -76,7 +76,7 @@
                             "icon": "function"
                         }
                     ],
-                    "description": "Dedicated mapper for Erlang syntax."
+                    "description": "Dedicated mapper for PowerShell syntax."
                 },
                 "codemap.json": {
                     "type": "array",
