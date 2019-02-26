@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.6.0
+
+* Added support for R (.r) syntax.
+* Added handling unsaved content ("unknown-*") documents.
+
 ## 1.5.0
 
 * Added support for PowerShell (.ps1) syntax.

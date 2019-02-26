@@ -18,7 +18,7 @@ declare global {
 	}
 }
 
-String.prototype.trimStart = function() {
+String.prototype.trimStart = function () {
 	if (this.length == 0)
 		return this;
 	let c = ' ';
@@ -27,7 +27,7 @@ String.prototype.trimStart = function() {
 	return this.substring(i);
 }
 
-String.prototype.trimEnd = function() {
+String.prototype.trimEnd = function () {
 	return this.replace(/ +$/, "");
 }
 
@@ -47,7 +47,11 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
 	}
 
 	refresh(): void {
-		this._onDidChangeTreeData.fire();
+		try {
+			this._onDidChangeTreeData.fire();
+		} catch (error) {
+
+		}
 	}
 
 	getTreeItem(element: MapItem): vscode.TreeItem {

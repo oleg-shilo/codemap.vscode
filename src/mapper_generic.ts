@@ -26,7 +26,15 @@ export class mapper {
 
 			mappings.forEach(item => item.regex = new RegExp(item.pattern, 'g'));
 
-			let lines = Utils.read_all_lines(file);
+			let lines: string[];
+
+			if (!fs.existsSync(file)) {
+
+				let text = vscode.window.activeTextEditor.document.getText();
+				lines = text.split(/\r?\n/g);
+			}
+			else
+				lines = Utils.read_all_lines(file);
 
 			let line_num = 0;
 			let last_type = '';

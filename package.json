@@ -2,7 +2,7 @@
     "name": "codemap",
     "displayName": "CodeMap",
     "description": "Interactive code map for quick visualization and navigation within code DOM objects (e.g. classes, members).",
-    "version": "1.5.0",
+    "version": "1.6.0",
     "publisher": "oleg-shilo",
     "engines": {
         "vscode": "^1.13.0"
@@ -76,7 +76,24 @@
                             "icon": "function"
                         }
                     ],
-                    "description": "Dedicated mapper for PowerShell syntax."
+                    "description": "Regex-based definition of the mapping rules for PowerShell syntax."
+                },
+                "codemap.r": {
+                    "type": "array",
+                    "default": [
+                        {
+                            "pattern": ".*<-.*function.*",
+                            "clear": "{|<-.*function",
+                            "icon": "function"
+                        },
+                        {
+                            "pattern": ".*test_that.*",
+                            "clear": ", {|{",
+                            "suffix": ")",
+                            "icon": "function"
+                        }
+                    ],
+                    "description": "Regex-based definition of the mapping rules for R syntax."
                 },
                 "codemap.json": {
                     "type": "array",
@@ -173,11 +190,15 @@
         "commands": [
             {
                 "command": "codemap.navigate_to_selected",
-                "title": "Navigate to selected member"
+                "title": "CodeMap: Navigate to selected member"
+            },
+            {
+                "command": "codemap.mappers",
+                "title": "CodeMap: Show mappers configuration"
             },
             {
                 "command": "codemap.refresh",
-                "title": "Refresh CodeMap",
+                "title": "CodeMap: Refresh",
                 "icon": {
                     "light": "resources/light/refresh.svg",
                     "dark": "resources/dark/refresh.svg"
@@ -212,7 +233,6 @@
     },
     "dependencies": {
         "fs-extra": "^3.0.1",
-        "mkdirp": "^0.5.1",
-        "vscode": "^1.0.0"
+        "mkdirp": "^0.5.1"
     }
 }
