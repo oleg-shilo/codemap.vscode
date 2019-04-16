@@ -11,6 +11,7 @@ export class mapper {
 
 	public static generate(file: string): string[] {
 
+		"".match(/.* \(.*\) {/g)
 		let members = [];
 
 		try {

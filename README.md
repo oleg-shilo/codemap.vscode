@@ -18,6 +18,7 @@ _Features_:
   * C#
   * TypeScript/JavaScript
   * Python
+  * Java
   * Erlang
   * Markdown
   * PowerShell

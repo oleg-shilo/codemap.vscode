@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.7.0
+
+* Added support for Java (.java) syntax.
+
 ## 1.6.0
 
 * Added support for R (.r) syntax.
