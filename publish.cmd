@@ -1,2 +1,2 @@
-vsce publish 1.6.0
+vsce publish
 pause
