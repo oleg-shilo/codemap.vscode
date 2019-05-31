@@ -67,7 +67,7 @@ export class config_defaults {
     ];
     public py = [
         {
-            "pattern": "class (.*?)[(|:]",
+            "pattern": "(?<![^\\r\\n\\t\\f\\v .])class (.*?)[(|:]",
             "clear": ":|(",
             "prefix": "",
             "role": "class",
