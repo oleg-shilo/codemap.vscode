@@ -27,7 +27,7 @@ declare global {
 //     return this.replace(/ +$/, "");
 // }
 
-String.prototype.trimStart = function() {
+String.prototype.trimStart = function () {
     if (this.length == 0)
         return this;
     let c = ' ';
@@ -36,15 +36,15 @@ String.prototype.trimStart = function() {
     return this.substring(i);
 }
 
-String.prototype.trimEnd = function() {
+String.prototype.trimEnd = function () {
     return this.replace(/ +$/, "");
 }
 
-String.prototype.lines = function(limit?: number) {
+String.prototype.lines = function (limit?: number) {
     return this.split(/\r?\n/g, limit);
 }
 
-String.prototype.replaceAll = function(search, replacement) {
+String.prototype.replaceAll = function (search, replacement) {
     var target = this;
     return target.replace(new RegExp(search, 'g'), replacement);
 };
@@ -134,6 +134,7 @@ export class config_defaults {
         else if (name == 'json') return this.json;
         else if (name == 'textModeLevelPrefix') return this.textModeLevelPrefix;
         else if (name == 'textMode') return this.textMode;
+        else if (name == 'maxNestingLevel') return 3;
         else return null;
     }
 }

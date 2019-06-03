@@ -2,7 +2,7 @@
     "name": "codemap",
     "displayName": "CodeMap",
     "description": "Interactive code map for quick visualization and navigation within code DOM objects (e.g. classes, members).",
-    "version": "1.8.0",
+    "version": "1.9.0",
     "publisher": "oleg-shilo",
     "engines": {
         "vscode": "^1.13.0"
@@ -44,6 +44,11 @@
                     "type": "boolean",
                     "default": true,
                     "description": "Show tree view with un-expendable nodes for better user experience."
+                },
+                "codemap.maxNestingLevel": {
+                    "type": "number",
+                    "default": 3,
+                    "description": "Maximum nesting/indentation level of the code map entries. This setting can be used to control code map details vevel of highly structured code."
                 },
                 "codemap.textModeLevelPrefix": {
                     "type": "string",
@@ -116,7 +121,7 @@
                     "type": "array",
                     "default": [
                         {
-                            "pattern": "class (.*?)[(|:]",
+                            "pattern": "(?<![^\\r\\n\\t\\f\\v .])class (.*?)[(|:]",
                             "clear": ":|(",
                             "prefix": "",
                             "role": "class",

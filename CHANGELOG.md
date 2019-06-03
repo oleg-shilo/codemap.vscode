@@ -1,5 +1,14 @@
 # Change Log
 
+## 1.9.0
+
+* Fixed false class detection in source if substring 'class' present in some variables.
+* Issue #14: Show/Hide level in code map. Added `maxNestingLevel` setting.
+
+## 1.8.0
+
+* Added `syntaxer.cli.exe` to allow synchronous client-server communication for C# mapper. Needed to handle the problem with the latest VSCode failing to process unsolicited map refresh requests.
+
 ## 1.7.0
 
 * Added support for Java (.java) syntax.
