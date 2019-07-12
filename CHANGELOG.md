@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.10.0
+
+* Issue #18: Simplify mapping rules for Python
+
+
 ## 1.9.0
 
 * Fixed false class detection in source if substring 'class' present in some variables.
