@@ -3,7 +3,7 @@
 ## 1.10.0
 
 * Issue #18: Simplify mapping rules for Python
-
+* Issue #16: Add to Activity Bar
 
 ## 1.9.0
 

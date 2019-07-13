@@ -28,8 +28,17 @@
     "main": "./out/src/extension",
     "icon": "media/logo.png",
     "contributes": {
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "codemap-explorer",
+                    "title": "CodeMap Explorer",
+                    "icon": "resources/light/logo_ab.svg"
+                }
+            ]
+        },
         "views": {
-            "explorer": [
+            "codemap-explorer": [
                 {
                     "id": "codemap",
                     "name": "Code Map"
