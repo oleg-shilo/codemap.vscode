@@ -36,6 +36,10 @@ The plugin comes with support for TypeScript, Python and Markdown syntax. C# sup
 
 ![codemap_vscode.gif](https://raw.githubusercontent.com/oleg-shilo/codemap.vscode/master/resources/images/codemap_vscode.gif)
 
+Note, the latest releases of CodeMap place the plugin view in its own activitrybar:
+
+![image](https://user-images.githubusercontent.com/16729806/67156959-16bf4a80-f371-11e9-841b-dee1b9ba364e.png)
+
 ## Adding custom mappers
 The most intriguing feature is the possibility to extend the plugin to support new and even more exotic syntaxes. Read more about the technique in this [Wiki page](https://github.com/oleg-shilo/codemap.vscode/wiki/Adding-custom-mappers). 
 
