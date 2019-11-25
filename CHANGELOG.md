@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.10.1
+
+* Issue #22: Codemap doesn't display async function
+
 ## 1.10.0
 
 * Issue #18: Simplify mapping rules for Python

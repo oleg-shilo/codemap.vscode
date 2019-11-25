@@ -4,6 +4,8 @@ import * as os from 'os';
 import * as path from 'path';
 import { Uri, commands } from "vscode";
 
+
+
 declare global {
     interface String {
         // splitBy(separator: string): string;
@@ -48,6 +50,7 @@ String.prototype.replaceAll = function (search, replacement) {
     var target = this;
     return target.replace(new RegExp(search, 'g'), replacement);
 };
+
 
 export class config_defaults {
 
