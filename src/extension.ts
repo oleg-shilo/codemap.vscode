@@ -163,9 +163,11 @@ export function activate(context: vscode.ExtensionContext) {
 
   const treeViewProvider = new FavoritesTreeProvider(get_map_items);
 
-  vscode.window.registerTreeDataProvider("codemap", treeViewProvider);
+  vscode.window.createTreeView("codemap", { treeDataProvider: treeViewProvider, showCollapseAll: true} );
 
-  vscode.commands.registerCommand("codemap.refresh", treeViewProvider.refresh);
+  // vscode.window.registerTreeDataProvider("codemap", treeViewProvider);
+
+  vscode.commands.registerCommand("codemap.refresh", () => treeViewProvider.refresh());
 
   vscode.commands.registerCommand("codemap.mappers", () => {
     let mappers = vscode.workspace.getConfiguration("codemap");

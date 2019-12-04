@@ -54,6 +54,11 @@
                     "default": true,
                     "description": "Show tree view with un-expendable nodes for better user experience."
                 },
+                "codemap.textModeExpanded": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Show expanded child items."
+                },
                 "codemap.maxNestingLevel": {
                     "type": "number",
                     "default": 3,
@@ -246,9 +251,9 @@
         "postinstall": "node ./node_modules/vscode/bin/install"
     },
     "devDependencies": {
-        "typescript": "^2.1.4",
-        "vscode": "^1.0.0",
-        "@types/node": "*"
+        "typescript": "^2.0.3",
+        "vscode": "^1.1.10",
+        "@types/node": "^6.14.7"
     },
     "dependencies": {
         "fs-extra": "^3.0.1",
