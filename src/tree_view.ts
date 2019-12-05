@@ -136,7 +136,7 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
                 if (nesting_level > max_nesting_level)
                     return;
 
-                // the normal spaces are collapsed by the tree item renderer 
+                // the normal spaces are collapsed by the tree item renderer
                 let non_whitespace_empty_char = levelUnitChar;
 
                 if (!plainTextMode)
@@ -146,9 +146,11 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
                 if (lineNumber == -1)
                     on_click_command = "";
 
+                let textModeExpanded = vscode.workspace.getConfiguration("codemap").get('textModeExpanded', defaults.get('textModeExpanded'));
+
                 let node = new MapItem(
                     title,
-                    vscode.TreeItemCollapsibleState.Expanded,
+                    textModeExpanded ? vscode.TreeItemCollapsibleState.Expanded : vscode.TreeItemCollapsibleState.Collapsed,
                     nesting_level,
                     {
                         command: on_click_command,
