@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.10.2
+
+* Issue #25: Added collapse all items button
+
 ## 1.10.1
 
 * Issue #22: Codemap doesn't display async function

@@ -2,7 +2,8 @@
     "name": "codemap",
     "displayName": "CodeMap",
     "description": "Interactive code map for quick visualization and navigation within code DOM objects (e.g. classes, members).",
-    "version": "1.10.1",
+    "version": "1.10.2",
+    "license": "MIT",
     "publisher": "oleg-shilo",
     "engines": {
         "vscode": "^1.13.0"
