@@ -6,7 +6,7 @@
     "license": "MIT",
     "publisher": "oleg-shilo",
     "engines": {
-        "vscode": "^1.13.0"
+        "vscode": "^1.40.0"
     },
     "categories": [
         "Other"
