@@ -1,286 +1,286 @@
 {
-	"name": "codemap",
-	"displayName": "CodeMap",
-	"description": "Interactive code map for quick visualization and navigation within code DOM objects (e.g. classes, members).",
-	"version": "1.10.2",
-	"license": "MIT",
-	"publisher": "oleg-shilo",
-	"engines": {
-		"vscode": "^1.40.0"
-	},
-	"categories": [
-		"Other"
-	],
-	"keywords": [
-		"CodeMap, codedom"
-	],
-	"bugs": {
-		"url": "https://github.com/oleg-shilo/codemap.vscode/issues",
-		"email": "oshilo@gmail.com"
-	},
-	"homepage": "https://github.com/oleg-shilo/codemap.vscode/blob/master/README.md",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/oleg-shilo/codemap.vscode.git"
-	},
-	"activationEvents": [
-		"onView:codemap",
-		"onView:explorer"
-	],
-	"main": "./out/src/extension",
-	"icon": "media/logo.png",
-	"contributes": {
-		"viewsContainers": {
-			"activitybar": [
-				{
-					"id": "codemap-explorer",
-					"title": "CodeMap Explorer",
-					"icon": "resources/light/logo_ab.svg"
-				}
-			]
-		},
-		"views": {
-			"codemap-explorer": [
-				{
-					"id": "codemap",
-					"name": "Code Map",
-					"when": "config.codemap.location == codemap"
-				}
-			],
-			"explorer": [
-				{
-					"id": "explorer",
-					"name": "Code Map",
-					"when": "config.codemap.location == explorer"
-				}
-			]
-		},
-		"configuration": {
-			"type": "object",
-			"title": "CodeMap configuration",
-			"properties": {
-				"codemap.textMode": {
-					"type": "boolean",
-					"default": true,
-					"description": "Show tree view with un-expendable nodes for better user experience."
-				},
-				"codemap.textModeExpanded": {
-					"type": "boolean",
-					"default": true,
-					"description": "Show expanded child items."
-				},
-				"codemap.maxNestingLevel": {
-					"type": "number",
-					"default": 3,
-					"description": "Maximum nesting/indentation level of the code map entries. This setting can be used to control code map details level of highly structured code."
-				},
-				"codemap.textModeLevelPrefix": {
-					"type": "string",
-					"default": "   ",
-					"description": "Required for improving user experience in 'codemap.textMode' since VSCode swallows all whitespace indent indicating nesting level. Default value is a string of 3 non-whitespace empty chars (char U+00A0)."
-				},
-				"codemap.erl": {
-					"type": "string",
-					"default": "./mapper_erlang.js",
-					"description": "Dedicated mapper for Erlang syntax."
-				},
-				"codemap.hrl": {
-					"type": "string",
-					"default": "./mapper_erlang.js",
-					"description": "Dedicated mapper for Erlang syntax."
-				},
-				"codemap.java": {
-					"type": "string",
-					"default": "./mapper_java.js",
-					"description": "Dedicated mapper for Java syntax."
-				},
-				"codemap.ps1": {
-					"type": "array",
-					"default": [
-						{
-							"pattern": "function \\w*",
-							"clear": "function ",
-							"suffix": "()",
-							"icon": "function"
-						},
-						{
-							"pattern": "param\\(\\w*",
-							"clear": "(|{",
-							"suffix": ")",
-							"icon": "function"
-						}
-					],
-					"description": "Regex-based definition of the mapping rules for PowerShell syntax."
-				},
-				"codemap.r": {
-					"type": "array",
-					"default": [
-						{
-							"pattern": ".*<-.*function.*",
-							"clear": "{|<-.*function",
-							"icon": "function"
-						},
-						{
-							"pattern": ".*test_that.*",
-							"clear": ", {|{",
-							"suffix": ")",
-							"icon": "function"
-						}
-					],
-					"description": "Regex-based definition of the mapping rules for R syntax."
-				},
-				"codemap.json": {
-					"type": "array",
-					"default": [
-						{
-							"pattern": "\\s\\\"[\\w.-]*\":\\s[{|[]",
-							"clear": "{|:|\"|\\[",
-							"prefix": "",
-							"icon": "level2"
-						}
-					],
-					"description": "Regex-based definition of the mapping rules for JSON syntax."
-				},
-				"codemap.py": {
-					"type": "array",
-					"default": [
-						{
-							"pattern": "(?<![^\\r\\n\\t\\f\\v .])class (.*?)[(|:]",
-							"clear": "class|:|\\)|\\(",
-							"prefix": "",
-							"role": "class",
-							"icon": "class"
-						},
-						{
-							"pattern": "def (.*?)[(|:]",
-							"clear": "def|:|\\(|\\)",
-							"suffix": "()",
-							"role": "function",
-							"icon": "function"
-						}
-					],
-					"description": "Regex-based definition of the mapping rules for Python syntax."
-				},
-				"codemap.svg": {
-					"type": "string",
-					"default": "config:codemap.xml",
-					"description": "Redirected (to XML) mapper."
-				},
-				"codemap.xaml": {
-					"type": "string",
-					"default": "config:codemap.xml",
-					"description": "Redirected (to XML) mapper."
-				},
-				"codemap.xml": {
-					"type": "array",
-					"default": [
-						{
-							"pattern": "\\s?<[^\\/|^\\?|^\\!][\\w:]*",
-							"clear": "<",
-							"prefix": "",
-							"icon": "level3"
-						}
-					],
-					"description": "Regex-based definition of the mapping rules for XML syntax."
-				},
-				"codemap.md": {
-					"type": "array",
-					"default": [
-						{
-							"pattern": "^(\\s*)### (.*)",
-							"clear": "###",
-							"prefix": " -",
-							"icon": "level3"
-						},
-						{
-							"pattern": "^(\\s*)## (.*)",
-							"clear": "##",
-							"prefix": " ",
-							"icon": "level2"
-						},
-						{
-							"pattern": "^(\\s*)# (.*)",
-							"clear": "#",
-							"prefix": "",
-							"icon": "level1"
-						},
-						{
-							"pattern": "!\\[image\\]",
-							"clear": "![image]",
-							"prefix": "<image>",
-							"icon": "none"
-						},
-						{
-							"pattern": "!\\[\\]",
-							"clear": "![]",
-							"prefix": "<image>",
-							"icon": "none"
-						}
-					],
-					"description": "Regex-based definition of the mapping rules for Markup syntax."
-				},
-				"codemap.location": {
-					"type": "string",
-					"default": "codemap",
-					"enum": [
-						"codemap",
-						"explorer"
-					],
-					"enumDescriptions": [
-						"Adds to the CodeMap side bar",
-						"Adds to the Explorer side bar"
-					],
-					"markdownDescription": "Specifies where to show the _CodeMap_ view",
-					"scope": "window"
-				}
-			}
-		},
-		"commands": [
-			{
-				"command": "codemap.navigate_to_selected",
-				"title": "CodeMap: Navigate to selected member"
-			},
-			{
-				"command": "codemap.mappers",
-				"title": "CodeMap: Show mappers configuration"
-			},
-			{
-				"command": "codemap.refresh",
-				"title": "CodeMap: Refresh",
-				"icon": {
-					"light": "resources/light/refresh.svg",
-					"dark": "resources/dark/refresh.svg"
-				}
-			}
-		],
-		"menus": {
-			"view/title": [
-				{
-					"command": "codemap.refresh",
-					"when": "view == codemap",
-					"group": "navigation@2"
-				}
-			],
-			"view/item/context": [
-				{
-					"command": "codemap.navigate_to_selected",
-					"when": "view == codemap && viewItem == file"
-				}
-			]
-		}
-	},
-	"scripts": {
-		"vscode:prepublish": "tsc -p ./",
-		"compile": "tsc -watch -p ./",
-		"postinstall": "node ./node_modules/vscode/bin/install"
-	},
-	"devDependencies": {
-		"typescript": "^2.0.3",
-		"vscode": "^1.1.10",
-		"@types/node": "^6.14.7"
-	},
-	"dependencies": {
-		"fs-extra": "^3.0.1",
-		"mkdirp": "^0.5.1"
-	}
+    "name": "codemap",
+    "displayName": "CodeMap",
+    "description": "Interactive code map for quick visualization and navigation within code DOM objects (e.g. classes, members).",
+    "version": "1.10.2",
+    "license": "MIT",
+    "publisher": "oleg-shilo",
+    "engines": {
+        "vscode": "^1.40.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "keywords": [
+        "CodeMap, codedom"
+    ],
+    "bugs": {
+        "url": "https://github.com/oleg-shilo/codemap.vscode/issues",
+        "email": "oshilo@gmail.com"
+    },
+    "homepage": "https://github.com/oleg-shilo/codemap.vscode/blob/master/README.md",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/oleg-shilo/codemap.vscode.git"
+    },
+    "activationEvents": [
+        "onView:codemap",
+        "onView:explorer"
+    ],
+    "main": "./out/src/extension",
+    "icon": "media/logo.png",
+    "contributes": {
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "codemap-explorer",
+                    "title": "CodeMap Explorer",
+                    "icon": "resources/light/logo_ab.svg"
+                }
+            ]
+        },
+        "views": {
+            "codemap-explorer": [
+                {
+                    "id": "codemap",
+                    "name": "Code Map",
+                    "when": "config.codemap.location == codemap"
+                }
+            ],
+            "explorer": [
+                {
+                    "id": "explorer",
+                    "name": "Code Map",
+                    "when": "config.codemap.location == explorer"
+                }
+            ]
+        },
+        "configuration": {
+            "type": "object",
+            "title": "CodeMap configuration",
+            "properties": {
+                "codemap.textMode": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Show tree view with un-expendable nodes for better user experience."
+                },
+                "codemap.textModeExpanded": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Show expanded child items."
+                },
+                "codemap.maxNestingLevel": {
+                    "type": "number",
+                    "default": 3,
+                    "description": "Maximum nesting/indentation level of the code map entries. This setting can be used to control code map details level of highly structured code."
+                },
+                "codemap.textModeLevelPrefix": {
+                    "type": "string",
+                    "default": "   ",
+                    "description": "Required for improving user experience in 'codemap.textMode' since VSCode swallows all whitespace indent indicating nesting level. Default value is a string of 3 non-whitespace empty chars (char U+00A0)."
+                },
+                "codemap.erl": {
+                    "type": "string",
+                    "default": "./mapper_erlang.js",
+                    "description": "Dedicated mapper for Erlang syntax."
+                },
+                "codemap.hrl": {
+                    "type": "string",
+                    "default": "./mapper_erlang.js",
+                    "description": "Dedicated mapper for Erlang syntax."
+                },
+                "codemap.java": {
+                    "type": "string",
+                    "default": "./mapper_java.js",
+                    "description": "Dedicated mapper for Java syntax."
+                },
+                "codemap.ps1": {
+                    "type": "array",
+                    "default": [
+                        {
+                            "pattern": "function \\w*",
+                            "clear": "function ",
+                            "suffix": "()",
+                            "icon": "function"
+                        },
+                        {
+                            "pattern": "param\\(\\w*",
+                            "clear": "(|{",
+                            "suffix": ")",
+                            "icon": "function"
+                        }
+                    ],
+                    "description": "Regex-based definition of the mapping rules for PowerShell syntax."
+                },
+                "codemap.r": {
+                    "type": "array",
+                    "default": [
+                        {
+                            "pattern": ".*<-.*function.*",
+                            "clear": "{|<-.*function",
+                            "icon": "function"
+                        },
+                        {
+                            "pattern": ".*test_that.*",
+                            "clear": ", {|{",
+                            "suffix": ")",
+                            "icon": "function"
+                        }
+                    ],
+                    "description": "Regex-based definition of the mapping rules for R syntax."
+                },
+                "codemap.json": {
+                    "type": "array",
+                    "default": [
+                        {
+                            "pattern": "\\s\\\"[\\w.-]*\":\\s[{|[]",
+                            "clear": "{|:|\"|\\[",
+                            "prefix": "",
+                            "icon": "level2"
+                        }
+                    ],
+                    "description": "Regex-based definition of the mapping rules for JSON syntax."
+                },
+                "codemap.py": {
+                    "type": "array",
+                    "default": [
+                        {
+                            "pattern": "(?<![^\\r\\n\\t\\f\\v .])class (.*?)[(|:]",
+                            "clear": "class|:|\\)|\\(",
+                            "prefix": "",
+                            "role": "class",
+                            "icon": "class"
+                        },
+                        {
+                            "pattern": "def (.*?)[(|:]",
+                            "clear": "def|:|\\(|\\)",
+                            "suffix": "()",
+                            "role": "function",
+                            "icon": "function"
+                        }
+                    ],
+                    "description": "Regex-based definition of the mapping rules for Python syntax."
+                },
+                "codemap.svg": {
+                    "type": "string",
+                    "default": "config:codemap.xml",
+                    "description": "Redirected (to XML) mapper."
+                },
+                "codemap.xaml": {
+                    "type": "string",
+                    "default": "config:codemap.xml",
+                    "description": "Redirected (to XML) mapper."
+                },
+                "codemap.xml": {
+                    "type": "array",
+                    "default": [
+                        {
+                            "pattern": "\\s?<[^\\/|^\\?|^\\!][\\w:]*",
+                            "clear": "<",
+                            "prefix": "",
+                            "icon": "level3"
+                        }
+                    ],
+                    "description": "Regex-based definition of the mapping rules for XML syntax."
+                },
+                "codemap.md": {
+                    "type": "array",
+                    "default": [
+                        {
+                            "pattern": "^(\\s*)### (.*)",
+                            "clear": "###",
+                            "prefix": " -",
+                            "icon": "level3"
+                        },
+                        {
+                            "pattern": "^(\\s*)## (.*)",
+                            "clear": "##",
+                            "prefix": " ",
+                            "icon": "level2"
+                        },
+                        {
+                            "pattern": "^(\\s*)# (.*)",
+                            "clear": "#",
+                            "prefix": "",
+                            "icon": "level1"
+                        },
+                        {
+                            "pattern": "!\\[image\\]",
+                            "clear": "![image]",
+                            "prefix": "<image>",
+                            "icon": "none"
+                        },
+                        {
+                            "pattern": "!\\[\\]",
+                            "clear": "![]",
+                            "prefix": "<image>",
+                            "icon": "none"
+                        }
+                    ],
+                    "description": "Regex-based definition of the mapping rules for Markup syntax."
+                },
+                "codemap.location": {
+                    "type": "string",
+                    "default": "codemap",
+                    "enum": [
+                        "codemap",
+                        "explorer"
+                    ],
+                    "enumDescriptions": [
+                        "Adds to the CodeMap side bar",
+                        "Adds to the Explorer side bar"
+                    ],
+                    "markdownDescription": "Specifies where to show the _CodeMap_ view",
+                    "scope": "window"
+                }
+            }
+        },
+        "commands": [
+            {
+                "command": "codemap.navigate_to_selected",
+                "title": "CodeMap: Navigate to selected member"
+            },
+            {
+                "command": "codemap.mappers",
+                "title": "CodeMap: Show mappers configuration"
+            },
+            {
+                "command": "codemap.refresh",
+                "title": "CodeMap: Refresh",
+                "icon": {
+                    "light": "resources/light/refresh.svg",
+                    "dark": "resources/dark/refresh.svg"
+                }
+            }
+        ],
+        "menus": {
+            "view/title": [
+                {
+                    "command": "codemap.refresh",
+                    "when": "view == codemap",
+                    "group": "navigation@2"
+                }
+            ],
+            "view/item/context": [
+                {
+                    "command": "codemap.navigate_to_selected",
+                    "when": "view == codemap && viewItem == file"
+                }
+            ]
+        }
+    },
+    "scripts": {
+        "vscode:prepublish": "tsc -p ./",
+        "compile": "tsc -watch -p ./",
+        "postinstall": "node ./node_modules/vscode/bin/install"
+    },
+    "devDependencies": {
+        "typescript": "^2.0.3",
+        "vscode": "^1.1.10",
+        "@types/node": "^6.14.7"
+    },
+    "dependencies": {
+        "fs-extra": "^3.0.1",
+        "mkdirp": "^0.5.1"
+    }
 }
