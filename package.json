@@ -24,7 +24,8 @@
         "url": "https://github.com/oleg-shilo/codemap.vscode.git"
     },
     "activationEvents": [
-        "onView:codemap"
+        "onView:codemap",
+        "onView:explorer"
     ],
     "main": "./out/src/extension",
     "icon": "media/logo.png",
@@ -42,7 +43,15 @@
             "codemap-explorer": [
                 {
                     "id": "codemap",
-                    "name": "Code Map"
+                    "name": "Code Map",
+                    "when": "config.codemap.location == codemap"
+                }
+            ],
+            "explorer": [
+                {
+                    "id": "explorer",
+                    "name": "Code Map",
+                    "when": "config.codemap.location == explorer"
                 }
             ]
         },
@@ -63,7 +72,7 @@
                 "codemap.maxNestingLevel": {
                     "type": "number",
                     "default": 3,
-                    "description": "Maximum nesting/indentation level of the code map entries. This setting can be used to control code map details vevel of highly structured code."
+                    "description": "Maximum nesting/indentation level of the code map entries. This setting can be used to control code map details level of highly structured code."
                 },
                 "codemap.textModeLevelPrefix": {
                     "type": "string",
@@ -209,6 +218,20 @@
                         }
                     ],
                     "description": "Regex-based definition of the mapping rules for Markup syntax."
+                },
+                "codemap.location": {
+                    "type": "string",
+                    "default": "codemap",
+                    "enum": [
+                        "codemap",
+                        "explorer"
+                    ],
+                    "enumDescriptions": [
+                        "Adds to the CodeMap side bar",
+                        "Adds to the Explorer side bar"
+                    ],
+                    "markdownDescription": "Specifies where to show the _CodeMap_ view",
+                    "scope": "window"
                 }
             }
         },
