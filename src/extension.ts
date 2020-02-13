@@ -164,6 +164,7 @@ export function activate(context: vscode.ExtensionContext) {
     const treeViewProvider = new FavoritesTreeProvider(get_map_items);
 
     vscode.window.createTreeView("codemap", { treeDataProvider: treeViewProvider, showCollapseAll: true });
+    vscode.window.createTreeView("explorer", { treeDataProvider: treeViewProvider, showCollapseAll: true });
 
     // vscode.window.registerTreeDataProvider("codemap", treeViewProvider);
 
