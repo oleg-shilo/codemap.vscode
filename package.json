@@ -24,8 +24,8 @@
         "url": "https://github.com/oleg-shilo/codemap.vscode.git"
     },
     "activationEvents": [
-        "onView:codemap",
-        "onView:explorer"
+        "onView:codemap-own-view",
+        "onView:codemap-explorer-view"
     ],
     "main": "./out/src/extension",
     "icon": "media/logo.png",
@@ -42,14 +42,14 @@
         "views": {
             "codemap-explorer": [
                 {
-                    "id": "codemap",
+                    "id": "codemap-own-view",
                     "name": "Code Map",
                     "when": "config.codemap.location == codemap"
                 }
             ],
             "explorer": [
                 {
-                    "id": "explorer",
+                    "id": "codemap-explorer-view",
                     "name": "Code Map",
                     "when": "config.codemap.location == explorer"
                 }
