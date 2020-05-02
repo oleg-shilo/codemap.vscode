@@ -1,8 +1,12 @@
 # Change Log
 
+## 1.11.0
+
+* C# syntaxer is migrated to .NET Core. There is no longer any dependency on Mono.
+
 ## 1.10.3
 
-* Issue #27: Add an option to put the code map back into the explorer. 
+* Issue #27: Add an option to put the code map back into the explorer.
 
 ## 1.10.2
 

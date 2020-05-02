@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
+import * as fsx from "fs-extra";
 import * as path from 'path';
 import * as os from 'os';
 import * as net from "net";
@@ -14,7 +15,7 @@ let execSync = require('child_process').execSync;
 let map = "";
 let map_last_source = "";
 
-let SYNTAXER_VERSION = "1.2.1.0";
+let SYNTAXER_VERSION = "1.0.0.0";
 
 // will be set at the end of this file
 let SEVER = "";
@@ -24,8 +25,41 @@ let HOST = '127.0.0.1';
 let PORT = 18002;
 
 function startServer(): void {
-    child_process.execFile("mono", [SEVER, "-port:" + PORT, "-listen", "-client:" + process.pid, "-timeout:60000"]);
+    child_process.execFile("dotnet", [SEVER, "-port:" + PORT, "-listen", "-client:" + process.pid, "-timeout:60000"]);
 }
+
+function copy_dir_to_sync(srcDir: string, destDir: string): void {
+
+    try {
+        fsx.copySync(srcDir, destDir);
+    } catch (error) {
+        console.log(error.toString());
+    }
+}
+
+function delete_dir(dir: string): void {
+    try {
+
+        let files = fs.readdirSync(dir);
+        for (let i = 0; i < files.length; i++) {
+
+            let item_path = path.join(dir, files[i]);
+
+            if (fs.lstatSync(item_path).isFile())
+                try {
+                    fs.unlinkSync(item_path);
+                } catch (error) {
+                }
+            else
+                delete_dir(item_path);
+        }
+        fs.rmdir(dir, () => { });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
 
 export class mapper {
 
@@ -45,7 +79,7 @@ export class mapper {
             // 18001 - Notepad++
             // 18002 - VSCode.CodeMap
 
-            let command = `"${SEVER_CLI}" ${PORT} -client:${process.pid} -op:codemap_vscode -script:"${file}"`;
+            let command = `dotnet "${SEVER_CLI}" ${PORT} -client:${process.pid} -op:codemap_vscode -script:"${file}"`;
 
             try {
 
@@ -86,36 +120,50 @@ function DeploySyntaxer() {
         }
     }
 
-    const fse = require('fs-extra')
-
-    let fileName = "syntaxer.exe";
-    let cliFileName = "syntaxer.cli.exe";
+    let fileName = "syntaxer.core.dll";
+    let cliFileName = "syntaxer.core.cli.dll";
     let ext_dir = path.join(__dirname, "..", "..");
     let sourceDir = path.join(ext_dir, 'bin');
-    let destDir = path.join(user_dir(), 'syntaxer', SYNTAXER_VERSION);
-    // let destDir = path.join(user_dir(), '..', 'cs-script.common', 'syntaxer', SYNTAXER_VERSION);
+    let destRootDir = path.join(user_dir(), 'syntaxer');
+    let destDir = path.join(destRootDir, SYNTAXER_VERSION);
 
     SEVER = path.join(destDir, fileName);
     SEVER_CLI = path.join(destDir, cliFileName);
 
+    fs.readdir(destRootDir, (err, items) => {
+
+        try {
+
+            items.forEach(item => {
+                try {
+
+                    let item_path = path.join(destRootDir, item);
+
+                    if (fs.lstatSync(item_path).isDirectory()) {
+
+                        if (item != SYNTAXER_VERSION) { // remove old version folder
+                            delete_dir(item_path);
+                        }
+                    }
+                } catch (error) {
+                }
+
+            });
+        } catch (error) {
+        }
+    });
+
+
     if (!fs.existsSync(SEVER_CLI)) {
-        create_dir(destDir);
-        fse.copy(path.join(sourceDir, cliFileName), path.join(destDir, cliFileName));
+        copy_dir_to_sync(sourceDir, destDir);
+    }
+    else {
+        fsx.readdirSync(destRootDir, item => {
+        });
     }
 
     if (fs.existsSync(SEVER)) {
         startServer();
-    }
-    else {
-        create_dir(destDir);
-
-        fse.copy(path.join(sourceDir, fileName), path.join(destDir, fileName))
-            .then(() => {
-                startServer();
-            })
-            .catch(err => {
-                console.error(err);
-            })
     }
 }
 
