@@ -15,19 +15,23 @@ The extension functionality is straight forward. Just click the code map item an
 
 _Features_:
 * Supported syntaxes:
-  * C#
-  * TypeScript/JavaScript
-  * Python
-  * Java
-  * Erlang
-  * Markdown
-  * PowerShell
-  * R
-  * JSON
-  * XML/SVG/XAML
+  1. C#
+  2. TypeScript
+  3. JavaScript
+  4. Python
+  5. Java
+  6. Erlang
+  7. Markdown
+  8. PowerShell
+  9. R
+  10. JSON
+  11. XML
+  12. SVG
+  13. XAML
+  
 * [Customization by adding support for new syntaxes via:](https://github.com/oleg-shilo/codemap.vscode/wiki/Adding-custom-mappers)
-  * set of Regex expressions in user settings
-  * dedicated simple mapper JS script file.
+  * A generic mapptr thatis set of Regex expressions in user settings
+  * A dedicated simple mapper JS script file.
 * Auto-refreshing code map on document change.
 * Navigation to code fragment associated with the clicked code map node.
 * Refreshing on demand via "Refresh" toolbar button a and VSCode command.
