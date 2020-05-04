@@ -32,8 +32,6 @@ _Features_:
 * Navigation to code fragment associated with the clicked code map node.
 * Refreshing on demand via "Refresh" toolbar button a and VSCode command.
 
-The plugin comes with support for TypeScript, Python and Markdown syntax. C# support will come very soon. 
-
 ![codemap_vscode.gif](https://raw.githubusercontent.com/oleg-shilo/codemap.vscode/master/resources/images/codemap_vscode.gif)
 
 Note, the latest releases of CodeMap place the plugin view in its own activitrybar:

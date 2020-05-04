@@ -1,10 +1,14 @@
 # Change Log
 
+## 1.11.1
+
+* Issue #34: Refresh button is missing
+
 ## 1.11.0
 
 * C# syntaxer is migrated to .NET Core. There is no longer any dependency on Mono.
 
-## 1.10.3
+## 1.10.4
 
 * Issue #27: Add an option to put the code map back into the explorer.
 
