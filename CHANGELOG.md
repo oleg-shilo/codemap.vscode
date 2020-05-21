@@ -1,5 +1,16 @@
 # Change Log
 
+## 1.12.0 (22 May 2020)
+
+* Implemented Quick Pick (Alt+P) for simple search/filter mapitems
+  * Issue #36: add search or filter?
+  * Issue #31: Feature proposal - Document Symbol
+
+## 1.11.2
+
+* Issue #33: Codemap generic mapper does not work with UTF-16 encoded files.
+Changed (from reading doc content from the file) to reading the doc content from the text editor buffer. So no dependency on the file encoding.
+
 ## 1.11.1
 
 * Issue #34: Refresh button is missing

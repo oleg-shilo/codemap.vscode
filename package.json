@@ -2,7 +2,7 @@
     "name": "codemap",
     "displayName": "CodeMap",
     "description": "Interactive code map for quick visualization and navigation within code DOM objects (e.g. classes, members).",
-    "version": "1.11.2",
+    "version": "1.12.0",
     "license": "MIT",
     "publisher": "oleg-shilo",
     "engines": {
@@ -251,12 +251,31 @@
                     "light": "resources/light/refresh.svg",
                     "dark": "resources/dark/refresh.svg"
                 }
+            },
+            {
+                "command": "codemap.quick_pick",
+                "title": "CodeMap: Quick pick",
+                "icon": {
+                    "light": "resources/light/pick.svg",
+                    "dark": "resources/dark/pick.svg"
+                }
+            }
+        ],
+        "keybindings": [
+            {
+                "key": "alt+p",
+                "command": "codemap.quick_pick"
             }
         ],
         "menus": {
             "view/title": [
                 {
                     "command": "codemap.refresh",
+                    "when": "view == codemap-own-view || view == codemap-explorer-view",
+                    "group": "navigation@2"
+                },
+                {
+                    "command": "codemap.quick_pick",
                     "when": "view == codemap-own-view || view == codemap-explorer-view",
                     "group": "navigation@2"
                 }

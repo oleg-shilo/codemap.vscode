@@ -158,6 +158,33 @@ function navigate_to_selected(element: MapItem) {
         });
 }
 
+function quick_pick() {
+
+    let info = get_map_items();
+
+    if (info == null || info.items.length == 0)
+        return;
+
+    let map = new Map();
+
+    info.items.forEach(item => {
+
+        if (item != '') {
+            let tokens = item.split('|');
+            if (tokens.length > 1) {
+                try {
+                    map.set(tokens[0], () => navigate_to(info.sourceFile, Number(tokens[1]) - 1));
+                } catch (error) {
+                }
+            }
+        }
+    });
+
+    vscode.window
+        .showQuickPick(Array.from(map.keys()))
+        .then(selectedItem => map.get(selectedItem)());
+}
+
 export function activate(context: vscode.ExtensionContext) {
     Utils.init();
 
@@ -168,6 +195,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     // vscode.window.registerTreeDataProvider("codemap", treeViewProvider);
 
+    vscode.commands.registerCommand("codemap.quick_pick", quick_pick);
     vscode.commands.registerCommand("codemap.refresh", () => treeViewProvider.refresh());
 
     vscode.commands.registerCommand("codemap.mappers", () => {
@@ -177,6 +205,5 @@ export function activate(context: vscode.ExtensionContext) {
     });
 
     vscode.commands.registerCommand("codemap.navigate_to_selected", navigate_to_selected);
-
     vscode.commands.registerCommand("codemap.navigate_to", navigate_to);
 }
