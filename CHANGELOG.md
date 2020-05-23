@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.12.1 (24 May 2020)
+
+* Added icons to "Quick Pick" list
+
 ## 1.12.0 (22 May 2020)
 
 * Implemented Quick Pick (Alt+P) for simple search/filter mapitems

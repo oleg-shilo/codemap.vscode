@@ -171,9 +171,21 @@ function quick_pick() {
 
         if (item != '') {
             let tokens = item.split('|');
+            let icon = "";
+
+            if (tokens[2] == "function") icon = "$(symbol-function) ";
+            else if (tokens[2] == "property") icon = "$(symbol-property) ";
+            else if (tokens[2] == "interface") icon = "$(symbol-interface) ";
+            else if (tokens[2] == "class") icon = "$(symbol-class) ";
+            else if (tokens[2] == "document") icon = "$(symbol-file) ";
+            else if (tokens[2] == "level1") icon = "$(circle-filled) ";
+            else if (tokens[2] == "level2") icon = "$(circle-outline) ";
+            else if (tokens[2] == "level3") icon = "$(debug-stackframe-dot) ";
+
             if (tokens.length > 1) {
                 try {
-                    map.set(tokens[0], () => navigate_to(info.sourceFile, Number(tokens[1]) - 1));
+                    // https://code.visualstudio.com/api/references/icons-in-labels
+                    map.set(icon + tokens[0], () => navigate_to(info.sourceFile, Number(tokens[1]) - 1));
                 } catch (error) {
                 }
             }
