@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { Uri, commands } from "vscode";
 import { config_defaults } from './utils';
+import { resolve } from 'dns';
 
 const defaults = new config_defaults();
 
@@ -37,6 +38,8 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
     private _onDidChangeTreeData: vscode.EventEmitter<MapItem | undefined> = new vscode.EventEmitter<MapItem | undefined>();
     readonly onDidChangeTreeData: vscode.Event<MapItem | undefined> = this._onDidChangeTreeData.event;
 
+    public Items: MapItem[];
+
     constructor(private aggregateItems: () => MapInfo) {
         vscode.window.onDidChangeActiveTextEditor(editor => {
             this._onDidChangeTreeData.fire();
@@ -58,6 +61,12 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
         return element;
     }
 
+    getParent?(element: MapItem): Thenable<MapItem> {
+        return new Promise(resolve => {
+            resolve(element.parent);
+        });
+    }
+
     getChildren(element?: MapItem): Thenable<MapItem[]> {
         return new Promise(resolve => {
             if (element) {
@@ -73,6 +82,24 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
         });
     }
 
+    public revealNodeOf(treeView: vscode.TreeView<MapItem>, lineNumber: number): void {
+        treeView.reveal(this.getItemOf(lineNumber), { select: true, focus: false, expand: true })
+    }
+
+    public getItemOf(lineNumber: number): MapItem {
+
+        let result: MapItem;
+        for (let index = 0; index < this.Items.length; index++) {
+            const element = this.Items[index];
+
+            if (element.lineNumber > lineNumber)
+                break;
+
+            result = element;
+        }
+        return result;
+    }
+
     private getScriptItems(): MapItem[] {
         let nodes = [];
 
@@ -84,7 +111,8 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
         if (info == null || info.items.length == 0)
             return nodes;
 
-        return FavoritesTreeProvider.parseScriptItems(info.items, info.sourceFile);
+        this.Items = FavoritesTreeProvider.parseScriptItems(info.items, info.sourceFile);
+        return this.Items;
     }
 
     public static parseScriptItems(items: string[], sourceFile: string): MapItem[] {
@@ -158,7 +186,8 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
                         // tooltip: file,
                         arguments: [source_file, lineNumber],
                     },
-                    source_file + '|' + lineNumber
+                    source_file + '|' + lineNumber,
+                    lineNumber
                 );
 
                 if (plainTextMode) {
@@ -205,7 +234,7 @@ export class MapItem extends vscode.TreeItem {
         public readonly nesting_level: number,
         public readonly command?: vscode.Command,
         public readonly context?: string,
-    ) {
+        public readonly lineNumber?: number) {
         super(title, state);
     }
 

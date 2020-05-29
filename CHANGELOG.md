@@ -4,6 +4,11 @@
 
 * Added icons to "Quick Pick" list
 
+## 1.13.0 (29 May 2020)
+
+* Implemented Reveal In Tree (Alt+L) for revealing the tree view node that corresponds to code at the current position in the document.
+  * Issue #29: Show current location of cursor in file
+
 ## 1.12.0 (22 May 2020)
 
 * Implemented Quick Pick (Alt+P) for simple search/filter mapitems

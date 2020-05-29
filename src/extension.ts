@@ -14,6 +14,8 @@ import { SyntaxMapping } from "./mapper_generic";
 import { Utils, config_defaults } from "./utils";
 
 const defaults = new config_defaults();
+let treeViewProvider1: FavoritesTreeProvider;
+let treeViewProvider2: FavoritesTreeProvider;
 
 function get_actual_mapper(mapper: any): any {
     if (typeof mapper == "string") {
@@ -158,6 +160,22 @@ function navigate_to_selected(element: MapItem) {
         });
 }
 
+function reveal_currentline_in_tree(treeView1: vscode.TreeView<MapItem>, treeView2: vscode.TreeView<MapItem>) {
+
+    let editor = vscode.window.activeTextEditor;
+
+    if (editor != null) {
+
+        let currentLine = editor.selection.active.line;
+
+        if (treeView1.visible)
+            treeViewProvider1.revealNodeOf(treeView1, currentLine);
+
+        if (treeView2.visible)
+            treeViewProvider2.revealNodeOf(treeView2, currentLine);
+    }
+}
+
 function quick_pick() {
 
     let info = get_map_items();
@@ -197,18 +215,20 @@ function quick_pick() {
         .then(selectedItem => map.get(selectedItem)());
 }
 
+let mapInfo: MapInfo;
+
 export function activate(context: vscode.ExtensionContext) {
     Utils.init();
 
-    const treeViewProvider = new FavoritesTreeProvider(get_map_items);
+    treeViewProvider1 = new FavoritesTreeProvider(get_map_items);
+    treeViewProvider2 = new FavoritesTreeProvider(get_map_items);
 
-    vscode.window.createTreeView("codemap-own-view", { treeDataProvider: treeViewProvider, showCollapseAll: true });
-    vscode.window.createTreeView("codemap-explorer-view", { treeDataProvider: treeViewProvider, showCollapseAll: true });
+    let treeView1 = vscode.window.createTreeView("codemap-own-view", { treeDataProvider: treeViewProvider1, showCollapseAll: true });
+    let treeView2 = vscode.window.createTreeView("codemap-explorer-view", { treeDataProvider: treeViewProvider2, showCollapseAll: true });
 
-    // vscode.window.registerTreeDataProvider("codemap", treeViewProvider);
-
+    vscode.commands.registerCommand("codemap.reveal", () => reveal_currentline_in_tree(treeView1, treeView2));
     vscode.commands.registerCommand("codemap.quick_pick", quick_pick);
-    vscode.commands.registerCommand("codemap.refresh", () => treeViewProvider.refresh());
+    vscode.commands.registerCommand("codemap.refresh", () => treeViewProvider1.refresh());
 
     vscode.commands.registerCommand("codemap.mappers", () => {
         let mappers = vscode.workspace.getConfiguration("codemap");
