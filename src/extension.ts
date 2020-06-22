@@ -60,11 +60,14 @@ function get_map_items(): MapInfo {
             let mapper = config.get(value_name, defaults.get(value_name));
             let baseMapper = config.get('base', defaults.get('base'));
 
-            if (vscode.workspace.getConfiguration('disableDefaults')) {
-                mapper = baseMapper;
-            } else if (mapper != null) {
-                mapper = mapper.concat(baseMapper);
+            if (baseMapper) {
+                if (mapper == null) {
+                    mapper = baseMapper;
+                } else {
+                    mapper = mapper.concat(baseMapper);
+                }
             }
+
 
             mapper = get_actual_mapper(mapper);
             if (mapper) {

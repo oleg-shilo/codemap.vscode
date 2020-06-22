@@ -59,11 +59,6 @@
             "type": "object",
             "title": "CodeMap configuration",
             "properties": {
-                "codemap.disableDefaults": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Disable all default mappers."
-                },
                 "codemap.base": {
                     "type": "array",
                     "default": [],
