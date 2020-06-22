@@ -59,6 +59,16 @@
             "type": "object",
             "title": "CodeMap configuration",
             "properties": {
+                "codemap.disableDefaults": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Disable all default mappers."
+                },
+                "codemap.base": {
+                    "type": "array",
+                    "default": [],
+                    "description": "Regex-based definition of the mapping rules to always apply."
+                },
                 "codemap.textMode": {
                     "type": "boolean",
                     "default": true,
