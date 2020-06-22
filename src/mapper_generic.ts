@@ -34,10 +34,17 @@ export class mapper {
             let line_num = 0;
             let last_type = '';
             let last_indent = 0;
+            // If there are N newlines in any pattern, need to parse chunks of N+1 lines
+            let allPatterns = mappings.map((m) => m.pattern);
+            let newlineCounts = allPatterns.map((pat) => pat.split('\n').length - 1);
+            let chunkLineCount = newlineCounts.sort()[newlineCounts.length - 1] + 1;
 
-            lines.forEach(line => {
+            for (let line_num = 0; line_num < lines.length; line_num++) {
+                let line = lines
+                    .slice(line_num, line_num + chunkLineCount)
+                    .join('\n');
 
-                line_num = line_num + 1;
+
                 line = line.replace('\t', '    ');
 
                 if (line != '') {
@@ -74,7 +81,7 @@ export class mapper {
                         }
                     }
                 }
-            });
+            };
         } catch (error) {
             members = [];
         }
