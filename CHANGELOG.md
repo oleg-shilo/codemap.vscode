@@ -4,6 +4,11 @@
 
 * Added icons to "Quick Pick" list
 
+## 1.14.0 (21 July 2020)
+
+* Added support for Blazor/Razor (.razor) syntax.
+* Added an option for automatically invoking "Reveal In Tree" on caret position change.
+
 ## 1.13.0 (29 May 2020)
 
 * Implemented Reveal In Tree (Alt+L) for revealing the tree view node that corresponds to code at the current position in the document.

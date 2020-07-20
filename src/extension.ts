@@ -91,6 +91,38 @@ function get_map_items(): MapInfo {
                 // dedicated built-in mapper
                 return { sourceFile: document, items: cs.mapper.generate(document) };
             }
+
+            if (document.toLowerCase().endsWith(".razor")) {
+
+                let codeFile = document + ".codemap.cs";
+                let code = [];
+
+                let started = false;
+
+                Utils
+                    .read_all_lines(document)
+                    .forEach(line => {
+                        if (line.trimStart().startsWith("@code {")) {
+
+                            started = true;
+                            code.push("class @code {");
+                        }
+                        else {
+
+                            if (started)
+                                code.push(line);
+                            else
+                                code.push("");
+                        }
+                    });
+
+                Utils.write_all_lines(codeFile, code);
+                let map = cs.mapper.generate(codeFile);
+                fs.unlinkSync(codeFile);
+
+                // dedicated built-in mapper
+                return { sourceFile: document, items: map };
+            }
         }
     } catch (error) {
         console.log(error.toString());
@@ -234,6 +266,12 @@ export function activate(context: vscode.ExtensionContext) {
         let mappers = vscode.workspace.getConfiguration("codemap");
         vscode.workspace.openTextDocument({ language: 'json', content: "// current Code Map configuration (read-only)\n" + JSON.stringify(mappers, null, 2) })
             .then(doc => vscode.window.showTextDocument(doc));
+    });
+
+    vscode.window.onDidChangeTextEditorSelection(editor => {
+        let autoReveal = vscode.workspace.getConfiguration("codemap").get('autoReveal', defaults.get('autoReveal'));
+        if (autoReveal)
+            vscode.commands.executeCommand("codemap.reveal");
     });
 
     vscode.commands.registerCommand("codemap.navigate_to_selected", navigate_to_selected);

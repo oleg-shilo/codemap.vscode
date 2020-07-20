@@ -60,6 +60,7 @@ export class config_defaults {
 
     public textMode = true;
     public textModeExpanded = true;
+    public autoReveal = true;
     public textModeLevelPrefix = "   ";
     public json = [
         {

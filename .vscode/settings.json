@@ -9,5 +9,6 @@
     "typescript.tsdk": "./node_modules/typescript/lib",
     "cSpell.words": [
         "codemap"
-    ] // we want to use the TS server from our node_modules folder to control its version
+    ],
+    "debug.javascript.suggestPrettyPrinting": false // we want to use the TS server from our node_modules folder to control its version
 }
