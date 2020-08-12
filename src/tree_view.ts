@@ -211,12 +211,21 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
                     }
                 }
 
-                let iconName = icon + ".svg";
+                if (icon.startsWith("path:")) {
 
-                node.iconPath = {
-                    light: path.join(__filename, '..', '..', '..', 'resources', 'light', iconName),
-                    dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', iconName)
-                };
+                    node.iconPath = {
+                        light: icon.replace("path:", "").replace("{theme}", "light"),
+                        dark: icon.replace("path:", "").replace("{theme}", "dark")
+                    };
+                }
+                else {
+                    let iconName = icon + ".svg";
+
+                    node.iconPath = {
+                        light: path.join(__filename, '..', '..', '..', 'resources', 'light', iconName),
+                        dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', iconName)
+                    };
+                }
 
                 map[node.nesting_level] = node;
             }
