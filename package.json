@@ -59,6 +59,11 @@
             "type": "object",
             "title": "CodeMap configuration",
             "properties": {
+                "codemap.base": {
+                    "type": "array",
+                    "default": [],
+                    "description": "Regex-based definition of the mapping rules to always apply."
+                },
                 "codemap.textMode": {
                     "type": "boolean",
                     "default": true,
