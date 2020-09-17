@@ -57,7 +57,10 @@ function get_map_items(): MapInfo {
                 value_name = vscode.window.activeTextEditor.document.languageId;
             }
 
-            let mapper = config.get(value_name, defaults.get(value_name));
+            let mapper = config.get("overloaded." + value_name, null);
+            
+            if(mapper == null)
+                mapper = config.get(value_name, defaults.get(value_name));
 
             mapper = get_actual_mapper(mapper);
             if (mapper) {
