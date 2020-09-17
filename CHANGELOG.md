@@ -1,8 +1,23 @@
 # Change Log
 
-## 1.12.1 (24 May 2020)
+## 1.15.0 (12 August 2020)
 
-* Added icons to "Quick Pick" list
+* Issue #41: Customizing the color of the squares in "Codemap explorer"
+
+  You can use an additional format for icon allows specifying custom path:
+  `path:<absolute path to svg icon file>`
+  The path string can contain special token `{theme}` which is replaced at runtime with the word "dark" or "light". Depending on the VS theme.  
+
+  ```
+      "codemap.md": [
+        {
+            "pattern": "^(\\s*)### (.*)",
+            "clear": "###",
+            "prefix": " -",
+            "icon": "path:E:\\icons\\VSCode\\codemap\\{theme}\\custom_level_a.svg"
+        },
+        . . .
+  ```
 
 ## 1.14.0 (21 July 2020)
 
@@ -13,6 +28,10 @@
 
 * Implemented Reveal In Tree (Alt+L) for revealing the tree view node that corresponds to code at the current position in the document.
   * Issue #29: Show current location of cursor in file
+
+## 1.12.1 (24 May 2020)
+
+* Added icons to "Quick Pick" list
 
 ## 1.12.0 (22 May 2020)
 
