@@ -99,6 +99,11 @@
                     "default": "./mapper_java.js",
                     "description": "Dedicated mapper for Java syntax."
                 },
+                "codemap.tcl": {
+                    "type": "string",
+                    "default": "./mapper_tcl.js",
+                    "description": "Dedicated mapper for TCL syntax."
+                },
                 "codemap.ps1": {
                     "type": "array",
                     "default": [
