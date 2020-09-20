@@ -51,7 +51,6 @@ String.prototype.replaceAll = function (search, replacement) {
     return target.replace(new RegExp(search, 'g'), replacement);
 };
 
-
 export class config_defaults {
 
     // Currently (4 May 2018) VSCode has broken returning defaults from the contributes.configuration.properties
@@ -59,6 +58,7 @@ export class config_defaults {
     // Thus implementing a poor man defaults
 
     public textMode = true;
+    public sortingEnabled = false;
     public textModeExpanded = true;
     public autoReveal = true;
     public textModeLevelPrefix = "   ";
@@ -136,12 +136,22 @@ export class config_defaults {
         else if (name == 'xaml') return this.xaml;
         else if (name == 'svg') return this.svg;
         else if (name == 'py') return this.py;
+        else if (name == 'sortingEnabled') return this.sortingEnabled;
         else if (name == 'json') return this.json;
         else if (name == 'textModeLevelPrefix') return this.textModeLevelPrefix;
         else if (name == 'textMode') return this.textMode;
         else if (name == 'textModeExpanded') return this.textModeExpanded;
         else if (name == 'maxNestingLevel') return 3;
         else return null;
+    }
+}
+
+
+export class Config {
+    static defaults = new config_defaults();
+    
+    public static get(name: string):object{
+        return vscode.workspace.getConfiguration("codemap").get('sortingEnabled', Config.defaults.get('sortingEnabled'));
     }
 }
 
@@ -155,7 +165,7 @@ export class Utils {
     public static write_all_lines(file: string, lines: string[]): void {
         fs.writeFileSync(file, lines.join('\n'), { encoding: 'utf8' });
     }
-
+    
     public static init(): void {
 
         // vscode:

@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Uri, commands } from "vscode";
-import { config_defaults } from './utils';
+import { Config, config_defaults, Utils } from './utils';
 import { resolve } from 'dns';
 
 const defaults = new config_defaults();
@@ -88,9 +88,22 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
 
     public getItemOf(lineNumber: number): MapItem {
 
-        let result: MapItem;
+        let allItems: MapItem[] = []; 
         for (let index = 0; index < this.Items.length; index++) {
-            const element = this.Items[index];
+            let item = this.Items[index];
+            allItems.push(item);
+            item.aggregateNestedChildren(allItems);
+        }
+
+        allItems = allItems.sort(MapItem.compareByLineNumber);
+
+        let result: MapItem;
+
+        if (allItems.length > 0)
+            result = allItems[0];
+        
+        for (let index = 0; index < allItems.length; index++) {
+            const element = allItems[index];
 
             if (element.lineNumber > lineNumber)
                 break;
@@ -206,7 +219,7 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
                                 parent = map[key];
                             }
                         }
-                        parent.children.push(node);
+                        parent.addChildItem(node); 
                         node.parent = parent;
                     }
                 }
@@ -248,6 +261,8 @@ export class MapItem extends vscode.TreeItem {
     }
 
     public children: MapItem[] = [];
+    public sortedByFilePositionChildren: MapItem[] = [];
+    
     public parent: MapItem;
     // iconPath = {
     // 	light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'document.svg'),
@@ -256,6 +271,45 @@ export class MapItem extends vscode.TreeItem {
     public updateState(): void {
         if (this.children.length == 0)
             this.collapsibleState = vscode.TreeItemCollapsibleState.None;
+    }
+
+    public addChildItem( item: MapItem){
+        this.children.push(item);
+
+        
+        let sortingEnabled = Config.get('sortingEnabled');
+        if (sortingEnabled){
+            // not very effisient to do it on every child added but OK as a starting point
+            this.children = this.children.sort(MapItem.compareByTitle); 
+        }
+    }
+
+    public aggregateNestedChildren(result: MapItem[]): void{
+        for (let index = 0; index < this.children.length; index++) {
+            var element = this.children[index];
+            result.push(element);
+            element.aggregateNestedChildren(result);
+        }
+    }
+    
+    public static compareByLineNumber(n1: MapItem, n2: MapItem) : number {
+        if (n1.lineNumber > n2.lineNumber) 
+            return 1;
+    
+        if (n1.lineNumber < n2.lineNumber)
+            return -1;
+        
+        return 0;
+    }
+
+    public static compareByTitle(n1: MapItem, n2: MapItem) : number {
+        if (n1.title > n2.title) 
+            return 1;
+    
+        if (n1.title < n2.title)
+            return -1;
+        
+        return 0;
     }
     contextValue = 'file';
 }

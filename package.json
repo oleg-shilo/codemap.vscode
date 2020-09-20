@@ -2,7 +2,7 @@
     "name": "codemap",
     "displayName": "CodeMap",
     "description": "Interactive code map for quick visualization and navigation within code DOM objects (e.g. classes, members).",
-    "version": "1.15.0",
+    "version": "1.16.0",
     "license": "MIT",
     "publisher": "oleg-shilo",
     "engines": {
@@ -61,8 +61,13 @@
             "properties": {
                 "codemap.textMode": {
                     "type": "boolean",
-                    "default": true,
+                    "default": false,
                     "description": "Show tree view with un-expendable nodes for better user experience."
+                },
+                "codemap.sortingEnabled": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Enable alpabetical order if the CodeMap a node items."
                 },
                 "codemap.textModeExpanded": {
                     "type": "boolean",
