@@ -10,6 +10,7 @@ export interface SyntaxMapping {
     suffix: string;
     prefix: string;
     regex: RegExp;
+    levelIndent: number;
     role: string;
     icon: string;
 }
@@ -41,15 +42,19 @@ export class mapper {
                 line = line.replace('\t', '    ');
 
                 if (line != '') {
+                    
                     let code_line = line.trimStart();
-
-                    let indent_level = line.length - code_line.length;
-
+                    
                     for (let item of mappings) {
-
+                        
                         let m = line.match(item.regex);
-
+                        
                         if (m) {
+
+                            let level_indent = line.length - code_line.length;
+                            if(item.levelIndent)
+                                level_indent = item.levelIndent;
+
                             let match = m[0];
 
                             if (item.clear)
@@ -69,7 +74,7 @@ export class mapper {
                             if (item.prefix)
                                 match = item.prefix + match;
 
-                            members.push([line_num, item.role, match, indent_level, item.icon]);
+                            members.push([line_num, item.role, match, level_indent, item.icon]);
                             break;
                         }
                     }
