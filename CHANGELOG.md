@@ -1,6 +1,6 @@
 # Change Log
 
-## 1.16.0 (?? September 2020)
+## 1.16.0 (23 September 2020)
 
 - Added support for TCS syntax
 - Issue #44: Cannot create json setting for dedicated mapper
