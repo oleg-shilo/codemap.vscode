@@ -51,25 +51,5 @@ If you create mapping rules or dedicated mapper and want to share it with others
 
 * The main objective of this plugin is not to provide the most accurate CodeDOM (syntax tree)  presentation but rather to assist with the navigation to the most important points in your code. Thus the default mappers deliberately avoid high resolution code parsing (e.g. local variables). 
 
-* Currently VSCode has a defect associate with the expandable nodes selection:<br>
-   https://github.com/Microsoft/vscode/issues/34130<br>
-   https://github.com/patrys/vscode-code-outline/issues/24
-   
-   This defect makes it impossible to select a node (and consequently trigger the navigation) without toggling node's expanded state. While being cosmetic this defect can become quite annoying and affecting the overall User Experience.
-   
-   CodeMap offers a work around. You can enable the plugin `textMode` in the user setting:
-   ```JASON
-   "codemap.textMode": true
-   ```
-   In this mode the all nodes are made non-expandable and nesting is expressed via node text indent.
-
-   _textMode disabled_<br>
-   ![tree_mode.png](https://raw.githubusercontent.com/oleg-shilo/codemap.vscode/master/resources/images/tree_mode.png)
-
-   _textMode enabled_<br>
-   ![text_mode.png](https://raw.githubusercontent.com/oleg-shilo/codemap.vscode/master/resources/images/text_mode.png)
-   
-
-
 
 
