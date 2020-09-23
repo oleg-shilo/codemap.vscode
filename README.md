@@ -28,6 +28,7 @@ _Features_:
   * XML
   * SVG
   * XAML  
+  * TCL
 * [Customization by adding support for new syntaxes via:](https://github.com/oleg-shilo/codemap.vscode/wiki/Adding-custom-mappers)
   * A generic mapptr thatis set of Regex expressions in user settings
   * A dedicated simple mapper JS script file.
