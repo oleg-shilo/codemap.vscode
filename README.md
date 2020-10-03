@@ -3,7 +3,8 @@
 Interactive code map for quick visualization and navigation within  code DOM objects (e.g. classes, members).
 <hr/>
 
-[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](http://www.csscript.net/Donation.html)
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.cs-script.net/cs-script/Donation.html)
+
 ## Overview
 
 This simple extension visualizes the code DOM objects defined in the active document. This extension is a for of the popular plugin that is available for:
