@@ -44,7 +44,7 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
         vscode.window.onDidChangeActiveTextEditor(editor => {
             this._onDidChangeTreeData.fire();
         });
-        vscode.workspace.onDidChangeTextDocument(e => {
+        vscode.workspace.onDidSaveTextDocument(e => {
             this._onDidChangeTreeData.fire();
         })
     }
