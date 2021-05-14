@@ -31,7 +31,7 @@ _Features_:
   * XAML  
   * TCL
 * [Customization by adding support for new syntaxes via:](https://github.com/oleg-shilo/codemap.vscode/wiki/Adding-custom-mappers)
-  * A generic mapptr thatis set of Regex expressions in user settings
+  * A generic mapper that is set of Regex expressions in user settings
   * A dedicated simple mapper JS script file.
 * Auto-refreshing code map on document change.
 * Navigation to code fragment associated with the clicked code map node.

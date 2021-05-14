@@ -88,7 +88,7 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
 
     public getItemOf(lineNumber: number): MapItem {
 
-        let allItems: MapItem[] = []; 
+        let allItems: MapItem[] = [];
         for (let index = 0; index < this.Items.length; index++) {
             let item = this.Items[index];
             allItems.push(item);
@@ -101,7 +101,7 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
 
         if (allItems.length > 0)
             result = allItems[0];
-        
+
         for (let index = 0; index < allItems.length; index++) {
             const element = allItems[index];
 
@@ -219,7 +219,7 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
                                 parent = map[key];
                             }
                         }
-                        parent.addChildItem(node); 
+                        parent.addChildItem(node);
                         node.parent = parent;
                     }
                 }
@@ -244,6 +244,11 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
             }
         });
 
+        let sortingEnabled = Config.get('sortingEnabled');
+        if (sortingEnabled && !plainTextMode) {
+            nodes.sort(MapItem.compareByTitle);
+        }
+
         return nodes;
     }
 }
@@ -262,7 +267,7 @@ export class MapItem extends vscode.TreeItem {
 
     public children: MapItem[] = [];
     public sortedByFilePositionChildren: MapItem[] = [];
-    
+
     public parent: MapItem;
     // iconPath = {
     // 	light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'document.svg'),
@@ -273,42 +278,42 @@ export class MapItem extends vscode.TreeItem {
             this.collapsibleState = vscode.TreeItemCollapsibleState.None;
     }
 
-    public addChildItem( item: MapItem){
+    public addChildItem(item: MapItem) {
         this.children.push(item);
 
-        
+
         let sortingEnabled = Config.get('sortingEnabled');
-        if (sortingEnabled){
-            // not very effisient to do it on every child added but OK as a starting point
-            this.children = this.children.sort(MapItem.compareByTitle); 
+        if (sortingEnabled) {
+            // not very efficient to do it on every child added but OK as a starting point
+            this.children = this.children.sort(MapItem.compareByTitle);
         }
     }
 
-    public aggregateNestedChildren(result: MapItem[]): void{
+    public aggregateNestedChildren(result: MapItem[]): void {
         for (let index = 0; index < this.children.length; index++) {
             var element = this.children[index];
             result.push(element);
             element.aggregateNestedChildren(result);
         }
     }
-    
-    public static compareByLineNumber(n1: MapItem, n2: MapItem) : number {
-        if (n1.lineNumber > n2.lineNumber) 
+
+    public static compareByLineNumber(n1: MapItem, n2: MapItem): number {
+        if (n1.lineNumber > n2.lineNumber)
             return 1;
-    
+
         if (n1.lineNumber < n2.lineNumber)
             return -1;
-        
+
         return 0;
     }
 
-    public static compareByTitle(n1: MapItem, n2: MapItem) : number {
-        if (n1.title > n2.title) 
+    public static compareByTitle(n1: MapItem, n2: MapItem): number {
+        if (n1.title.toUpperCase() > n2.title.toUpperCase())
             return 1;
-    
-        if (n1.title < n2.title)
+
+        if (n1.title.toUpperCase() < n2.title.toUpperCase())
             return -1;
-        
+
         return 0;
     }
     contextValue = 'file';

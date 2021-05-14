@@ -74,8 +74,8 @@ function get_map_items(): MapInfo {
             }
 
             let mapper = config.get("overloaded." + value_name, null);
-            
-            if(mapper == null)
+
+            if (mapper == null)
                 mapper = config.get(value_name, defaults.get(value_name));
 
             mapper = get_actual_mapper(mapper);
@@ -211,7 +211,7 @@ function navigate_to_selected(element: MapItem) {
         });
 }
 
-function reveal_currentline_in_tree(treeView1: vscode.TreeView<MapItem>, treeView2: vscode.TreeView<MapItem>) {
+function reveal_current_line_in_tree(treeView1: vscode.TreeView<MapItem>, treeView2: vscode.TreeView<MapItem>) {
 
     let editor = vscode.window.activeTextEditor;
 
@@ -277,7 +277,7 @@ export function activate(context: vscode.ExtensionContext) {
     let treeView1 = vscode.window.createTreeView("codemap-own-view", { treeDataProvider: treeViewProvider1, showCollapseAll: true });
     let treeView2 = vscode.window.createTreeView("codemap-explorer-view", { treeDataProvider: treeViewProvider2, showCollapseAll: true });
 
-    vscode.commands.registerCommand("codemap.reveal", () => reveal_currentline_in_tree(treeView1, treeView2));
+    vscode.commands.registerCommand("codemap.reveal", () => reveal_current_line_in_tree(treeView1, treeView2));
     vscode.commands.registerCommand("codemap.quick_pick", quick_pick);
     vscode.commands.registerCommand("codemap.refresh", () => treeViewProvider1.refresh());
 

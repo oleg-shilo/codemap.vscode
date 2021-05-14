@@ -57,7 +57,7 @@ export class config_defaults {
     // It looks like issue #14500 is back
     // Thus implementing a poor man defaults
 
-    public textMode = true;
+    public textMode = false;
     public sortingEnabled = false;
     public textModeExpanded = true;
     public autoReveal = true;
@@ -149,8 +149,8 @@ export class config_defaults {
 
 export class Config {
     static defaults = new config_defaults();
-    
-    public static get(name: string):object{
+
+    public static get(name: string): object {
         return vscode.workspace.getConfiguration("codemap").get('sortingEnabled', Config.defaults.get('sortingEnabled'));
     }
 }
@@ -165,7 +165,7 @@ export class Utils {
     public static write_all_lines(file: string, lines: string[]): void {
         fs.writeFileSync(file, lines.join('\n'), { encoding: 'utf8' });
     }
-    
+
     public static init(): void {
 
         // vscode:

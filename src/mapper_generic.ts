@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Uri, commands } from "vscode";
-import { Utils } from './utils';
+import { Config, config_defaults, Utils } from './utils';
 
 export interface SyntaxMapping {
     pattern: string;
@@ -16,6 +16,28 @@ export interface SyntaxMapping {
 }
 
 export class mapper {
+
+    private static compareByLevelAndTitle(n1: any, n2: any): number {
+        let level_indent1 = n1[3];
+        let level_indent2 = n2[3];
+        let title1 = n1[2];
+        let title2 = n2[2];
+
+        if (level_indent1 > level_indent2)
+            return 1;
+
+        if (level_indent1 < level_indent2)
+            return -1;
+
+
+        if (title1 > title2)
+            return 1;
+
+        if (title1 < title2)
+            return -1;
+
+        return 0;
+    }
 
     public static generate(file: string, mappings: SyntaxMapping[]): string[] {
 
@@ -42,17 +64,17 @@ export class mapper {
                 line = line.replace('\t', '    ');
 
                 if (line != '') {
-                    
+
                     let code_line = line.trimStart();
-                    
+
                     for (let item of mappings) {
-                        
+
                         let m = line.match(item.regex);
-                        
+
                         if (m) {
 
                             let level_indent = line.length - code_line.length;
-                            if(item.levelIndent)
+                            if (item.levelIndent)
                                 level_indent = item.levelIndent;
 
                             let match = m[0];
