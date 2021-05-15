@@ -174,6 +174,8 @@ function navigate_to(sourceFile: string, line: number) {
                     new vscode.Position(Math.floor(line), 0),
                     new vscode.Position(Math.floor(line), 0)
                 );
+
+                commands.executeCommand('editor.unfold');
             }
         });
 }
