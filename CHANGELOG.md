@@ -10,6 +10,8 @@
 - Hot-reload custom mapper scripts when they have changed
 - Update mapper_tcl.ts
 
+## 1.16.0 (23 September 2020)
+
 - Added support for TCS syntax
 - Issue #44: Cannot create json setting for dedicated mapper
 - Issue #43: Sorting
