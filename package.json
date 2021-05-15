@@ -24,6 +24,7 @@
         "url": "https://github.com/oleg-shilo/codemap.vscode.git"
     },
     "activationEvents": [
+        "onCommand:codemap.quick_pick",
         "onView:codemap-own-view",
         "onView:codemap-explorer-view"
     ],
@@ -62,7 +63,7 @@
                 "codemap.textMode": {
                     "type": "boolean",
                     "default": false,
-                    "description": "Show tree view with un-expendable nodes for better user experience."
+                    "description": "Show tree view with un-expendable nodes for better user experience (ignore double-clicking) Note, alphabetical sorting is not available in this mode."
                 },
                 "codemap.sortingEnabled": {
                     "type": "boolean",
@@ -72,7 +73,7 @@
                 "codemap.textModeExpanded": {
                     "type": "boolean",
                     "default": true,
-                    "description": "Show expanded child items."
+                    "description": "Show expanded child items just after loading the TreeView items."
                 },
                 "codemap.autoReveal": {
                     "type": "boolean",
