@@ -2,7 +2,7 @@
     "name": "codemap",
     "displayName": "CodeMap",
     "description": "Interactive code map for quick visualization and navigation within code DOM objects (e.g. classes, members).",
-    "version": "1.16.1",
+    "version": "1.16.2",
     "license": "MIT",
     "publisher": "oleg-shilo",
     "engines": {
@@ -127,6 +127,26 @@
                         }
                     ],
                     "description": "Regex-based definition of the mapping rules for PowerShell syntax."
+                },
+                "codemap.vb": {
+                    "type": "array",
+                    "default": [
+                        {
+                            "pattern": "[Cc]lass .*",
+                            "clear": "",
+                            "suffix": "",
+                            "role": "class",
+                            "icon": "class"
+                        },
+                        {
+                            "pattern": "([Ff]unction|[Ss]ub) (.*?)[(|:{]",
+                            "clear": "[Ff]unction |[Ss]ub |\\(",
+                            "suffix": "()",
+                            "role": "function",
+                            "icon": "function"
+                        }
+                    ],
+                    "description": "Regex-based definition of the mapping rules for VB.NET syntax."
                 },
                 "codemap.r": {
                     "type": "array",

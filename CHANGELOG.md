@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.16.2 (10 sep 2021)
+
+- Added generic mapper for VB.NET syntax
+  
 ## 1.16.1 (15 May 2021)
 
 - Issue #55: Unfold also in editor
