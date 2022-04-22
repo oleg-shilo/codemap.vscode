@@ -189,6 +189,8 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
 
                 let textModeExpanded = vscode.workspace.getConfiguration("codemap").get('textModeExpanded', defaults.get('textModeExpanded'));
 
+                title = title.replace('%pipe%', '|');
+
                 let node = new MapItem(
                     title,
                     textModeExpanded ? vscode.TreeItemCollapsibleState.Expanded : vscode.TreeItemCollapsibleState.Collapsed,

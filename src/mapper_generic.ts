@@ -61,7 +61,7 @@ export class mapper {
             lines.forEach(line => {
 
                 line_num = line_num + 1;
-                line = line.replace('\t', '    ');
+                line = line.replace('\t', '    ').replace('|', '%pipe%');
 
                 if (line != '') {
 
