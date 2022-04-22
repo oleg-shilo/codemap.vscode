@@ -3,6 +3,8 @@
 Interactive code map for quick visualization and navigation within  code DOM objects (e.g. classes, members).
 <hr/>
 
+[![Github All Releases](https://vsmarketplacebadge.apphb.com/installs-short/oleg-shilo.codemap.svg)]()
+
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.cs-script.net/cs-script/Donation.html)
 
 ## Overview
@@ -30,6 +32,7 @@ _Features_:
   * SVG
   * XAML  
   * TCL
+  * VB.NET
 * [Customization by adding support for new syntaxes via:](https://github.com/oleg-shilo/codemap.vscode/wiki/Adding-custom-mappers)
   * A generic mapper that is set of Regex expressions in user settings
   * A dedicated simple mapper JS script file.
