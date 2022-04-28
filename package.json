@@ -148,6 +148,19 @@
                     ],
                     "description": "Regex-based definition of the mapping rules for VB.NET syntax."
                 },
+                "codemap.ini": {
+                    "type": "array",
+                    "default": [
+                        {
+                            "pattern": "\\[.*\\]",
+                            "clear": "\\[|\\]",
+                            "prefix": "",
+                            "role": "class",
+                            "icon": "class"
+                        }
+                    ],
+                    "description": "Regex-based definition of the mapping rules for INI file syntax."
+                },
                 "codemap.r": {
                     "type": "array",
                     "default": [
