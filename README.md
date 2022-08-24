@@ -1,3 +1,4 @@
+[![stand with Ukraine](https://img.shields.io/badge/stand_with-ukraine-ffd700.svg?labelColor=0057b7)](https://stand-with-ukraine.pp.ua)
 # CodeMap - VSCode Extension
 
 Interactive code map for quick visualization and navigation within  code DOM objects (e.g. classes, members).
