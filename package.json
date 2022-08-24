@@ -2,7 +2,7 @@
     "name": "codemap",
     "displayName": "CodeMap",
     "description": "Interactive code map for quick visualization and navigation within code DOM objects (e.g. classes, members).",
-    "version": "1.16.3",
+    "version": "1.16.4",
     "license": "MIT",
     "publisher": "oleg-shilo",
     "engines": {
@@ -121,8 +121,8 @@
                         },
                         {
                             "pattern": "param\\(\\w*",
-                            "clear": "(|{",
-                            "suffix": ")",
+                            "clear": "\\(|{",
+                            "suffix": "()",
                             "icon": "function"
                         }
                     ],
@@ -203,7 +203,7 @@
                         {
                             "pattern": "def (.*?)[(|:]",
                             "clear": "def|:|\\(|\\)",
-                            "suffix": ")",
+                            "suffix": "()",
                             "role": "function",
                             "icon": "function"
                         }

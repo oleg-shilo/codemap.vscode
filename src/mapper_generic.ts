@@ -84,7 +84,9 @@ export class mapper {
                                     .split('|')
                                     .forEach(text => {
                                         try {
-                                            match = match.replaceAll(text, '');
+                                            // match = match.replaceAll(text, ''); // fails to treat arguments as regex :o( 
+
+                                            match = match.replace(new RegExp(text, 'g'), '');
                                         }
                                         catch (error) {
                                             console.log(error);
@@ -132,7 +134,7 @@ export class mapper {
                 last_type = content_type;
 
             } catch (error) {
-                console.log('');
+                console.log(''); // just a breakpoint placeholder
             }
         });
 

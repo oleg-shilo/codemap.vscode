@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.16.4 (24 August 2022)
+
+- Issue #71: Missing Parenthesis  
+
 ## 1.16.3 (22 April 2022)
 
 - Issue #66: Generic Mapper: a pipe char in the source interferes with the complete mapping

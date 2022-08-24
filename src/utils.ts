@@ -8,26 +8,12 @@ import { Uri, commands } from "vscode";
 
 declare global {
     interface String {
-        // splitBy(separator: string): string;
         trimStart(): string;
         trimEnd(): string;
         replaceAll(search: string, replacement: string): string;
         lines(limit?: number): string[];
     }
-
-    // interface Array<T> {
-    //     where<T>(filter: (T) => boolean): Array<T>;
-    //     any<T>(filter: (T) => boolean): boolean;
-    //     select<U>(convert: (T) => U): Array<U>;
-    //     cast<U>(): Array<U>;
-    //     first<T>(filter?: (T) => boolean): T;
-    //     firstOrDefault<T>(filter?: (T) => boolean): T;
-    // }
 }
-
-// String.prototype.splitBy = function (separator: string) {
-//     return this.replace(/ +$/, "");
-// }
 
 String.prototype.trimStart = function () {
     if (this.length == 0)
