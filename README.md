@@ -13,7 +13,7 @@ Interactive code map for quick visualization and navigation within  code DOM obj
 This simple extension visualizes the code DOM objects defined in the active document. This extension is a for of the popular plugin that is available for:
 * Sublime Text 3 - [Sublime CodeMap plugin](https://github.com/oleg-shilo/sublime-codemap/blob/master/README.md)
 * Notepad++ - [Part of CS-Script.Npp plugin](https://github.com/oleg-shilo/cs-script.npp/blob/master/README.md)
-* Visual Studio - [PyMap (python flavor extension)](https://marketplace.visualstudio.com/items?itemName=OlegShilo.PyMap)
+* Visual Studio - [CodeMap (ex-PyMap)](https://marketplace.visualstudio.com/items?itemName=OlegShilo.PyMap)
 
 The extension functionality is straight forward. Just click the code map item and it will trigger the navigation to the document where the corresponding code element is defined in the document.
 
