@@ -2,7 +2,7 @@
     "name": "codemap",
     "displayName": "CodeMap",
     "description": "Interactive code map for quick visualization and navigation within code DOM objects (e.g. classes, members).",
-    "version": "1.16.4",
+    "version": "1.17.0",
     "license": "MIT",
     "publisher": "oleg-shilo",
     "engines": {
@@ -310,6 +310,30 @@
                 }
             },
             {
+                "command": "codemap.sort_desc",
+                "title": "CodeMap: Sort (descending)",
+                "icon": {
+                    "light": "resources/light/refresh.svg",
+                    "dark": "resources/dark/refresh.svg"
+                }
+            },
+            {
+                "command": "codemap.sort_asc",
+                "title": "CodeMap: Sort (ascending)",
+                "icon": {
+                    "light": "resources/light/refresh.svg",
+                    "dark": "resources/dark/refresh.svg"
+                }
+            },
+            {
+                "command": "codemap.sort_location",
+                "title": "CodeMap: Sort by location",
+                "icon": {
+                    "light": "resources/light/refresh.svg",
+                    "dark": "resources/dark/refresh.svg"
+                }
+            },
+            {
                 "command": "codemap.quick_pick",
                 "title": "CodeMap: Quick pick",
                 "icon": {
@@ -337,7 +361,7 @@
                 },
                 {
                     "command": "codemap.reveal",
-                    "when": "(view == codemap-own-view || view == codemap-explorer-view) && config.autoReveal == false",
+                    "when": "(view == codemap-own-view || view == codemap-explorer-view) && codemap.autoReveal == false",
                     "group": "navigation@2"
                 },
                 {
@@ -349,7 +373,23 @@
             "view/item/context": [
                 {
                     "command": "codemap.navigate_to_selected",
-                    "when": "view == codemap-own-view || view == codemap-explorer-view"
+                    "when": "view == codemap-own-view || view == codemap-explorer-view",
+                    "group": "navigation@1"
+                },
+                {
+                    "command": "codemap.sort_location",
+                    "when": "view == codemap-own-view || view == codemap-explorer-view",
+                    "group": "navigation@2"
+                },
+                {
+                    "command": "codemap.sort_asc",
+                    "when": "view == codemap-own-view || view == codemap-explorer-view",
+                    "group": "navigation@3"
+                },
+                {
+                    "command": "codemap.sort_desc",
+                    "when": "view == codemap-own-view || view == codemap-explorer-view",
+                    "group": "navigation@4"
                 }
             ]
         }

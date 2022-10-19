@@ -1,5 +1,14 @@
 # Change Log
 
+## 1.17.0 (20 October 2022)
+
+- Issue #72: Add sort button to the CodeMap display  
+Added context menu for sorting direction when it is enabled. Supopo
+Supported sorting directions are:
+- Ascendant
+- Descendant
+- By location (in document)
+After switching the active document the default sorting direction (ascendant) is always restored.
 
 ## 1.16.4 (24 August 2022)
 

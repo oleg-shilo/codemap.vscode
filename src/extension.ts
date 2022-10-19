@@ -4,7 +4,7 @@ import * as vscode from "vscode";
 import * as os from "os";
 import * as path from "path";
 import * as fs from "fs";
-import { FavoritesTreeProvider, MapItem, MapInfo } from "./tree_view";
+import { FavoritesTreeProvider, MapItem, MapInfo, SortDirection } from "./tree_view";
 import { Uri, commands, TextDocument, TextEditor } from "vscode";
 import * as ts from "./mapper_ts";
 import * as cs from "./mapper_cs";
@@ -46,6 +46,7 @@ function requireWithHotReload(module: string) {
 
     return require(module);
 }
+
 
 function get_map_items(): MapInfo {
     let result = { sourceFile: null, items: [] };
@@ -229,6 +230,11 @@ function reveal_current_line_in_tree(treeView1: vscode.TreeView<MapItem>, treeVi
     }
 }
 
+function sort(direction: SortDirection) {
+    MapItem.sortDirection = direction;
+    treeViewProvider1.refresh();
+}
+
 function quick_pick() {
 
     let info = get_map_items();
@@ -282,6 +288,10 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand("codemap.reveal", () => reveal_current_line_in_tree(treeView1, treeView2));
     vscode.commands.registerCommand("codemap.quick_pick", quick_pick);
     vscode.commands.registerCommand("codemap.refresh", () => treeViewProvider1.refresh());
+
+    vscode.commands.registerCommand("codemap.sort_location", () => sort(SortDirection.ByLocation));
+    vscode.commands.registerCommand("codemap.sort_asc", () => sort(SortDirection.Asc));
+    vscode.commands.registerCommand("codemap.sort_desc", () => sort(SortDirection.Decs));
 
     vscode.commands.registerCommand("codemap.mappers", () => {
         let mappers = vscode.workspace.getConfiguration("codemap");

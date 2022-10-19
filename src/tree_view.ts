@@ -42,6 +42,7 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
 
     constructor(private aggregateItems: () => MapInfo) {
         vscode.window.onDidChangeActiveTextEditor(editor => {
+            MapItem.sortDirection = null;
             this._onDidChangeTreeData.fire();
         });
         vscode.workspace.onDidSaveTextDocument(e => {
@@ -255,6 +256,13 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
     }
 }
 
+
+export enum SortDirection {
+    ByLocation,
+    Decs,
+    Asc
+}
+
 export class MapItem extends vscode.TreeItem {
 
     constructor(
@@ -266,6 +274,8 @@ export class MapItem extends vscode.TreeItem {
         public readonly lineNumber?: number) {
         super(title, state);
     }
+
+    public static sortDirection: SortDirection;
 
     public children: MapItem[] = [];
     public sortedByFilePositionChildren: MapItem[] = [];
@@ -282,7 +292,6 @@ export class MapItem extends vscode.TreeItem {
 
     public addChildItem(item: MapItem) {
         this.children.push(item);
-
 
         let sortingEnabled = Config.get('sortingEnabled');
         if (sortingEnabled) {
@@ -310,6 +319,17 @@ export class MapItem extends vscode.TreeItem {
     }
 
     public static compareByTitle(n1: MapItem, n2: MapItem): number {
+
+        if (MapItem.sortDirection == null || MapItem.sortDirection == SortDirection.Asc) {
+            return MapItem.compareByTitleAsc(n1, n2);
+        }
+        else if (MapItem.sortDirection == SortDirection.Decs) {
+            return MapItem.compareByTitleAsc(n2, n1);
+        }
+
+    }
+
+    public static compareByTitleAsc(n1: MapItem, n2: MapItem): number {
         if (n1.title.toUpperCase() > n2.title.toUpperCase())
             return 1;
 
@@ -318,5 +338,6 @@ export class MapItem extends vscode.TreeItem {
 
         return 0;
     }
+
     contextValue = 'file';
 }
