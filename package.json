@@ -70,6 +70,11 @@
                     "default": false,
                     "description": "Enable alphabetical order if the CodeMap a node items."
                 },
+                "codemap.defaultSortDirection": {
+                    "type": "string",
+                    "default": "ByLocation",
+                    "description": "Default direction to sort the codemap tree in new window."
+                },
                 "codemap.textModeExpanded": {
                     "type": "boolean",
                     "default": true,
