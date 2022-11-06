@@ -73,7 +73,18 @@
                 "codemap.defaultSortDirection": {
                     "type": "string",
                     "default": "ByLocation",
-                    "description": "Default direction to sort the codemap tree in new window. Allowed values are ByLocation, Asc and Desc."
+                    "enum": [
+                        "ByLocation",
+                        "Asc",
+                        "Desc"
+                    ],
+                    "enumDescriptions": [
+                        "Sorts by location in file",
+                        "Sorts alphabetically ascending ",
+                        "Sorts alphabetically descending"
+                    ],
+                    "markdownDescription": "Default direction to sort the codemap tree in new window.",
+                    "scope": "window"
                 },
                 "codemap.textModeExpanded": {
                     "type": "boolean",
