@@ -259,7 +259,7 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
 
 export enum SortDirection {
     ByLocation,
-    Decs,
+    Desc,
     Asc
 }
 
@@ -328,7 +328,7 @@ export class MapItem extends vscode.TreeItem {
         if (MapItem.sortDirection == SortDirection.Asc) {
             return MapItem.compareByTitleAsc(n1, n2);
         }
-        else if (MapItem.sortDirection == SortDirection.Decs) {
+        else if (MapItem.sortDirection == SortDirection.Desc) {
             return MapItem.compareByTitleAsc(n2, n1);
         }
 
