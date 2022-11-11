@@ -42,7 +42,7 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
 
     constructor(private aggregateItems: () => MapInfo) {
         vscode.window.onDidChangeActiveTextEditor(editor => {
-            MapItem.sortDirection = null;
+            MapItem.sortDirection = getDefaultSortDirection();
             this._onDidChangeTreeData.fire();
         });
         vscode.workspace.onDidSaveTextDocument(e => {
@@ -259,8 +259,13 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
 
 export enum SortDirection {
     ByLocation,
-    Decs,
+    Desc,
     Asc
+}
+
+function getDefaultSortDirection() {
+    let dir: string = Config.get('defaultSortDirection').toString();
+    return SortDirection[dir];
 }
 
 export class MapItem extends vscode.TreeItem {
@@ -275,7 +280,7 @@ export class MapItem extends vscode.TreeItem {
         super(title, state);
     }
 
-    public static sortDirection: SortDirection;
+    public static sortDirection: SortDirection = getDefaultSortDirection();
 
     public children: MapItem[] = [];
     public sortedByFilePositionChildren: MapItem[] = [];
@@ -320,10 +325,10 @@ export class MapItem extends vscode.TreeItem {
 
     public static compareByTitle(n1: MapItem, n2: MapItem): number {
 
-        if (MapItem.sortDirection == null || MapItem.sortDirection == SortDirection.Asc) {
+        if (MapItem.sortDirection == SortDirection.Asc) {
             return MapItem.compareByTitleAsc(n1, n2);
         }
-        else if (MapItem.sortDirection == SortDirection.Decs) {
+        else if (MapItem.sortDirection == SortDirection.Desc) {
             return MapItem.compareByTitleAsc(n2, n1);
         }
 

@@ -45,6 +45,7 @@ export class config_defaults {
 
     public textMode = false;
     public sortingEnabled = false;
+    public defaultSortDirection = "ByLocation";
     public textModeExpanded = true;
     public autoReveal = true;
     public textModeLevelPrefix = "   ";
@@ -123,6 +124,7 @@ export class config_defaults {
         else if (name == 'svg') return this.svg;
         else if (name == 'py') return this.py;
         else if (name == 'sortingEnabled') return this.sortingEnabled;
+        else if (name == 'defaultSortDirection') return this.defaultSortDirection;
         else if (name == 'json') return this.json;
         else if (name == 'textModeLevelPrefix') return this.textModeLevelPrefix;
         else if (name == 'textMode') return this.textMode;
@@ -137,7 +139,7 @@ export class Config {
     static defaults = new config_defaults();
 
     public static get(name: string): object {
-        return vscode.workspace.getConfiguration("codemap").get('sortingEnabled', Config.defaults.get('sortingEnabled'));
+        return vscode.workspace.getConfiguration("codemap").get(name, Config.defaults.get(name));
     }
 }
 

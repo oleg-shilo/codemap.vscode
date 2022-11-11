@@ -1,5 +1,12 @@
 # Change Log
 
+## 1.18.0 (6 November 2022)
+- Issue #72: Add sort button to the CodeMap display
+Added additional configuration for setting a default sorting direction when a new codemap window is opened. The config key for this is "defaultSortDirection" with valid values:
+- ByLocation
+- Asc
+- Desc
+
 ## 1.17.0 (20 October 2022)
 
 - Issue #72: Add sort button to the CodeMap display  
