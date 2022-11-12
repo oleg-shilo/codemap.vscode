@@ -4,7 +4,7 @@ import * as vscode from "vscode";
 import * as os from "os";
 import * as path from "path";
 import * as fs from "fs";
-import { FavoritesTreeProvider, MapItem, MapInfo, SortDirection } from "./tree_view";
+import { FavoritesTreeProvider, MapItem, MapInfo, SortDirection, SettingsTreeProvider, SettingsItem } from "./tree_view";
 import { Uri, commands, TextDocument, TextEditor } from "vscode";
 import * as ts from "./mapper_ts";
 import * as cs from "./mapper_cs";
@@ -16,15 +16,13 @@ import { Utils, config_defaults } from "./utils";
 const defaults = new config_defaults();
 let treeViewProvider1: FavoritesTreeProvider;
 let treeViewProvider2: FavoritesTreeProvider;
-
+let settingsTreeViewProvider: SettingsTreeProvider;
 let moduleModDates = {};
 
 function get_actual_mapper(mapper: any): any {
     if (typeof mapper == "string") {
         let mapper_value = mapper as string;
         if (mapper_value.startsWith("config:codemap.")) {
-            // console.log(mapper_value);
-
             let config = vscode.workspace.getConfiguration("codemap");
             let linked_config_value = mapper_value.replace("config:codemap.", "");
             return config.get(linked_config_value, defaults.get(linked_config_value));
@@ -45,6 +43,11 @@ function requireWithHotReload(module: string) {
     moduleModDates[modulePath] = modDate;
 
     return require(module);
+}
+
+function settings_on_click(item: SettingsItem) {
+    item.onClick();
+    settingsTreeViewProvider.refresh(item);
 }
 
 
@@ -279,9 +282,11 @@ let mapInfo: MapInfo;
 export function activate(context: vscode.ExtensionContext) {
     Utils.init();
 
-    treeViewProvider1 = new FavoritesTreeProvider(get_map_items);
-    treeViewProvider2 = new FavoritesTreeProvider(get_map_items);
+    settingsTreeViewProvider = new SettingsTreeProvider(get_map_items);
+    let settingsTree = vscode.window.createTreeView("codemap-settings", { treeDataProvider: settingsTreeViewProvider, showCollapseAll: true });
 
+    treeViewProvider1 = new FavoritesTreeProvider(get_map_items, settingsTreeViewProvider);
+    treeViewProvider2 = new FavoritesTreeProvider(get_map_items, settingsTreeViewProvider);
     let treeView1 = vscode.window.createTreeView("codemap-own-view", { treeDataProvider: treeViewProvider1, showCollapseAll: true });
     let treeView2 = vscode.window.createTreeView("codemap-explorer-view", { treeDataProvider: treeViewProvider2, showCollapseAll: true });
 
@@ -307,4 +312,5 @@ export function activate(context: vscode.ExtensionContext) {
 
     vscode.commands.registerCommand("codemap.navigate_to_selected", navigate_to_selected);
     vscode.commands.registerCommand("codemap.navigate_to", navigate_to);
+    vscode.commands.registerCommand("codemap.settings_on_click", settings_on_click);
 }

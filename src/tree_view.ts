@@ -4,6 +4,7 @@ import * as path from 'path';
 import { Uri, commands } from "vscode";
 import { Config, config_defaults, Utils } from './utils';
 import { resolve } from 'dns';
+import { Console } from 'console';
 
 const defaults = new config_defaults();
 
@@ -32,22 +33,81 @@ String.prototype.trimEnd = function () {
     return this.replace(/ +$/, "");
 }
 
+export class SettingsTreeProvider implements vscode.TreeDataProvider<SettingsItem> {
+    private _onDidChangeTreeData: vscode.EventEmitter<SettingsItem | undefined> = new vscode.EventEmitter<SettingsItem | undefined>();
+    readonly onDidChangeTreeData: vscode.Event<SettingsItem | undefined> = this._onDidChangeTreeData.event;
+    private _nodeTypesAllowedByUser: string[];
+
+    get nodeTypesAllowedByUser(): string[] {
+        return this._nodeTypesAllowedByUser;
+    }
+
+    constructor(private aggregateItems: () => MapInfo) {
+        vscode.window.onDidChangeActiveTextEditor(editor => {
+            this._onDidChangeTreeData.fire();
+        });
+        vscode.workspace.onDidSaveTextDocument(e => {
+            this._onDidChangeTreeData.fire();
+        });
+    }
+
+    public getTreeItem(element: SettingsItem): vscode.TreeItem {
+        return element;
+    }
+
+    public getChildren(element?: SettingsItem): Thenable<SettingsItem[]> {
+        return new Promise(resolve => {
+            if (element) {
+                resolve([]);  // no children
+            } else {
+                let items = this.getSettingItems();
+                resolve(items);
+            }
+        });
+    }
+
+    public getSettingItems(): SettingsItem[] {
+        let codeMapTree = this.aggregateItems();
+
+        let codeMapTypes: Set<string> = new Set<string>();
+        codeMapTree['items'].filter((strItem) => strItem != '').forEach(
+            (x) => { codeMapTypes.add(x.trimStart().split("|")[2]); }
+        );
+
+        let ArrCodeMapTypes = Array.from(codeMapTypes);
+        this._nodeTypesAllowedByUser = [...ArrCodeMapTypes];
+
+        return ArrCodeMapTypes.sort().map((x) => new SettingsItem(
+            x, true,
+            (type_: string) => this._nodeTypesAllowedByUser.push(type_),
+            (type_: string) => this._nodeTypesAllowedByUser =
+                this._nodeTypesAllowedByUser.filter((val) => val != type_)
+        ));
+    }
+
+    public refresh(item?: SettingsItem): void {
+        try {
+            this._onDidChangeTreeData.fire(item);
+        } catch (error) {
+
+        }
+    }
+}
 
 export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
 
     private _onDidChangeTreeData: vscode.EventEmitter<MapItem | undefined> = new vscode.EventEmitter<MapItem | undefined>();
     readonly onDidChangeTreeData: vscode.Event<MapItem | undefined> = this._onDidChangeTreeData.event;
-
+    private MapSettingsTreeProvider: SettingsTreeProvider;
     public Items: MapItem[];
 
-    constructor(private aggregateItems: () => MapInfo) {
-        vscode.window.onDidChangeActiveTextEditor(editor => {
-            MapItem.sortDirection = getDefaultSortDirection();
-            this._onDidChangeTreeData.fire();
-        });
-        vscode.workspace.onDidSaveTextDocument(e => {
-            this._onDidChangeTreeData.fire();
-        })
+    constructor(private aggregateItems: () => MapInfo, MapSettingsTreeProvider: SettingsTreeProvider) {
+        // codemap tree is triggered once settings are generated:
+        this.MapSettingsTreeProvider = MapSettingsTreeProvider;
+        MapSettingsTreeProvider.onDidChangeTreeData(
+            (e) => this._onDidChangeTreeData.fire()
+        );
+
     }
 
     refresh(): void {
@@ -125,14 +185,14 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
         if (info == null || info.items.length == 0)
             return nodes;
 
-        this.Items = FavoritesTreeProvider.parseScriptItems(info.items, info.sourceFile);
+        let validItemTypes = this.MapSettingsTreeProvider.nodeTypesAllowedByUser;
+        this.Items = FavoritesTreeProvider.parseScriptItems(info.items, info.sourceFile, validItemTypes);
         return this.Items;
     }
 
-    public static parseScriptItems(items: string[], sourceFile: string): MapItem[] {
+    public static parseScriptItems(items: string[], sourceFile: string, nodeTypesToKeep: string[]): MapItem[] {
 
         let nodes = [];
-        let prev_node: MapItem = null;
 
         // https://github.com/Microsoft/vscode/issues/34130: TreeDataProvider: allow selecting a TreeItem without affecting its collapsibleState
         // https://github.com/patrys/vscode-code-outline/issues/24: Is it possible to disable expand/collapse on click
@@ -206,24 +266,26 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
                     lineNumber
                 );
 
-                if (plainTextMode) {
-                    node.collapsibleState = vscode.TreeItemCollapsibleState.None;
-                    node.label = non_whitespace_empty_char.repeat(nesting_level) + title;
-                    nodes.push(node);
-                }
-                else {
-                    if (nesting_level == 0) {
+                if (nodeTypesToKeep.includes(icon)) {
+                    if (plainTextMode) {
+                        node.collapsibleState = vscode.TreeItemCollapsibleState.None;
+                        node.label = non_whitespace_empty_char.repeat(nesting_level) + title;
                         nodes.push(node);
                     }
                     else {
-                        let parent = map[node.nesting_level - 1];
-                        if (!parent) {
-                            for (let key in map) {
-                                parent = map[key];
-                            }
+                        if (nesting_level == 0) {
+                            nodes.push(node);
                         }
-                        parent.addChildItem(node);
-                        node.parent = parent;
+                        else {
+                            let parent = map[node.nesting_level - 1];
+                            if (!parent) {
+                                for (let key in map) {
+                                    parent = map[key];
+                                }
+                            }
+                            parent.addChildItem(node);
+                            node.parent = parent;
+                        }
                     }
                 }
 
@@ -284,12 +346,8 @@ export class MapItem extends vscode.TreeItem {
 
     public children: MapItem[] = [];
     public sortedByFilePositionChildren: MapItem[] = [];
-
     public parent: MapItem;
-    // iconPath = {
-    // 	light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'document.svg'),
-    // 	dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'document.svg')
-    // };
+
     public updateState(): void {
         if (this.children.length == 0)
             this.collapsibleState = vscode.TreeItemCollapsibleState.None;
@@ -345,4 +403,57 @@ export class MapItem extends vscode.TreeItem {
     }
 
     contextValue = 'file';
+}
+
+function getSettingsIconPathFromName(include: boolean): { light: string, dark: string } {
+    let pathObj;
+    if (include) {
+        pathObj = {
+            light: path.join(__filename, '..', '..', '..', 'resources', 'light', "circle-filled" + ".svg"),
+            dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', "circle-filled" + ".svg")
+        };
+    }
+    else {
+        pathObj = {
+            light: path.join(__filename, '..', '..', '..', 'resources', 'light', "circle-outline" + ".svg"),
+            dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', "circle-outline" + ".svg")
+        };
+    }
+    return pathObj;
+}
+
+export class SettingsItem extends vscode.TreeItem {
+    constructor(
+        public readonly title: string,
+        public include: boolean,
+        private AddValidType: Function,
+        private RemoveValidType: Function
+    ) {
+        // no collapsible state
+        super(title, vscode.TreeItemCollapsibleState.None);
+        this.iconPath = getSettingsIconPathFromName(include);
+        this.command = {
+            title: title,
+            command: 'codemap.settings_on_click',
+            arguments: [this]
+        };
+    }
+    public readonly command: vscode.Command;
+    public onClick() {
+        const suffix = " - Ignored";
+        this.include = !this.include;
+
+        if (!this.include) {
+            this.label += suffix;
+            this.RemoveValidType(this.title);
+        }
+        else {
+            if (this.label.endsWith(suffix)) {
+                this.label = this.label.replace(suffix, '');
+            }
+            this.AddValidType(this.title);
+        }
+
+        this.iconPath = getSettingsIconPathFromName(this.include);
+    }
 }
