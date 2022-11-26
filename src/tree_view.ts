@@ -1,10 +1,6 @@
 import * as vscode from 'vscode';
-import * as fs from 'fs';
 import * as path from 'path';
-import { Uri, commands } from "vscode";
-import { Config, config_defaults, Utils } from './utils';
-import { resolve } from 'dns';
-import { Console } from 'console';
+import { Config, config_defaults } from './utils';
 
 const defaults = new config_defaults();
 
@@ -37,12 +33,14 @@ export class SettingsTreeProvider implements vscode.TreeDataProvider<SettingsIte
     private _onDidChangeTreeData: vscode.EventEmitter<SettingsItem | undefined> = new vscode.EventEmitter<SettingsItem | undefined>();
     readonly onDidChangeTreeData: vscode.Event<SettingsItem | undefined> = this._onDidChangeTreeData.event;
     private _nodeTypesAllowedByUser: string[];
+    private _settings: { [filename: string]: { [nodeType: string]: boolean } };
 
     get nodeTypesAllowedByUser(): string[] {
         return this._nodeTypesAllowedByUser;
     }
 
     constructor(private aggregateItems: () => MapInfo) {
+        this._settings = {};
         vscode.window.onDidChangeActiveTextEditor(editor => {
             this._onDidChangeTreeData.fire();
         });
@@ -68,6 +66,7 @@ export class SettingsTreeProvider implements vscode.TreeDataProvider<SettingsIte
 
     public getSettingItems(): SettingsItem[] {
         let codeMapTree = this.aggregateItems();
+        const filename: string = codeMapTree.sourceFile;
 
         let codeMapTypes: Set<string> = new Set<string>();
         codeMapTree['items'].filter((strItem) => strItem != '').forEach(
@@ -75,14 +74,51 @@ export class SettingsTreeProvider implements vscode.TreeDataProvider<SettingsIte
         );
 
         let ArrCodeMapTypes = Array.from(codeMapTypes);
-        this._nodeTypesAllowedByUser = [...ArrCodeMapTypes];
 
-        return ArrCodeMapTypes.sort().map((x) => new SettingsItem(
-            x, true,
-            (type_: string) => this._nodeTypesAllowedByUser.push(type_),
-            (type_: string) => this._nodeTypesAllowedByUser =
-                this._nodeTypesAllowedByUser.filter((val) => val != type_)
-        ));
+        // "backup" settings defined here. This is done to keep the settings chosen that aren't the default 
+        // available for reinstatement after a whole tree rebuild is triggered by a file save or window change.
+        // Sadly we need this hack rather than only causing a rebuild on changed nodes as more nodes may 
+        // have been added. Bit silly to have both a _settings and _nodeTypesAllowedByUser but cba to alter it.
+        if (!(Object.keys(this._settings).includes(filename))) {
+            this._settings[filename] = {};
+        }
+
+        if (Object.keys(this._settings[filename]).length == 0) {  // if no prior settings
+            this._nodeTypesAllowedByUser = [...ArrCodeMapTypes];
+            ArrCodeMapTypes.forEach(x => { this._settings[filename][x] = true; });
+        }
+        else {  // if prior settings reinstate them
+            ArrCodeMapTypes.forEach(x => {
+                {
+                    if (Object.keys(this._settings[filename]).includes(x)) {
+                        if (this._settings[filename][x]) {
+                            this._nodeTypesAllowedByUser.push(x);
+                        }
+                    }
+                    else {
+                        this._nodeTypesAllowedByUser.push(x);
+                        this._settings[filename][x] = true;
+                    }
+                }
+            });
+        }
+
+        return ArrCodeMapTypes.sort().map(
+            (x) => new SettingsItem(
+                x, this._settings[filename][x],
+                (nodeType: string) => this.addToNodeTypesAllowed(nodeType, filename),
+                (nodeType: string) => this.toggleNodeTypeAllowed(nodeType, filename)
+            ));
+    }
+
+    public addToNodeTypesAllowed(nodeType: string, filename: string): void {
+        this._nodeTypesAllowedByUser.push(nodeType);
+        this._settings[filename][nodeType] = true;
+    }
+
+    public toggleNodeTypeAllowed(nodeType: string, filename: string): void {
+        this._nodeTypesAllowedByUser = this._nodeTypesAllowedByUser.filter((val) => val != nodeType);
+        this._settings[filename][nodeType] = !this._settings[filename][nodeType];
     }
 
     public refresh(item?: SettingsItem): void {
@@ -406,20 +442,18 @@ export class MapItem extends vscode.TreeItem {
 }
 
 function getSettingsIconPathFromName(include: boolean): { light: string, dark: string } {
-    let pathObj;
     if (include) {
-        pathObj = {
+        return {
             light: path.join(__filename, '..', '..', '..', 'resources', 'light', "circle-filled" + ".svg"),
             dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', "circle-filled" + ".svg")
         };
     }
     else {
-        pathObj = {
+        return {
             light: path.join(__filename, '..', '..', '..', 'resources', 'light', "circle-outline" + ".svg"),
             dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', "circle-outline" + ".svg")
         };
     }
-    return pathObj;
 }
 
 export class SettingsItem extends vscode.TreeItem {
@@ -440,17 +474,12 @@ export class SettingsItem extends vscode.TreeItem {
     }
     public readonly command: vscode.Command;
     public onClick() {
-        const suffix = " - Ignored";
         this.include = !this.include;
 
         if (!this.include) {
-            this.label += suffix;
             this.RemoveValidType(this.title);
         }
         else {
-            if (this.label.endsWith(suffix)) {
-                this.label = this.label.replace(suffix, '');
-            }
             this.AddValidType(this.title);
         }
 
