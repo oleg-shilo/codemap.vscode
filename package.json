@@ -48,7 +48,7 @@
                     "when": "config.codemap.location == codemap"
                 },
                 {
-                    "id": "codemap-settings",
+                    "id": "codemap-settings-own-view",
                     "name": "CodeMap Settings",
                     "when": "config.codemap.location == codemap"
                 }
@@ -57,6 +57,11 @@
                 {
                     "id": "codemap-explorer-view",
                     "name": "Code Map",
+                    "when": "config.codemap.location == explorer"
+                },
+                {
+                    "id": "codemap-settings-explorer-view",
+                    "name": "CodeMap Settings",
                     "when": "config.codemap.location == explorer"
                 }
             ]

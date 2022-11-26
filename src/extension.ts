@@ -283,7 +283,8 @@ export function activate(context: vscode.ExtensionContext) {
     Utils.init();
 
     settingsTreeViewProvider = new SettingsTreeProvider(get_map_items);
-    let settingsTree = vscode.window.createTreeView("codemap-settings", { treeDataProvider: settingsTreeViewProvider, showCollapseAll: true });
+    let settingsTree1 = vscode.window.createTreeView("codemap-settings-own-view", { treeDataProvider: settingsTreeViewProvider, showCollapseAll: true });
+    let settingsTree2 = vscode.window.createTreeView("codemap-settings-explorer-view", { treeDataProvider: settingsTreeViewProvider, showCollapseAll: true });
 
     treeViewProvider1 = new FavoritesTreeProvider(get_map_items, settingsTreeViewProvider);
     treeViewProvider2 = new FavoritesTreeProvider(get_map_items, settingsTreeViewProvider);
