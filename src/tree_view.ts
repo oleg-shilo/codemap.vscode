@@ -34,6 +34,17 @@ export class SettingsTreeProvider implements vscode.TreeDataProvider<SettingsIte
     readonly onDidChangeTreeData: vscode.Event<SettingsItem | undefined> = this._onDidChangeTreeData.event;
     private _settings: { [filename: string]: { [nodeType: string]: boolean } };
 
+
+    constructor(private aggregateItems: () => MapInfo) {
+        this._settings = {};
+        vscode.window.onDidChangeActiveTextEditor(e => {
+            this._onDidChangeTreeData.fire();
+        });
+        vscode.workspace.onDidSaveTextDocument(e => {
+            this._onDidChangeTreeData.fire();
+        });
+    }
+
     public nodeTypesAllowedByUser(filename: string): string[] {
         let nodeTypesAllowed: string[] = [];
         for (let key in this._settings[filename]) {
@@ -44,14 +55,11 @@ export class SettingsTreeProvider implements vscode.TreeDataProvider<SettingsIte
         return nodeTypesAllowed;
     }
 
-    constructor(private aggregateItems: () => MapInfo) {
-        this._settings = {};
-        vscode.window.onDidChangeActiveTextEditor(e => {
-            this._onDidChangeTreeData.fire();
-        });
-        vscode.workspace.onDidSaveTextDocument(e => {
-            this._onDidChangeTreeData.fire();
-        });
+    public allow_all(filename: string) {
+        for (let key in this._settings[filename]) {
+            this._settings[filename][key] = true;
+        }
+        this.refresh();
     }
 
     public getTreeItem(element: SettingsItem): vscode.TreeItem {

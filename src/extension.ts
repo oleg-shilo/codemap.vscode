@@ -277,6 +277,15 @@ function quick_pick() {
         .then(selectedItem => map.get(selectedItem)());
 }
 
+function allow_all() {
+    let document = vscode.window.activeTextEditor.document.fileName;
+    if (document) {
+        if (fs.existsSync(document)) {
+            settingsTreeViewProvider.allow_all(document);
+        }
+    }
+}
+
 let mapInfo: MapInfo;
 
 export function activate(context: vscode.ExtensionContext) {
@@ -299,6 +308,8 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand("codemap.sort_location", () => sort(SortDirection.ByLocation));
     vscode.commands.registerCommand("codemap.sort_asc", () => sort(SortDirection.Asc));
     vscode.commands.registerCommand("codemap.sort_desc", () => sort(SortDirection.Desc));
+
+    vscode.commands.registerCommand("codemap.allow_all", () => allow_all());
 
     vscode.commands.registerCommand("codemap.mappers", () => {
         let mappers = vscode.workspace.getConfiguration("codemap");
