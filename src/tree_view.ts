@@ -32,16 +32,21 @@ String.prototype.trimEnd = function () {
 export class SettingsTreeProvider implements vscode.TreeDataProvider<SettingsItem> {
     private _onDidChangeTreeData: vscode.EventEmitter<SettingsItem | undefined> = new vscode.EventEmitter<SettingsItem | undefined>();
     readonly onDidChangeTreeData: vscode.Event<SettingsItem | undefined> = this._onDidChangeTreeData.event;
-    private _nodeTypesAllowedByUser: string[];
     private _settings: { [filename: string]: { [nodeType: string]: boolean } };
 
-    get nodeTypesAllowedByUser(): string[] {
-        return this._nodeTypesAllowedByUser;
+    public nodeTypesAllowedByUser(filename: string): string[] {
+        let nodeTypesAllowed: string[] = [];
+        for (let key in this._settings[filename]) {
+            if (this._settings[filename][key]) {
+                nodeTypesAllowed.push(key);
+            }
+        }
+        return nodeTypesAllowed;
     }
 
     constructor(private aggregateItems: () => MapInfo) {
         this._settings = {};
-        vscode.window.onDidChangeActiveTextEditor(editor => {
+        vscode.window.onDidChangeActiveTextEditor(e => {
             this._onDidChangeTreeData.fire();
         });
         vscode.workspace.onDidSaveTextDocument(e => {
@@ -78,26 +83,21 @@ export class SettingsTreeProvider implements vscode.TreeDataProvider<SettingsIte
         // "backup" settings defined here. This is done to keep the settings chosen that aren't the default 
         // available for reinstatement after a whole tree rebuild is triggered by a file save or window change.
         // Sadly we need this hack rather than only causing a rebuild on changed nodes as more nodes may 
-        // have been added. Bit silly to have both a _settings and _nodeTypesAllowedByUser but cba to alter it.
+        // have been added.
         if (!(Object.keys(this._settings).includes(filename))) {
             this._settings[filename] = {};
         }
 
         if (Object.keys(this._settings[filename]).length == 0) {  // if no prior settings
-            this._nodeTypesAllowedByUser = [...ArrCodeMapTypes];
             ArrCodeMapTypes.forEach(x => { this._settings[filename][x] = true; });
         }
         else {  // if prior settings reinstate them
             ArrCodeMapTypes.forEach(x => {
                 {
-                    if (Object.keys(this._settings[filename]).includes(x)) {
-                        if (this._settings[filename][x]) {
-                            this._nodeTypesAllowedByUser.push(x);
+                    if (!Object.keys(this._settings[filename]).includes(x)) {
+                        {
+                            this._settings[filename][x] = true;
                         }
-                    }
-                    else {
-                        this._nodeTypesAllowedByUser.push(x);
-                        this._settings[filename][x] = true;
                     }
                 }
             });
@@ -107,18 +107,16 @@ export class SettingsTreeProvider implements vscode.TreeDataProvider<SettingsIte
             (x) => new SettingsItem(
                 x, this._settings[filename][x],
                 (nodeType: string) => this.addToNodeTypesAllowed(nodeType, filename),
-                (nodeType: string) => this.toggleNodeTypeAllowed(nodeType, filename)
+                (nodeType: string) => this.removeFromNodeTypesAllowed(nodeType, filename)
             ));
     }
 
     public addToNodeTypesAllowed(nodeType: string, filename: string): void {
-        this._nodeTypesAllowedByUser.push(nodeType);
         this._settings[filename][nodeType] = true;
     }
 
-    public toggleNodeTypeAllowed(nodeType: string, filename: string): void {
-        this._nodeTypesAllowedByUser = this._nodeTypesAllowedByUser.filter((val) => val != nodeType);
-        this._settings[filename][nodeType] = !this._settings[filename][nodeType];
+    public removeFromNodeTypesAllowed(nodeType: string, filename: string): void {
+        this._settings[filename][nodeType] = false;
     }
 
     public refresh(item?: SettingsItem): void {
@@ -143,7 +141,6 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
         MapSettingsTreeProvider.onDidChangeTreeData(
             (e) => this._onDidChangeTreeData.fire()
         );
-
     }
 
     refresh(): void {
@@ -221,7 +218,7 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
         if (info == null || info.items.length == 0)
             return nodes;
 
-        let validItemTypes = this.MapSettingsTreeProvider.nodeTypesAllowedByUser;
+        let validItemTypes = this.MapSettingsTreeProvider.nodeTypesAllowedByUser(info.sourceFile);
         this.Items = FavoritesTreeProvider.parseScriptItems(info.items, info.sourceFile, validItemTypes);
         return this.Items;
     }

@@ -293,7 +293,8 @@ export function activate(context: vscode.ExtensionContext) {
 
     vscode.commands.registerCommand("codemap.reveal", () => reveal_current_line_in_tree(treeView1, treeView2));
     vscode.commands.registerCommand("codemap.quick_pick", quick_pick);
-    vscode.commands.registerCommand("codemap.refresh", () => treeViewProvider1.refresh());
+    // settings tree forces refresh on codemap tree:
+    vscode.commands.registerCommand("codemap.refresh", () => settingsTreeViewProvider.refresh());
 
     vscode.commands.registerCommand("codemap.sort_location", () => sort(SortDirection.ByLocation));
     vscode.commands.registerCommand("codemap.sort_asc", () => sort(SortDirection.Asc));
