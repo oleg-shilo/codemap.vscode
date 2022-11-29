@@ -4,7 +4,7 @@ import * as vscode from "vscode";
 import * as os from "os";
 import * as path from "path";
 import * as fs from "fs";
-import { FavoritesTreeProvider, MapItem, MapInfo, SortDirection } from "./tree_view";
+import { FavoritesTreeProvider, MapItem, MapInfo, SortDirection, SettingsTreeProvider, SettingsItem } from "./tree_view";
 import { Uri, commands, TextDocument, TextEditor } from "vscode";
 import * as ts from "./mapper_ts";
 import * as cs from "./mapper_cs";
@@ -16,15 +16,13 @@ import { Utils, config_defaults } from "./utils";
 const defaults = new config_defaults();
 let treeViewProvider1: FavoritesTreeProvider;
 let treeViewProvider2: FavoritesTreeProvider;
-
+let settingsTreeViewProvider: SettingsTreeProvider;
 let moduleModDates = {};
 
 function get_actual_mapper(mapper: any): any {
     if (typeof mapper == "string") {
         let mapper_value = mapper as string;
         if (mapper_value.startsWith("config:codemap.")) {
-            // console.log(mapper_value);
-
             let config = vscode.workspace.getConfiguration("codemap");
             let linked_config_value = mapper_value.replace("config:codemap.", "");
             return config.get(linked_config_value, defaults.get(linked_config_value));
@@ -45,6 +43,11 @@ function requireWithHotReload(module: string) {
     moduleModDates[modulePath] = modDate;
 
     return require(module);
+}
+
+function settings_on_click(item: SettingsItem) {
+    item.onClick();
+    settingsTreeViewProvider.refresh(item);
 }
 
 
@@ -274,24 +277,39 @@ function quick_pick() {
         .then(selectedItem => map.get(selectedItem)());
 }
 
+function allow_all() {
+    let document = vscode.window.activeTextEditor.document.fileName;
+    if (document) {
+        if (fs.existsSync(document)) {
+            settingsTreeViewProvider.allow_all(document);
+        }
+    }
+}
+
 let mapInfo: MapInfo;
 
 export function activate(context: vscode.ExtensionContext) {
     Utils.init();
 
-    treeViewProvider1 = new FavoritesTreeProvider(get_map_items);
-    treeViewProvider2 = new FavoritesTreeProvider(get_map_items);
+    settingsTreeViewProvider = new SettingsTreeProvider(get_map_items);
+    let settingsTree1 = vscode.window.createTreeView("codemap-settings-own-view", { treeDataProvider: settingsTreeViewProvider, showCollapseAll: true });
+    let settingsTree2 = vscode.window.createTreeView("codemap-settings-explorer-view", { treeDataProvider: settingsTreeViewProvider, showCollapseAll: true });
 
+    treeViewProvider1 = new FavoritesTreeProvider(get_map_items, settingsTreeViewProvider);
+    treeViewProvider2 = new FavoritesTreeProvider(get_map_items, settingsTreeViewProvider);
     let treeView1 = vscode.window.createTreeView("codemap-own-view", { treeDataProvider: treeViewProvider1, showCollapseAll: true });
     let treeView2 = vscode.window.createTreeView("codemap-explorer-view", { treeDataProvider: treeViewProvider2, showCollapseAll: true });
 
     vscode.commands.registerCommand("codemap.reveal", () => reveal_current_line_in_tree(treeView1, treeView2));
     vscode.commands.registerCommand("codemap.quick_pick", quick_pick);
-    vscode.commands.registerCommand("codemap.refresh", () => treeViewProvider1.refresh());
+    // settings tree forces refresh on codemap tree:
+    vscode.commands.registerCommand("codemap.refresh", () => settingsTreeViewProvider.refresh());
 
     vscode.commands.registerCommand("codemap.sort_location", () => sort(SortDirection.ByLocation));
     vscode.commands.registerCommand("codemap.sort_asc", () => sort(SortDirection.Asc));
     vscode.commands.registerCommand("codemap.sort_desc", () => sort(SortDirection.Desc));
+
+    vscode.commands.registerCommand("codemap.allow_all", () => allow_all());
 
     vscode.commands.registerCommand("codemap.mappers", () => {
         let mappers = vscode.workspace.getConfiguration("codemap");
@@ -307,4 +325,5 @@ export function activate(context: vscode.ExtensionContext) {
 
     vscode.commands.registerCommand("codemap.navigate_to_selected", navigate_to_selected);
     vscode.commands.registerCommand("codemap.navigate_to", navigate_to);
+    vscode.commands.registerCommand("codemap.settings_on_click", settings_on_click);
 }

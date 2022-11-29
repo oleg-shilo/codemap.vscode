@@ -46,12 +46,22 @@
                     "id": "codemap-own-view",
                     "name": "Code Map",
                     "when": "config.codemap.location == codemap"
+                },
+                {
+                    "id": "codemap-settings-own-view",
+                    "name": "CodeMap Settings",
+                    "when": "config.codemap.location == codemap"
                 }
             ],
             "explorer": [
                 {
                     "id": "codemap-explorer-view",
                     "name": "Code Map",
+                    "when": "config.codemap.location == explorer"
+                },
+                {
+                    "id": "codemap-settings-explorer-view",
+                    "name": "CodeMap Settings",
                     "when": "config.codemap.location == explorer"
                 }
             ]
@@ -356,6 +366,14 @@
                     "light": "resources/light/pick.svg",
                     "dark": "resources/dark/pick.svg"
                 }
+            },
+            {
+                "command": "codemap.allow_all",
+                "title": "CodeMap: Allow All",
+                "icon": {
+                    "dark": "resources/dark/refresh.svg",
+                    "light": "resources/light/refresh.svg"
+                }
             }
         ],
         "keybindings": [
@@ -383,6 +401,11 @@
                 {
                     "command": "codemap.quick_pick",
                     "when": "view == codemap-own-view || view == codemap-explorer-view",
+                    "group": "navigation@2"
+                },
+                {
+                    "command": "codemap.allow_all",
+                    "when": "view == codemap-settings-own-view || view == codemap-settings-explorer-view",
                     "group": "navigation@2"
                 }
             ],
