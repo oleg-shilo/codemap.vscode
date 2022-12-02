@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.19.0 (2 December 2022)
+
+- PR #80: Add sorting option (include/exclude) by node type (e.g. class, functions) 
+  The option is available in the [explorer view](https://github.com/oleg-shilo/codemap.vscode/pull/80).
+- Incorporated GitHub suggested vulnerability patches  
+
 ## 1.18.0 (11 November 2022)
 
 - Issue #72: Add sort button to the CodeMap display (continuation)
@@ -9,7 +15,7 @@
 ## 1.17.0 (20 October 2022)
 
 - Issue #72: Add sort button to the CodeMap display  
-Added context menu for sorting direction when it is enabled. 
+Added context menu for sorting direction when it is enabled.
 Supported sorting directions are:
 - Ascendant
 - Descendant
