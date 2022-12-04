@@ -57,7 +57,7 @@ export class SettingsTreeProvider implements vscode.TreeDataProvider<SettingsIte
         }
         else {
             this.getSettingItems();
-            // manually trigger settngs tree update for file
+            // manually trigger settings tree update for file
             return this.nodeTypesAllowedByUser(filename);
         }
 
