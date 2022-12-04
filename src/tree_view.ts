@@ -46,13 +46,21 @@ export class SettingsTreeProvider implements vscode.TreeDataProvider<SettingsIte
     }
 
     public nodeTypesAllowedByUser(filename: string): string[] {
-        let nodeTypesAllowed: string[] = [];
-        for (let key in this._settings[filename]) {
-            if (this._settings[filename][key]) {
-                nodeTypesAllowed.push(key);
+        if (this._settings[filename] != undefined) {
+            let nodeTypesAllowed: string[] = [];
+            for (let key in this._settings[filename]) {
+                if (this._settings[filename][key]) {
+                    nodeTypesAllowed.push(key);
+                }
             }
+            return nodeTypesAllowed;
         }
-        return nodeTypesAllowed;
+        else {
+            this.getSettingItems();
+            // manually trigger settngs tree update for file
+            return this.nodeTypesAllowedByUser(filename);
+        }
+
     }
 
     public allow_all(filename: string) {
@@ -80,6 +88,10 @@ export class SettingsTreeProvider implements vscode.TreeDataProvider<SettingsIte
     public getSettingItems(): SettingsItem[] {
         let codeMapTree = this.aggregateItems();
         const filename: string = codeMapTree.sourceFile;
+
+        if (filename == null) {
+            return [];
+        }
 
         let codeMapTypes: Set<string> = new Set<string>();
         codeMapTree['items'].filter((strItem) => strItem != '').forEach(

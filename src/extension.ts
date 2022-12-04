@@ -235,7 +235,7 @@ function reveal_current_line_in_tree(treeView1: vscode.TreeView<MapItem>, treeVi
 
 function sort(direction: SortDirection) {
     MapItem.sortDirection = direction;
-    treeViewProvider1.refresh();
+    settingsTreeViewProvider.refresh();
 }
 
 function quick_pick() {
