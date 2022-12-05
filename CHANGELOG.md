@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.20.0 (5 December 2022)
+
+- PR #81: opening new unopened script initially filters all nodes.
+  This is a fix of an accidental side effect of the very previous PR.
+
 ## 1.19.0 (2 December 2022)
 
 - PR #80: Add sorting option (include/exclude) by node type (e.g. class, functions) 
