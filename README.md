@@ -1,10 +1,10 @@
 [![stand with Ukraine](https://img.shields.io/badge/stand_with-ukraine-ffd700.svg?labelColor=0057b7)](https://stand-with-ukraine.pp.ua)
 # CodeMap - VSCode Extension
 
-Interactive code map for quick visualization and navigation within  code DOM objects (e.g. classes, members).
+Interactive code map for quick visualization and navigation within code DOM objects (e.g. classes, members).
 <hr/>
 
-[![Github All Releases](https://vsmarketplacebadge.apphb.com/installs-short/oleg-shilo.codemap.svg)]()
+[![Github All Releases](https://github.com/oleg-shilo/codemap.vscode/releases)]()
 
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.cs-script.net/cs-script/Donation.html)
 
