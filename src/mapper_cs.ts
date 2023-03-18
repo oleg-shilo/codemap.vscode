@@ -15,7 +15,7 @@ let execSync = require('child_process').execSync;
 let map = "";
 let map_last_source = "";
 
-let SYNTAXER_VERSION = "1.0.0.0";
+let SYNTAXER_VERSION = "3.1.2.0";
 
 // will be set at the end of this file
 let SEVER = "";
@@ -120,8 +120,8 @@ function DeploySyntaxer() {
         }
     }
 
-    let fileName = "syntaxer.core.dll";
-    let cliFileName = "syntaxer.core.cli.dll";
+    let fileName = "syntaxer.dll";
+    let cliFileName = "syntaxer.cli.dll";
     let ext_dir = path.join(__dirname, "..", "..");
     let sourceDir = path.join(ext_dir, 'bin');
     let destRootDir = path.join(user_dir(), 'syntaxer');

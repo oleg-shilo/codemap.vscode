@@ -1,5 +1,13 @@
 # Change Log
 
+## 1.20.1 (18 March 2023)
+
+- Syntaxer upgraded to v3.1.2 to run on .NET 7.0
+
+## 1.20.0 (5 December 2022)
+
+- Bumped version to align with the published one on VSCode marketplace
+
 ## 1.19.1 (5 December 2022)
 
 - PR #81: opening new unopened script initially filters all nodes.
