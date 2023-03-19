@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.20.1 (19 March 2023)
+
+- Just a rebuild of v1.20.1 (#82)
+
 ## 1.20.1 (18 March 2023)
 
 - Syntaxer upgraded to v3.1.2 to run on .NET 7.0
