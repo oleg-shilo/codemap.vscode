@@ -2,7 +2,7 @@
     "name": "codemap",
     "displayName": "CodeMap",
     "description": "Interactive code map for quick visualization and navigation within code DOM objects (e.g. classes, members).",
-    "version": "1.20.2",
+    "version": "1.20.3",
     "license": "MIT",
     "publisher": "oleg-shilo",
     "engines": {
@@ -236,47 +236,46 @@
                     ],
                     "description": "Regex-based definition of the mapping rules for Python syntax."
                 },
-				"codemap.pdl": {
-					"type": "array",
-					"default": [
-					{
-						"pattern": "(?=[^--])(?<![^\\r\\n\\t\\f\\v])PROGRAM (.*?)\\w+",
-						"clear": "PROGRAM",
-						"prefix": "",
-						"role": "class",
-						"icon": "class"
-					},
-					{
-						"pattern": "(?=[^--])(?<![^\\r\\n\\t\\f\\v])ROUTINE (.*?)\\w+",
-						"clear": "ROUTINE",
-						"suffix": "()",
-						"role": "function",
-						"icon": "function"
-					}
-				],
-				"description": "Regex-based definition of the mapping rules for PDL2 syntax (Comau Robot Language)."
-				},
-				"codemap.pds": {
-					"type": "array",
-					"default": [
-					{
-						"pattern": "(?=[^--])(?<![^\\r\\n\\t\\f\\v])PROGRAM (.*?)\\w+",
-						"clear": "PROGRAM",
-						"prefix": "",
-						"role": "class",
-						"icon": "class"
-					},
-					{
-						"pattern": "(?=[^--])(?<![^\\r\\n\\t\\f\\v])ROUTINE (.*?)\\w+",
-						"clear": "ROUTINE",
-						"suffix": "()",
-						"role": "function",
-						"icon": "function"
-					}
-				],
-				"description": "Regex-based definition of the mapping rules for PDL2 syntax for Application Files (Comau Robot Language)."
-				},
-
+                "codemap.pdl": {
+                    "type": "array",
+                    "default": [
+                        {
+                            "pattern": "(?=[^--])(?<![^\\r\\n\\t\\f\\v])PROGRAM (.*?)\\w+",
+                            "clear": "PROGRAM",
+                            "prefix": "",
+                            "role": "class",
+                            "icon": "class"
+                        },
+                        {
+                            "pattern": "(?=[^--])(?<![^\\r\\n\\t\\f\\v])ROUTINE (.*?)\\w+",
+                            "clear": "ROUTINE",
+                            "suffix": "()",
+                            "role": "function",
+                            "icon": "function"
+                        }
+                    ],
+                    "description": "Regex-based definition of the mapping rules for PDL2 syntax (Comau Robot Language)."
+                },
+                "codemap.pds": {
+                    "type": "array",
+                    "default": [
+                        {
+                            "pattern": "(?=[^--])(?<![^\\r\\n\\t\\f\\v])PROGRAM (.*?)\\w+",
+                            "clear": "PROGRAM",
+                            "prefix": "",
+                            "role": "class",
+                            "icon": "class"
+                        },
+                        {
+                            "pattern": "(?=[^--])(?<![^\\r\\n\\t\\f\\v])ROUTINE (.*?)\\w+",
+                            "clear": "ROUTINE",
+                            "suffix": "()",
+                            "role": "function",
+                            "icon": "function"
+                        }
+                    ],
+                    "description": "Regex-based definition of the mapping rules for PDL2 syntax for Application Files (Comau Robot Language)."
+                },
                 "codemap.svg": {
                     "type": "string",
                     "default": "config:codemap.xml",

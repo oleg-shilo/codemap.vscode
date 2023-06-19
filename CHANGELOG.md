@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.20.3 (19 June 2023)
+
+- Added Support PDL2 Files(Comau Robot Language)
+ _Curtesy of Marco Caputo_
+
 ## 1.20.1 (19 March 2023)
 
 - Just a rebuild of v1.20.1 (#82)
