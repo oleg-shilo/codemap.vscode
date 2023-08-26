@@ -74,8 +74,10 @@ export class mapper {
                         if (m) {
 
                             let level_indent = line.length - code_line.length;
+
+                            let level_hierarchy = 0
                             if (item.levelIndent)
-                                level_indent = item.levelIndent;
+                                level_hierarchy = item.levelIndent;
 
                             let match = m[0];
 
@@ -84,8 +86,8 @@ export class mapper {
                                     .split('|')
                                     .forEach(text => {
                                         try {
-                                            // match = match.replaceAll(text, ''); // fails to treat arguments as regex :o( 
-
+                                            // match = match.replaceAll(text, ''); // fails to treat arguments as regex :o(
+// vscode.workspace.getConfiguration vscode.window.activeTextEditor.options.tabSize
                                             match = match.replace(new RegExp(text, 'g'), '');
                                         }
                                         catch (error) {
@@ -98,7 +100,7 @@ export class mapper {
                             if (item.prefix)
                                 match = item.prefix + match;
 
-                            members.push([line_num, item.role, match, level_indent, item.icon]);
+                            members.push([line_num, item.role, match, level_indent, item.icon, level_hierarchy]);
                             break;
                         }
                     }
@@ -120,6 +122,7 @@ export class mapper {
                 let content = item[2];
                 let indent = item[3];
                 let icon = item[4];
+                let hierarchy = item[5];
                 let extra_line = '';
 
                 if (indent == last_indent && content_type != last_type)
@@ -128,7 +131,8 @@ export class mapper {
                 let prefix = ' '.repeat(indent);
                 let lean_content = content.trimStart();
 
-                map = map + extra_line + prefix + lean_content + '|' + String(line) + '|' + icon + '\n';
+                map = map + extra_line + prefix + lean_content + '|' +
+                    String(line) + '|' + icon + '|'+ String(hierarchy) + '\n';
 
                 last_indent = indent;
                 last_type = content_type;

@@ -100,9 +100,9 @@ export class SettingsTreeProvider implements vscode.TreeDataProvider<SettingsIte
 
         let ArrCodeMapTypes = Array.from(codeMapTypes);
 
-        // "backup" settings defined here. This is done to keep the settings chosen that aren't the default 
+        // "backup" settings defined here. This is done to keep the settings chosen that aren't the default
         // available for reinstatement after a whole tree rebuild is triggered by a file save or window change.
-        // Sadly we need this hack rather than only causing a rebuild on changed nodes as more nodes may 
+        // Sadly we need this hack rather than only causing a rebuild on changed nodes as more nodes may
         // have been added.
         if (!(Object.keys(this._settings).includes(filename))) {
             this._settings[filename] = {};
@@ -243,6 +243,84 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
         return this.Items;
     }
 
+    public static process_node(
+        node : MapItem,
+        nodes : MapItem[],
+        map_hierarchy : MapItem[]
+    ): void {
+        let level_indent = node.level_indent;
+        let level_hierarchy = node.level_hierarchy;
+
+        if (!(map_hierarchy.length)) {
+            if (level_hierarchy == 0)
+            {
+                nodes.push(node);
+            }
+            else
+            {
+                map_hierarchy.push(node)
+            }
+        }
+        else if (map_hierarchy.length) {
+            // Let us get parent
+            let parent : MapItem = map_hierarchy[map_hierarchy.length - 1];
+
+            if (level_indent > parent.level_indent)
+            {
+                if (level_hierarchy)
+                {
+                    map_hierarchy.push(node);
+                }
+                else
+                {
+                    parent.addChildItem(node);
+                    node.parent = parent;
+                }
+            }
+            else if (level_indent == parent.level_indent)
+            {
+                if (level_hierarchy)
+                {
+                    if  (level_hierarchy < parent.level_hierarchy)
+                    {
+                        map_hierarchy.pop()
+                        FavoritesTreeProvider.process_node(node, nodes, map_hierarchy)
+                    }
+                    else if (level_hierarchy == parent.level_hierarchy)
+                    {
+                        nodes.push(parent)
+                        map_hierarchy.pop()
+                    }
+                    else // TODO Implementing outline type, that different types will not
+                    {    // TODO race hierarchy (nestable will not nest the other type on same
+                         // TODO indent level)
+                        parent.addChildItem(node);
+                        node.parent = parent;
+                    }
+                    map_hierarchy.push(node)
+                }
+                else
+                {
+                    parent.addChildItem(node);
+                    node.parent = parent;
+                }
+            }
+            else if (level_indent < parent.level_indent)
+            {
+                map_hierarchy.pop()
+                // parent = map_hierarchy[map_hierarchy.length - 1]
+                FavoritesTreeProvider.process_node(node, nodes, map_hierarchy)
+                // if (level_hierarchy)
+                // {
+                //     map_hierarchy.push(node)
+                // }
+                // else
+                // {
+                //     nodes.push(node)
+            }
+        }
+    }
+
     public static parseScriptItems(items: string[], sourceFile: string, nodeTypesToKeep: string[]): MapItem[] {
 
         let nodes = [];
@@ -251,44 +329,58 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
         // https://github.com/patrys/vscode-code-outline/issues/24: Is it possible to disable expand/collapse on click
         // Until above items are fixed need to go with the plain text.
         let plainTextMode = vscode.workspace.getConfiguration("codemap").get('textMode', defaults.get('textMode'));
-        let max_nesting_level = vscode.workspace.getConfiguration("codemap").get('maxNestingLevel', defaults.get('maxNestingLevel'));
+        let max_hierarchy_level = vscode.workspace.getConfiguration("codemap").get('maxNestingLevel', defaults.get('maxNestingLevel'));
 
         // default is empty (non-white space) character U+00A0; to avoid trimming by treeview renderer
         let levelUnitChar = vscode.workspace.getConfiguration("codemap").get('textModeLevelPrefix', defaults.get('textModeLevelPrefix'));
 
-        let levelUnit = null;
+        // Intelligently taking tab size (in terms of number of spaces) from active text editor
+        let levelUnit : number;
+        let levelUnit_t = vscode.window.activeTextEditor.options.tabSize;
+        if (typeof levelUnit_t === "string")
+        {
+            // set indentation according to language or scrape it from document
+            let editor_language = vscode.window.activeTextEditor.document.languageId
+
+            levelUnit = 4;
+        }
+        else
+        {
+            levelUnit = levelUnit_t
+        }
         let map: { [index: number]: MapItem; } = {};
+        let map_hierarchy = [];
 
         items.forEach(item => {
 
             if (item != '') {
                 let source_file = sourceFile;
                 let tokens = item.split('|');
+
                 let lineNumber = 0;
                 let icon = 'document';
-
-                let title: string = item;
-
-                let nesting_level = item.length - item.trimStart().length;
-
-                if (nesting_level != 0) {
-                    if (!levelUnit)
-                        levelUnit = nesting_level;
-                    nesting_level = nesting_level / levelUnit;
-                }
-
+                let title: string;
+                let level_indent = item.length - item.trimStart().length;
+                let level_hierarchy:number = 0;
                 if (tokens.length > 1) {
                     try {
                         title = tokens[0];
                         lineNumber = Number(tokens[1]) - 1;
                         icon = tokens[2];
+                        level_hierarchy = Number(tokens[3]);
                     } catch (error) {
                     }
                 }
                 else
                     source_file = null;
 
-                if (nesting_level > max_nesting_level)
+                // if (level_indent != 0) {
+                //     if (!levelUnit)
+                //         levelUnit = level_indent;
+                //     level_indent = level_indent / levelUnit;
+                // }
+
+                if (level_hierarchy > max_hierarchy_level)
                     return;
 
                 // the normal spaces are collapsed by the tree item renderer
@@ -308,7 +400,8 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
                 let node = new MapItem(
                     title,
                     textModeExpanded ? vscode.TreeItemCollapsibleState.Expanded : vscode.TreeItemCollapsibleState.Collapsed,
-                    nesting_level,
+                    level_indent,
+                    level_hierarchy,
                     {
                         command: on_click_command,
                         title: '',
@@ -322,23 +415,29 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
                 if (nodeTypesToKeep.includes(icon)) {
                     if (plainTextMode) {
                         node.collapsibleState = vscode.TreeItemCollapsibleState.None;
-                        node.label = non_whitespace_empty_char.repeat(nesting_level) + title;
+                        node.label = non_whitespace_empty_char.repeat(Math.floor(level_indent / levelUnit)) + title;
                         nodes.push(node);
                     }
                     else {
-                        if (nesting_level == 0) {
-                            nodes.push(node);
-                        }
-                        else {
-                            let parent = map[node.nesting_level - 1];
-                            if (!parent) {
-                                for (let key in map) {
-                                    parent = map[key];
-                                }
-                            }
-                            parent.addChildItem(node);
-                            node.parent = parent;
-                        }
+
+                        FavoritesTreeProvider.process_node(
+                            node,
+                            nodes,
+                            map_hierarchy
+                        )
+                        // if (level_indent == 0) {
+                        //     nodes.push(node);
+                        // }
+                        // else {
+                        //     let parent = map[node.nesting_level - 1];
+                        //     if (!parent) {
+                        //         for (let key in map) {
+                        //             parent = map[key];
+                        //         }
+                        //     }
+                        //     parent.addChildItem(node);
+                        //     node.parent = parent;
+                        // }
                     }
                 }
 
@@ -358,7 +457,7 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
                     };
                 }
 
-                map[node.nesting_level] = node;
+                map[node.level_indent] = node;
             }
         });
 
@@ -383,12 +482,16 @@ function getDefaultSortDirection() {
     return SortDirection[dir];
 }
 
+// TODO Implementing outline type, that different types will not
+// TODO race hierarchy (nestable will not nest the other type on same
+// TODO indent level)
 export class MapItem extends vscode.TreeItem {
 
     constructor(
         public readonly title: string,
         public readonly state: vscode.TreeItemCollapsibleState,
-        public readonly nesting_level: number,
+        public readonly level_indent: number,
+        public readonly level_hierarchy: number,
         public readonly command?: vscode.Command,
         public readonly context?: string,
         public readonly lineNumber?: number) {
