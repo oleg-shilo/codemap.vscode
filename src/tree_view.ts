@@ -252,12 +252,11 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
         let level_hierarchy = node.level_hierarchy;
 
         if (!(map_hierarchy.length)) {
-            if (level_hierarchy == 0)
+            nodes.push(node)
+
+            if (level_hierarchy)
             {
-                nodes.push(node);
-            }
-            else
-            {
+                node = nodes[nodes.length - 1]
                 map_hierarchy.push(node)
             }
         }
@@ -271,11 +270,10 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
                 {
                     map_hierarchy.push(node);
                 }
-                else
-                {
-                    parent.addChildItem(node);
-                    node.parent = parent;
-                }
+
+                parent.addChildItem(node);
+                node.parent = parent;
+
             }
             else if (level_indent == parent.level_indent)
             {
@@ -284,19 +282,33 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
                     if  (level_hierarchy < parent.level_hierarchy)
                     {
                         map_hierarchy.pop()
-                        FavoritesTreeProvider.process_node(node, nodes, map_hierarchy)
+                        FavoritesTreeProvider.process_node(
+                            node,
+                            nodes,
+                            map_hierarchy
+                        )
                     }
                     else if (level_hierarchy == parent.level_hierarchy)
                     {
-                        nodes.push(parent)
+                        if (parent.parent) {
+                            parent.parent.addChildItem(node)
+                            node.parent = parent.parent
+                        }
+                        else {
+                            nodes.push(node)
+                        }
+
                         map_hierarchy.pop()
                     }
-                    else // TODO Implementing outline type, that different types will not
-                    {    // TODO race hierarchy (nestable will not nest the other type on same
-                         // TODO indent level)
+                    else
+                    {
+                        // TODO Implementing outline type, that different types
+                        // TODO will not race hierarchy (nestable will not nest
+                        // TODO the other type on same indent level)
                         parent.addChildItem(node);
                         node.parent = parent;
                     }
+
                     map_hierarchy.push(node)
                 }
                 else
@@ -308,15 +320,8 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
             else if (level_indent < parent.level_indent)
             {
                 map_hierarchy.pop()
-                // parent = map_hierarchy[map_hierarchy.length - 1]
                 FavoritesTreeProvider.process_node(node, nodes, map_hierarchy)
-                // if (level_hierarchy)
-                // {
-                //     map_hierarchy.push(node)
-                // }
-                // else
-                // {
-                //     nodes.push(node)
+
             }
         }
     }
@@ -337,10 +342,15 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
         // Intelligently taking tab size (in terms of number of spaces) from active text editor
         let levelUnit : number;
         let levelUnit_t = vscode.window.activeTextEditor.options.tabSize;
+
+        // Language
+        let editor_language = vscode.window.activeTextEditor.document.languageId;
+
         if (typeof levelUnit_t === "string")
         {
-            // set indentation according to language or scrape it from document
-            let editor_language = vscode.window.activeTextEditor.document.languageId
+            // TODO Set indentation according to language or
+            // TODO scrape it from document
+            editor_language;
 
             levelUnit = 4;
         }
@@ -425,6 +435,7 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
                             nodes,
                             map_hierarchy
                         )
+
                         // if (level_indent == 0) {
                         //     nodes.push(node);
                         // }

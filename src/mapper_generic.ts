@@ -42,7 +42,6 @@ export class mapper {
     public static generate(file: string, mappings: SyntaxMapping[]): string[] {
 
         // # Parse
-        let item_max_length = 0;
         let members = [];
 
         try {
@@ -55,8 +54,6 @@ export class mapper {
             lines = text.split(/\r?\n/g);
 
             let line_num = 0;
-            let last_type = '';
-            let last_indent = 0;
 
             lines.forEach(line => {
 
@@ -66,15 +63,13 @@ export class mapper {
                 if (line != '') {
 
                     let code_line = line.trimStart();
+                    let level_indent = line.length - code_line.length;
 
                     for (let item of mappings) {
 
                         let m = line.match(item.regex);
 
                         if (m) {
-
-                            let level_indent = line.length - code_line.length;
-
                             let level_hierarchy = 0
                             if (item.levelIndent)
                                 level_hierarchy = item.levelIndent;
@@ -87,7 +82,6 @@ export class mapper {
                                     .forEach(text => {
                                         try {
                                             // match = match.replaceAll(text, ''); // fails to treat arguments as regex :o(
-// vscode.workspace.getConfiguration vscode.window.activeTextEditor.options.tabSize
                                             match = match.replace(new RegExp(text, 'g'), '');
                                         }
                                         catch (error) {
@@ -99,8 +93,16 @@ export class mapper {
                                 match += item.suffix;
                             if (item.prefix)
                                 match = item.prefix + match;
-
+                            // TODO: We should do the processing here instead.
+                            // Collecting and processing may lead to
+                            // misinterpretation of hierarch, hence
+                            // when we go out of a function and enter
+                            // another indentation and have a mapping,
+                            // this mapping will be nested under functions
+                            // even it is not inside the function
+                            //
                             members.push([line_num, item.role, match, level_indent, item.icon, level_hierarchy]);
+
                             break;
                         }
                     }
