@@ -216,6 +216,19 @@
                     ],
                     "description": "Regex-based definition of the mapping rules for JSON syntax."
                 },
+                "codemap.ino": {
+                    "type": "array",
+                    "default": [
+                        {
+                            "pattern": "\\s+\\w+\\(\\w*\\)$",
+                            "clear": "\\(\\w*\\)",
+                            "suffix": "()",
+                            "role": "function",
+                            "icon": "function"
+                        }
+                    ],
+                    "description": "Regex-based definition of the mapping rules for Arduino syntax."
+                },
                 "codemap.py": {
                     "type": "array",
                     "default": [
