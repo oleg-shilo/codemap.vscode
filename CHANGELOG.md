@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.20.4 (18 December 2023)
+
+- Added support Arduino syntax (*.ino files)
+
 ## 1.20.3 (19 June 2023)
 
 - Added Support PDL2 Files(Comau Robot Language)
