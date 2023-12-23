@@ -220,11 +220,23 @@
                     "type": "array",
                     "default": [
                         {
-                            "pattern": "\\s+\\w+\\(\\w*\\)$",
+                            "pattern": "\\s+\\w+\\(.*\\)$",
                             "clear": "\\(\\w*\\)",
                             "suffix": "()",
                             "role": "function",
                             "icon": "function"
+                        }
+                    ],
+                    "description": "Regex-based definition of the mapping rules for Arduino syntax."
+                },
+                "codemap.css": {
+                    "type": "array",
+                    "default": [
+                        {
+                          "pattern": ".*{",
+                          "clear": "\\{",
+                          "role": "class",
+                          "icon": "class"
                         }
                     ],
                     "description": "Regex-based definition of the mapping rules for Arduino syntax."
