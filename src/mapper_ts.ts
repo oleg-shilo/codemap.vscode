@@ -86,7 +86,6 @@ export class mapper {
 
                 let includePrivateMembers = false;
 
-
                 if (!info)
                     info = parse_as_class('interface', line);
 
@@ -99,6 +98,16 @@ export class mapper {
                             return; // private class functions
                     }
 
+                    last_type = 'function';
+                    last_indent = indent_level;
+                    info = [line_num,
+                        'function',
+                        line.split('(')[0].trimEnd() + '()',
+                        indent_level,
+                        'function']
+                }
+
+                else if (code_line.match(/^(\s*)\w+\(.*\)\s*{/g) != null) { // catch pure JS class functions without access modifiers or `function` keyword
                     last_type = 'function';
                     last_indent = indent_level;
                     info = [line_num,
