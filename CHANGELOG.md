@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.20.5 (30 January 2024)
+
+- Improved TS mapper algorithm so it handles pure JS class functions for `*.js` files.
+- Updated all packages
+
 ## 1.20.4 (18 December 2023)
 
 - Added support Arduino syntax (*.ino files)

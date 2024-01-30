@@ -6,7 +6,7 @@
     "license": "MIT",
     "publisher": "oleg-shilo",
     "engines": {
-        "vscode": "^1.56.2"
+        "vscode": "^1.85.0"
     },
     "categories": [
         "Other"
@@ -233,10 +233,10 @@
                     "type": "array",
                     "default": [
                         {
-                          "pattern": ".*{",
-                          "clear": "\\{",
-                          "role": "class",
-                          "icon": "class"
+                            "pattern": ".*{",
+                            "clear": "\\{",
+                            "role": "class",
+                            "icon": "class"
                         }
                     ],
                     "description": "Regex-based definition of the mapping rules for Arduino syntax."
@@ -507,20 +507,20 @@
         "test": "node ./out/test/runTest.js"
     },
     "devDependencies": {
-        "@types/glob": "^7.1.1",
-        "@types/mocha": "^7.0.2",
-        "@types/node": "^13.13.52",
-        "@types/vscode": "^1.44.0",
-        "@typescript-eslint/eslint-plugin": "^3.6.1",
-        "@typescript-eslint/parser": "^3.6.1",
-        "eslint": "^6.8.0",
-        "glob": "^7.1.6",
+        "@types/glob": "^8.1.0",
+        "@types/mocha": "^10.0.6",
+        "@types/node": "^20.11.10",
+        "@types/vscode": "^1.85.0",
+        "@typescript-eslint/eslint-plugin": "^6.19.1",
+        "@typescript-eslint/parser": "^6.19.1",
+        "eslint": "^8.56.0",
+        "glob": "^10.3.10",
         "mocha": "^10.1.0",
-        "typescript": "^3.8.3",
+        "typescript": "^5.3.3",
         "vscode-test": "^1.3.0"
     },
     "dependencies": {
-        "fs-extra": "^9.0.0",
-        "mkdirp": "^1.0.4"
+        "fs-extra": "^11.2.0",
+        "mkdirp": "^3.0.1"
     }
 }

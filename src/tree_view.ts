@@ -38,10 +38,10 @@ export class SettingsTreeProvider implements vscode.TreeDataProvider<SettingsIte
     constructor(private aggregateItems: () => MapInfo) {
         this._settings = {};
         vscode.window.onDidChangeActiveTextEditor(e => {
-            this._onDidChangeTreeData.fire();
+            this._onDidChangeTreeData.fire(null);
         });
         vscode.workspace.onDidSaveTextDocument(e => {
-            this._onDidChangeTreeData.fire();
+            this._onDidChangeTreeData.fire(null);
         });
     }
 
@@ -159,13 +159,13 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
         // codemap tree is triggered once settings are generated:
         this.MapSettingsTreeProvider = MapSettingsTreeProvider;
         MapSettingsTreeProvider.onDidChangeTreeData(
-            (e) => this._onDidChangeTreeData.fire()
+            (e) => this._onDidChangeTreeData.fire(null)
         );
     }
 
     refresh(): void {
         try {
-            this._onDidChangeTreeData.fire();
+            this._onDidChangeTreeData.fire(null);
         } catch (error) {
 
         }

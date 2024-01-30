@@ -80,6 +80,8 @@ export class mapper {
                         content,
                         indent_level,
                         icon]
+
+                    return info;
                 }
 
                 info = parse_as_class('class', line);
@@ -89,10 +91,7 @@ export class mapper {
                 if (!info)
                     info = parse_as_class('interface', line);
 
-                if (info) {
-                }
-
-                else if (code_line.startsWith('function ') || code_line.startsWith('export function ') || code_line.startsWith('async function ')) {
+                if (!info && code_line.startsWith('function ') || code_line.startsWith('export function ') || code_line.startsWith('async function ')) {
                     if (last_type == 'function' && indent_level > last_indent) {
                         if (!includePrivateMembers)
                             return; // private class functions
@@ -104,25 +103,32 @@ export class mapper {
                         'function',
                         line.split('(')[0].trimEnd() + '()',
                         indent_level,
-                        'function']
+                        'function'];
                 }
 
-                else if (code_line.match(/^(\s*)\w+\(.*\)\s*{/g) != null) { // catch pure JS class functions without access modifiers or `function` keyword
-                    last_type = 'function';
-                    last_indent = indent_level;
-                    info = [line_num,
-                        'function',
-                        line.split('(')[0].trimEnd() + '()',
-                        indent_level,
-                        'function']
+                if (!info && code_line.match(/^(\s*)\w+\(.*\)\s*{/g) != null) { // catch pure JS class functions without access modifiers or `function` keyword
+
+                    let name = line.split('(')[0].trimEnd();
+
+                    // just to avoid misinterpreting control statements as class functions (e.g. `for`)
+                    if (name != 'if' && name != 'do' && name != 'while' && name != 'for' && name != 'switch') {
+                        last_type = 'function';
+                        last_indent = indent_level;
+                        info = [line_num,
+                            'function',
+                            name + '()',
+                            indent_level,
+                            'function'];
+                    }
                 }
 
-                else if (code_line.startsWith('public ')) {
-                    parse_as_class_member('public');
-                }
-
-                else if (code_line.startsWith('private ') && includePrivateMembers) {
-                    parse_as_class_member('private');
+                if (!info) {
+                    if (code_line.startsWith('public ')) {
+                        info = parse_as_class_member('public');
+                    }
+                    else if (code_line.startsWith('private ') && includePrivateMembers) {
+                        info = parse_as_class_member('private');
+                    }
                 }
 
                 if (info) {
