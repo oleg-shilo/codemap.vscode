@@ -389,6 +389,14 @@
                 }
             },
             {
+                "command": "codemap.edit_mapper",
+                "title": "CodeMap: Edit mapper for the currently opened file",
+                "icon": {
+                    "light": "resources/light/arrow-both.svg",
+                    "dark": "resources/dark/arrow-both.svg"
+                }
+            },
+            {
                 "command": "codemap.mappers",
                 "title": "CodeMap: Show mappers configuration"
             },

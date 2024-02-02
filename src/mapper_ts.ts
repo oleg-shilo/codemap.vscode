@@ -1,3 +1,8 @@
+/**
+ * This file is a part of CodeMap distribution. 
+ * It will be overwritten after the extension next update. Thus you may want to make an editable copy of
+ * this file and add it as a custom dedicated mapper in the settings file.
+*/
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';

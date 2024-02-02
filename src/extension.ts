@@ -11,7 +11,7 @@ import * as cs from "./mapper_cs";
 import * as generic from "./mapper_generic";
 import * as md from "./mapper_md";
 import { SyntaxMapping } from "./mapper_generic";
-import { Utils, config_defaults } from "./utils";
+import { Utils, config_defaults, } from "./utils";
 
 const defaults = new config_defaults();
 let treeViewProvider1: FavoritesTreeProvider;
@@ -61,21 +61,7 @@ function get_map_items(): MapInfo {
 
         if (document) {
 
-            let value_name = "";
-
-            if (fs.existsSync(document)) {
-                var extension = path.extname(document.toLowerCase());
-                if (extension) {
-                    // Trim starting dot: '.py' vs 'py'
-                    value_name = extension.substring(1).toLowerCase();
-                }
-                else {
-                    // Add bracket: 'Makefile' vs '(Makefile)'
-                    value_name = "(" + path.basename(document) + ")";
-                }
-            } else {
-                value_name = vscode.window.activeTextEditor.document.languageId;
-            }
+            let value_name = get_required_mapper_type();
 
             let mapper = config.get("overloaded." + value_name, null);
 
@@ -235,7 +221,73 @@ function reveal_current_line_in_tree(treeView1: vscode.TreeView<MapItem>, treeVi
 
 function sort(direction: SortDirection) {
     MapItem.sortDirection = direction;
-    settingsTreeViewProvider.refresh();  // triggers both codemap trees refesh
+    settingsTreeViewProvider.refresh();  // triggers both codemap trees refresh
+}
+
+function get_required_mapper_type() {
+
+    let document = vscode.window.activeTextEditor.document.fileName;
+
+    if (document) {
+        if (fs.existsSync(document)) {
+            var extension = path.extname(document.toLowerCase());
+            if (extension) {
+                // Trim starting dot: '.py' vs 'py'
+                return extension.substring(1).toLowerCase();
+            }
+            else {
+                // Add bracket: 'Makefile' vs '(Makefile)'
+                return "(" + path.basename(document) + ")";
+            }
+        } else {
+            return vscode.window.activeTextEditor.document.languageId;
+        }
+    }
+    return null;
+}
+
+function edit() {
+
+    try {
+
+        let value_name = get_required_mapper_type();
+        if (value_name) {
+
+            let config = vscode.workspace.getConfiguration("codemap");
+
+            let mapper = config.get("overloaded." + value_name, null);
+
+            if (mapper == null)
+                mapper = config.get(value_name, defaults.get(value_name));
+
+            mapper = get_actual_mapper(mapper);
+
+            if (mapper) {
+
+                if (typeof mapper == "string") { // custom dedicated mapper (path string)
+
+                    let file = mapper;
+                    if (!path.isAbsolute(file)) {
+                        file = path.join(__dirname, file);
+                        vscode.window.showInformationMessage(`The file ${path.basename(file)} is a part of CodeMap distribution. 
+                        It will be overwritten after the extension next update. Thus you may want to make an editable copy of`+
+                            ' this file and add it as a custom dedicated mapper in the settings file.');
+
+                    }
+                    commands.executeCommand('vscode.open', Uri.file(file));
+                }
+                else { // Generic mapper (an object)
+                    vscode.commands.executeCommand('workbench.action.openSettings', 'codemap.' + value_name);
+                }
+                return;
+            }
+        }
+        vscode.window.showErrorMessage(
+            'The current document does not have associated CodeMap mapper. ' +
+            'Use command "CodeMap: Create..." if you want to create a new mapper.');
+    } catch (error) {
+        console.log(error.toString());
+    }
 }
 
 function quick_pick() {
@@ -299,6 +351,8 @@ export function activate(context: vscode.ExtensionContext) {
     treeViewProvider2 = new FavoritesTreeProvider(get_map_items, settingsTreeViewProvider);
     let treeView1 = vscode.window.createTreeView("codemap-own-view", { treeDataProvider: treeViewProvider1, showCollapseAll: true });
     let treeView2 = vscode.window.createTreeView("codemap-explorer-view", { treeDataProvider: treeViewProvider2, showCollapseAll: true });
+
+    vscode.commands.registerCommand("codemap.edit_mapper", edit);
 
     vscode.commands.registerCommand("codemap.reveal", () => reveal_current_line_in_tree(treeView1, treeView2));
     vscode.commands.registerCommand("codemap.quick_pick", quick_pick);

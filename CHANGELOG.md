@@ -1,5 +1,9 @@
 # Change Log
 
+## Next
+
+- Added workflow for editing the mapper of the active opened document.
+
 ## 1.20.5 (30 January 2024)
 
 - Improved TS mapper algorithm so it handles pure JS class functions for `*.js` files.
