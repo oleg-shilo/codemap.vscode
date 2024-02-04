@@ -2,7 +2,7 @@
     "name": "codemap",
     "displayName": "CodeMap",
     "description": "Interactive code map for quick visualization and navigation within code DOM objects (e.g. classes, members).",
-    "version": "1.20.5",
+    "version": "1.21.0",
     "license": "MIT",
     "publisher": "oleg-shilo",
     "engines": {
@@ -186,6 +186,26 @@
                         }
                     ],
                     "description": "Regex-based definition of the mapping rules for INI file syntax."
+                },
+                "codemap.go": {
+                    "type": "array",
+                    "default": [
+                        {
+                            "pattern": "func (.*?)\\)(.*?){",
+                            "clear": "func|(|{",
+                            "suffix": "",
+                            "role": "function",
+                            "icon": "function"
+                        },
+                        {
+                            "pattern": "type (.*?) struct(.*?){",
+                            "clear": "type|struct|(|{",
+                            "suffix": "",
+                            "role": "class",
+                            "icon": "class"
+                        }
+                    ],
+                    "description": "Regex-based definition of the mapping rules for GO file syntax."
                 },
                 "codemap.r": {
                     "type": "array",
@@ -391,6 +411,14 @@
             {
                 "command": "codemap.edit_mapper",
                 "title": "CodeMap: Edit mapper for the currently opened file",
+                "icon": {
+                    "light": "resources/light/arrow-both.svg",
+                    "dark": "resources/dark/arrow-both.svg"
+                }
+            },
+            {
+                "command": "codemap.create_mapper",
+                "title": "CodeMap: Create a mapper for the currently opened file",
                 "icon": {
                     "light": "resources/light/arrow-both.svg",
                     "dark": "resources/dark/arrow-both.svg"

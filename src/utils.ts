@@ -154,6 +154,13 @@ export class Utils {
         fs.writeFileSync(file, lines.join('\n'), { encoding: 'utf8' });
     }
 
+    public static editor_go_to_line(line: number): void {
+        let editor = vscode.window.activeTextEditor;
+        let range = editor.document.lineAt(line - 1).range;
+        editor.selection = new vscode.Selection(range.start, range.end);
+        editor.revealRange(range);
+    }
+
     public static init(): void {
 
         // vscode:

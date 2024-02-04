@@ -1,8 +1,11 @@
 # Change Log
 
-## Next
+## 1.21.0 (5 February 2024)
 
+- Added support for GO syntax (*.go files).
 - Added workflow for editing the mapper of the active opened document.
+- Added workflow for creating a new mapper for the active opened document.
+- New commands: `codemap.edit_mapper` and `codemap.create_mapper`
 
 ## 1.20.5 (30 January 2024)
 
