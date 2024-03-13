@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.22.0 (13 March 2024)
+
+- Added support for React modules in TypeScript and JavaScript syntax (*.tsx/*.jsx files).
+
 ## 1.21.0 (5 February 2024)
 
 - Added support for GO syntax (*.go files).

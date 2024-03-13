@@ -2,7 +2,7 @@
     "name": "codemap",
     "displayName": "CodeMap",
     "description": "Interactive code map for quick visualization and navigation within code DOM objects (e.g. classes, members).",
-    "version": "1.21.0",
+    "version": "1.22.0",
     "license": "MIT",
     "publisher": "oleg-shilo",
     "engines": {
@@ -260,6 +260,38 @@
                         }
                     ],
                     "description": "Regex-based definition of the mapping rules for Arduino syntax."
+                },
+                "codemap.jsx": {
+                    "type": "string",
+                    "default": "config:codemap.tsx",
+                    "description": "Redirected (to TSX) mapper."
+                },
+                "codemap.tsx": {
+                    "type": "array",
+                    "default": [
+                        {
+                            "pattern": "function (.*?)\\)(.*?){",
+                            "clear": "function|(|{",
+                            "suffix": "",
+                            "role": "function",
+                            "icon": "function"
+                        },
+                        {
+                            "pattern": "export const (.*?){",
+                            "clear": "styled\\((.*)\\)(.*?){|export|const|{||=",
+                            "suffix": "",
+                            "role": "function",
+                            "icon": "function"
+                        },
+                        {
+                            "pattern": "interface (.*?){",
+                            "clear": "export|const|(|{",
+                            "suffix": "",
+                            "role": "function",
+                            "icon": "function"
+                        }
+                    ],
+                    "description": "Regex-based definition of the mapping rules for Type Script React component module (can be reused for JSX files too). For more advanced mapping a dedicated mapper can be a better choice."
                 },
                 "codemap.py": {
                     "type": "array",
