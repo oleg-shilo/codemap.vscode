@@ -15,7 +15,7 @@ This simple extension visualizes the code DOM objects defined in the active docu
 * Notepad++ - [Part of CS-Script.Npp plugin](https://github.com/oleg-shilo/cs-script.npp/blob/master/README.md)
 * Visual Studio - [CodeMap (ex-PyMap)](https://marketplace.visualstudio.com/items?itemName=OlegShilo.PyMap)
 
-The extension functionality is straight forward. Just click the code map item and it will trigger the navigation to the document where the corresponding code element is defined in the document.
+The extension functionality is straightforward. Just click the code map item and it will trigger the navigation to the document where the corresponding code element is defined in the document.
 
 _Features_:
 * Supported syntaxes:
@@ -28,6 +28,7 @@ _Features_:
   * Markdown
   * PowerShell
   * R
+  * GO
   * JSON
   * XML
   * SVG
@@ -36,11 +37,11 @@ _Features_:
   * VB.NET
   * PDL2 (Comau Robot Language)
 * [Customization by adding support for new syntaxes via:](https://github.com/oleg-shilo/codemap.vscode/wiki/Adding-custom-mappers)
-  * A generic mapper that is set of Regex expressions in user settings
+  * A generic mapper that is a set of Regex expressions in user settings
   * A dedicated simple mapper JS script file.
 * Auto-refreshing code map on document change.
 * Navigation to code fragment associated with the clicked code map node.
-* Refreshing on demand via "Refresh" toolbar button a and VSCode command.
+* Refreshing on demand via "Refresh" toolbar button and VSCode command.
 
 ![codemap_vscode.gif](https://raw.githubusercontent.com/oleg-shilo/codemap.vscode/master/resources/images/codemap_vscode.gif)
 
@@ -51,11 +52,11 @@ Note, the latest releases of CodeMap place the plugin view in its own activitryb
 ## Adding custom mappers
 The most intriguing feature is the possibility to extend the plugin to support new and even more exotic syntaxes. Read more about the technique in this [Wiki page](https://github.com/oleg-shilo/codemap.vscode/wiki/Adding-custom-mappers). 
 
-If you create mapping rules or dedicated mapper and want to share it with others. Create a pull request or just log the corresponding issue on this project and I will consider including your mapper into the plugin package. 
+If you create mapping rules or a dedicated mapper and want to share it with others. Create a pull request or just log the corresponding issue on this project and I will consider including your mapper in the plugin package. 
 
 ## Limitations
 
-* The main objective of this plugin is not to provide the most accurate CodeDOM (syntax tree)  presentation but rather to assist with the navigation to the most important points in your code. Thus the default mappers deliberately avoid high resolution code parsing (e.g. local variables). 
+* The main objective of this plugin is not to provide the most accurate CodeDOM (syntax tree)  presentation but rather to assist with navigating to the most important points in your code. Thus the default mappers deliberately avoid high-resolution code parsing (e.g. local variables). 
 
 
 
