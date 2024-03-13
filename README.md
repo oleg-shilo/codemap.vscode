@@ -22,6 +22,7 @@ _Features_:
   * C#
   * TypeScript
   * JavaScript
+  * React (TSX/JSX)
   * Python
   * Java
   * Erlang
