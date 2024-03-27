@@ -42,7 +42,6 @@ export class mapper {
     public static generate(file: string, mappings: SyntaxMapping[]): string[] {
 
         // # Parse
-        let item_max_length = 0;
         let members = [];
 
         try {
@@ -55,8 +54,6 @@ export class mapper {
             lines = text.split(/\r?\n/g);
 
             let line_num = 0;
-            let last_type = '';
-            let last_indent = 0;
 
             lines.forEach(line => {
 
@@ -66,16 +63,16 @@ export class mapper {
                 if (line != '') {
 
                     let code_line = line.trimStart();
+                    let level_indent = line.length - code_line.length;
 
                     for (let item of mappings) {
 
                         let m = line.match(item.regex);
 
                         if (m) {
-
-                            let level_indent = line.length - code_line.length;
+                            let level_hierarchy = 0
                             if (item.levelIndent)
-                                level_indent = item.levelIndent;
+                                level_hierarchy = item.levelIndent;
 
                             let match = m[0];
 
@@ -84,8 +81,7 @@ export class mapper {
                                     .split('|')
                                     .forEach(text => {
                                         try {
-                                            // match = match.replaceAll(text, ''); // fails to treat arguments as regex :o( 
-
+                                            // match = match.replaceAll(text, ''); // fails to treat arguments as regex :o(
                                             match = match.replace(new RegExp(text, 'g'), '');
                                         }
                                         catch (error) {
@@ -97,8 +93,16 @@ export class mapper {
                                 match += item.suffix;
                             if (item.prefix)
                                 match = item.prefix + match;
+                            // TODO: We should do the processing here instead.
+                            // Collecting and processing may lead to
+                            // misinterpretation of hierarch, hence
+                            // when we go out of a function and enter
+                            // another indentation and have a mapping,
+                            // this mapping will be nested under functions
+                            // even it is not inside the function
+                            //
+                            members.push([line_num, item.role, match, level_indent, item.icon, level_hierarchy]);
 
-                            members.push([line_num, item.role, match, level_indent, item.icon]);
                             break;
                         }
                     }
@@ -120,6 +124,7 @@ export class mapper {
                 let content = item[2];
                 let indent = item[3];
                 let icon = item[4];
+                let hierarchy = item[5];
                 let extra_line = '';
 
                 if (indent == last_indent && content_type != last_type)
@@ -128,7 +133,8 @@ export class mapper {
                 let prefix = ' '.repeat(indent);
                 let lean_content = content.trimStart();
 
-                map = map + extra_line + prefix + lean_content + '|' + String(line) + '|' + icon + '\n';
+                map = map + extra_line + prefix + lean_content + '|' +
+                    String(line) + '|' + icon + '|'+ String(hierarchy) + '\n';
 
                 last_indent = indent;
                 last_type = content_type;
