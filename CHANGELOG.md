@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.23.0 (8 April 2024)
+
+- Issue #94: Default class/function display settings
+
 ## 1.22.0 (13 March 2024)
 
 - Added support for React modules in TypeScript and JavaScript syntax (*.tsx/*.jsx files).

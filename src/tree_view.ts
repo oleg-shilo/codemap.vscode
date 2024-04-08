@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { Config, config_defaults } from './utils';
+import * as fs from 'fs';
+import { Config, Utils, config_defaults } from './utils';
 
 const defaults = new config_defaults();
 
@@ -37,6 +38,12 @@ export class SettingsTreeProvider implements vscode.TreeDataProvider<SettingsIte
 
     constructor(private aggregateItems: () => MapInfo) {
         this._settings = {};
+
+        var state = Config.getLastSessionState();
+        if (state != null) {
+            this._settings = state;
+        }
+
         vscode.window.onDidChangeActiveTextEditor(e => {
             this._onDidChangeTreeData.fire(null);
         });
@@ -139,11 +146,26 @@ export class SettingsTreeProvider implements vscode.TreeDataProvider<SettingsIte
         this._settings[filename][nodeType] = false;
     }
 
+    public purge(): void {
+        for (let filename in this._settings) {
+            try {
+                if (fs.existsSync(filename) == false) {
+                    delete this._settings[filename];
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    }
+
     public refresh(item?: SettingsItem): void {
         try {
             this._onDidChangeTreeData.fire(item);
-        } catch (error) {
+            this.purge();
+            Config.setLastSessionState(this._settings);
 
+        } catch (error) {
+            console.log(error);
         }
     }
 }

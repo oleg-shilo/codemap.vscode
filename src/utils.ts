@@ -138,12 +138,39 @@ export class config_defaults {
 export class Config {
     static defaults = new config_defaults();
 
-    public static get(name: string): object {
-        return vscode.workspace.getConfiguration("codemap").get(name, Config.defaults.get(name));
+    public static get(name: string, defaultValue: string = null): any {
+        return vscode.workspace.getConfiguration("codemap").get(name, defaultValue ?? Config.defaults.get(name));
+    }
+
+    public static getLastSessionState(): any {
+        let file = path.join(process.env.VSCODE_USER, "codemap.user", "codemap.state.json");
+        if (fs.existsSync(file)) {
+            let stateBack = Utils.read_all_text(file);
+            return JSON.parse(stateBack);
+        }
+        return null;
+    }
+
+    public static setLastSessionState(state: any): void {
+        let file = path.join(process.env.VSCODE_USER, "codemap.user", "codemap.state.json");
+        fs.writeFile(file, JSON.stringify(state), (err) => {
+            if (err) {
+                console.error(err);
+            }
+        });
     }
 }
 
 export class Utils {
+
+    public static read_all_text(file: string): string {
+        let text = fs.readFileSync(file, 'utf8');
+        return text;
+    }
+
+    public static write_all_text(file: string, text: string): void {
+        fs.writeFileSync(file, text, { encoding: 'utf8' });
+    }
 
     public static read_all_lines(file: string): string[] {
         let text = fs.readFileSync(file, 'utf8');
@@ -168,14 +195,20 @@ export class Utils {
         // Mac $HOME/Library/Application Support/Code/User/settings.json
         // Linux $HOME/.config/Code/User/settings.json
 
-        if (os.platform() == 'win32') {
-            process.env.VSCODE_USER = path.join(process.env.APPDATA, 'Code', 'User');
-        }
-        else if (os.platform() == 'darwin') {
-            process.env.VSCODE_USER = path.join(process.env.HOME, 'Library', 'Application Support', 'Code', 'User');
-        }
-        else {
-            process.env.VSCODE_USER = path.join(process.env.HOME, '.config', 'Code', 'User');
+        ///////////////////////////////////////
+        let dataRoot = path.join(path.dirname(process.execPath), "data");
+        let isPortable = (fs.existsSync(dataRoot) && fs.lstatSync(dataRoot).isDirectory());
+        ///////////////////////////////////////
+
+        if (isPortable) {
+            process.env.VSCODE_USER = path.join(dataRoot, 'user-data', 'User', 'globalStorage');
+        } else {
+            if (os.platform() == 'win32')
+                process.env.VSCODE_USER = path.join(process.env.APPDATA, 'Code', 'User');
+            else if (os.platform() == 'darwin')
+                process.env.VSCODE_USER = path.join(process.env.HOME, 'Library', 'Application Support', 'Code', 'User');
+            else
+                process.env.VSCODE_USER = path.join(process.env.HOME, '.config', 'Code', 'User');
         }
     }
 }
