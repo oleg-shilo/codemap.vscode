@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.24.0 (21 April 2024)
+
+- Issue #59: How to register a custom mapper with a complex file extension
+  
 ## 1.23.0 (8 April 2024)
 
 - Issue #94: Default class/function display settings

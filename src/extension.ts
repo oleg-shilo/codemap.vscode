@@ -61,12 +61,7 @@ function get_map_items(): MapInfo {
 
         if (document) {
 
-            let value_name = get_required_mapper_type();
-
-            let mapper = config.get("overloaded." + value_name, null);
-
-            if (mapper == null)
-                mapper = config.get(value_name, defaults.get(value_name));
+            let mapper = get_required_mapper_type();
 
             mapper = get_actual_mapper(mapper);
             if (mapper) {
@@ -221,26 +216,65 @@ function sort(direction: SortDirection) {
     settingsTreeViewProvider.refresh();  // triggers both codemap trees refresh
 }
 
+function getAllExtensionCombinations(fileName: string): string[] {
+    let parts = fileName.split('.');
+    parts.shift(); // Remove the first part (the file name itself)
+
+    let extensions: string[] = [];
+
+    while (parts.length > 0) {
+        // Add the full extension 
+        // Escape dots as value names with dots are not allowed in settings.json)
+        // Interestingly enough VSCode is fine with some dot-containing names (e.g. "debug.javascript.suggestPrettyPrinting")
+
+        extensions.push(parts.join('/'));
+        extensions.push(parts.join('.')); // do not escape dots as VSCode may fix it and start supporting dots in the future
+
+        parts.shift();
+    }
+
+    return extensions;
+}
+
 function get_required_mapper_type() {
 
     let document = vscode.window.activeTextEditor.document.fileName;
+    let config = vscode.workspace.getConfiguration("codemap");
+
+    let possibleExtensions = []; // to allow testing for complex extensions like '.razor.cs' 
 
     if (document) {
         if (fs.existsSync(document)) {
-            var extension = path.extname(document.toLowerCase());
-            if (extension) {
+            // var extension = path.extname(document.toLowerCase());
+            var extensions = getAllExtensionCombinations(path.basename(document).toLowerCase());
+            if (extensions.length > 0) {
                 // Trim starting dot: '.py' vs 'py'
-                return extension.substring(1).toLowerCase();
+                extensions.forEach(extension =>
+                    possibleExtensions.push(extension.toLowerCase()));
             }
             else {
                 // Add bracket: 'Makefile' vs '(Makefile)'
-                return "(" + path.basename(document) + ")";
+                possibleExtensions.push("(" + path.basename(document) + ")");
             }
         } else {
-            return vscode.window.activeTextEditor.document.languageId;
+            possibleExtensions.push(vscode.window.activeTextEditor.document.languageId);
         }
     }
-    return null;
+
+    let mapper = null;
+    for (let i = 0; i < possibleExtensions.length; i++) {
+
+        let extension = possibleExtensions[i];
+        mapper = config.get("overloaded." + extension, null);
+
+        if (mapper == null)
+            mapper = config.get(extension, defaults.get(extension));
+
+        if (mapper)
+            break;
+    }
+
+    return mapper;
 }
 
 function edit_mapper() {
