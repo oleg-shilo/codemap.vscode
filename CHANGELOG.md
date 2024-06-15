@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.25.0 (15 June 2024)
+
+- Issue #96: Unresponsive Generic Mapper
+- Added support (dedicated mapper) for LScript syntax.
+
 ## 1.24.0 (21 April 2024)
 
 - Issue #59: How to register a custom mapper with a complex file extension

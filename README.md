@@ -37,6 +37,7 @@ _Features_:
   * TCL
   * VB.NET
   * PDL2 (Comau Robot Language)
+  * LScript
 * [Customization by adding support for new syntaxes via:](https://github.com/oleg-shilo/codemap.vscode/wiki/Adding-custom-mappers)
   * A generic mapper that is a set of Regex expressions in user settings
   * A dedicated simple mapper JS script file.
