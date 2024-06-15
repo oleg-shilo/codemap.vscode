@@ -217,6 +217,9 @@ function sort(direction: SortDirection) {
 }
 
 function getAllExtensionCombinations(fileName: string): string[] {
+    // this method extracts all possible extensions from a file name
+    // e.g. "test.g.cs" -> ["g.cs", "cs"]
+
     let parts = fileName.split('.');
     parts.shift(); // Remove the first part (the file name itself)
 
@@ -227,8 +230,17 @@ function getAllExtensionCombinations(fileName: string): string[] {
         // Escape dots as value names with dots are not allowed in settings.json)
         // Interestingly enough VSCode is fine with some dot-containing names (e.g. "debug.javascript.suggestPrettyPrinting")
 
-        extensions.push(parts.join('/'));
-        extensions.push(parts.join('.')); // do not escape dots as VSCode may fix it and start supporting dots in the future
+        // push if it is not there yet
+        let item = parts.join('/');
+        if (!extensions.includes(item)) {
+            extensions.push(item);
+        }
+
+        // do not escape dots as VSCode may fix it and start supporting dots in the future
+        item = parts.join('.');
+        if (!extensions.includes(item)) {
+            extensions.push(item);
+        }
 
         parts.shift();
     }
@@ -236,7 +248,7 @@ function getAllExtensionCombinations(fileName: string): string[] {
     return extensions;
 }
 
-function get_required_mapper_type() {
+function get_required_mapper_type(returnIdOnly: boolean = false): string {
 
     let document = vscode.window.activeTextEditor.document.fileName;
     let config = vscode.workspace.getConfiguration("codemap");
@@ -261,10 +273,11 @@ function get_required_mapper_type() {
         }
     }
 
+    let extension = null;
     let mapper = null;
     for (let i = 0; i < possibleExtensions.length; i++) {
 
-        let extension = possibleExtensions[i];
+        extension = possibleExtensions[i];
         mapper = config.get("overloaded." + extension, null);
 
         if (mapper == null)
@@ -274,14 +287,19 @@ function get_required_mapper_type() {
             break;
     }
 
-    return mapper;
+    if (returnIdOnly) {
+        return extension; // regardless if the mapper exists or not
+    }
+    else {
+        return mapper;
+    }
 }
 
 function edit_mapper() {
 
     try {
 
-        let value_name = get_required_mapper_type();
+        let value_name = get_required_mapper_type(true);
         if (value_name) {
 
             let config = vscode.workspace.getConfiguration("codemap");
@@ -355,7 +373,7 @@ function edit_mapper() {
 
 function create_mapper() {
 
-    var mapper_type = get_required_mapper_type();
+    var mapper_type = get_required_mapper_type(true);
     var dedicated = 'Dedicated mapper (JS file)';
     var generic = 'Generic mapper (regular expression in the settings file)';
 
