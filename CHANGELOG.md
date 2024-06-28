@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.26.0 (28 June 2024)
+
+- Issue #99: Added Verilog Mapper
+
 ## 1.25.0 (15 June 2024)
 
 - Issue #96: Unresponsive Generic Mapper
