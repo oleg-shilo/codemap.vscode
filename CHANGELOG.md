@@ -1,8 +1,17 @@
 # Change Log
 
+## 1.26.1 (29 June 2024)
+
+- Fixed problem with the extension startup crash if the last state file for `Codemap Settings` contains corrupted data.
+- Issue #98: Make icon as simple additional string
+  Not you can specify an emoji character as a node icon in the config section of the generic mapper.
+
+
 ## 1.26.0 (28 June 2024)
 
 - Issue #99: Added Verilog Mapper
+- Issue #98: Make icon as simple additional string
+  Not you can specify an emoji character as a node icon in the config section of the generic mapper.
 
 ## 1.25.0 (15 June 2024)
 

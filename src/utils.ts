@@ -146,7 +146,12 @@ export class Config {
         let file = path.join(process.env.VSCODE_USER, "codemap.user", "codemap.state.json");
         if (fs.existsSync(file)) {
             let stateBack = Utils.read_all_text(file);
-            return JSON.parse(stateBack);
+            try {
+                return JSON.parse(stateBack);
+            }
+            catch (e) {
+                return null;
+            }
         }
         return null;
     }

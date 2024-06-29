@@ -327,6 +327,9 @@ export class FavoritesTreeProvider implements vscode.TreeDataProvider<MapItem> {
 
                 title = title.replace('%pipe%', '|');
 
+                if (icon.length <= 4)
+                    title = icon + ' ' + title;
+
                 let node = new MapItem(
                     title,
                     textModeExpanded ? vscode.TreeItemCollapsibleState.Expanded : vscode.TreeItemCollapsibleState.Collapsed,
