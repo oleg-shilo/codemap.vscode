@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.26.2 (24 July 2024)
+
+- Changed extension icon (#103)
+
 ## 1.26.1 (29 June 2024)
 
 - Fixed problem with the extension startup crash if the last state file for `Codemap Settings` contains corrupted data.
