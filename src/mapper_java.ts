@@ -39,7 +39,6 @@ export class mapper {
 					line_num++;
 					let code_line = line.trimStart();
 
-
 					if (!code_line.startsWith("//")) {
 
 						if (/.*class.*{/gm.test(line)) {

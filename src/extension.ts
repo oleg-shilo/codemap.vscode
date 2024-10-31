@@ -8,6 +8,7 @@ import { FavoritesTreeProvider, MapItem, MapInfo, SortDirection, SettingsTreePro
 import { Uri, commands, TextDocument, TextEditor } from "vscode";
 import * as ts from "./mapper_ts";
 import * as cs from "./mapper_cs";
+import * as cs_parser from "./mapper_cs_parser";
 import * as generic from "./mapper_generic";
 import * as md from "./mapper_md";
 import { SyntaxMapping } from "./mapper_generic";
@@ -90,7 +91,11 @@ function get_map_items(): MapInfo {
 
             if (document.toLowerCase().endsWith(".cs")) {
                 // dedicated built-in mapper
-                return { sourceFile: document, items: cs.mapper.generate(document) };
+                let useNoDependencyCSharpMapper = vscode.workspace.getConfiguration("codemap").get('useNoDependencyCSharpMapper', false);
+                if (useNoDependencyCSharpMapper)
+                    return { sourceFile: document, items: cs_parser.mapper.generate(document) };
+                else
+                    return { sourceFile: document, items: cs.mapper.generate(document) };
             }
 
             if (document.toLowerCase().endsWith(".razor")) {
@@ -539,6 +544,8 @@ let mapInfo: MapInfo;
 
 export function activate(context: vscode.ExtensionContext) {
     Utils.init();
+
+    // console.log(data1);
 
     settingsTreeViewProvider = new SettingsTreeProvider(get_map_items);
     let settingsTree1 = vscode.window.createTreeView("codemap-settings-own-view", { treeDataProvider: settingsTreeViewProvider, showCollapseAll: true });

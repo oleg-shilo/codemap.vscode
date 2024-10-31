@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.26.3 (1 November 2024)
+
+- Added alternative built-in limited C# mapper to be used in the environments that have no C# syntax infrastructure available (.NET, Roslyn, CS-Script Syntaxer). Use "codemap.useNoDependencyCSharpMapper" to control which mapper to handle C# documents.
+
 ## 1.26.2 (24 July 2024)
 
 - Changed extension icon (#103)

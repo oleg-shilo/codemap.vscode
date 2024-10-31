@@ -80,7 +80,7 @@ export class mapper {
 
         if (map == "") {
 
-            // 18000 - Subline Text 3
+            // 18000 - Sublime Text 3
             // 18001 - Notepad++
             // 18002 - VSCode.CodeMap
 
