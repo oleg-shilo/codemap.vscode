@@ -4,6 +4,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { Uri, commands } from "vscode";
 
+// TODO: cleanup and refactoring
+
 export class mapper {
 
 	static read_all_lines(file: string): string[] {
