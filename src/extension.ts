@@ -142,7 +142,6 @@ function get_map_items(): MapInfo {
             lastGeneratedMap.file = result.sourceFile;
             lastGeneratedMap.items = result.items;
             lastGeneratedMap.date = docStats.mtime;
-            lastGeneratedMap.when = Date.now();
         }
     } catch (error) {
         console.log(error.toString());
