@@ -19,15 +19,17 @@ export class mapper {
 
 		let parts = text.split('(', 2)
 
+		// class
 		if (parts.length < 2)
 			return " ".repeat(indent_level) + text
 				.replaceAll("static", "")
+				.replaceAll("partial", "")
 				.replaceAll("public", "")
 				.replaceAll("internal", "")
 				.replaceAll("private", "")
 				.trimStart()
 
-
+		// method
 		let leftPart = parts[0].split(' ');
 		let numOfParams = parts[1].split(',').length;
 
@@ -81,20 +83,23 @@ export class mapper {
 								code_line.indexOf("else if ") == -1 && 	// else if (item is File)
 								code_line.indexOf("new ") == -1 && 	// return new Message() 
 								code_line.indexOf(" (") == -1 && 	// The MIT License (MIT) 
-								code_line.indexOf(" = ") == -1 && 	// var sum = Count(); {
-								code_line.indexOf("while") == -1 && // while (result != null)
+							       !code_line.startsWith(".") &&            // .Select(x=>x)
+							       !code_line.indexOf("=>") == -1 &&        // .Select(x=>x)
+								code_line.indexOf(" = ") == -1 && 	// var sum = Count(); 
+								code_line.indexOf("while") == -1 &&     // while (result != null)
 								!code_line.startsWith("for") &&		// for (int i=0; i!=len; ++i) 
-								!code_line.endsWith(";") &&			// Count();  
-								code_line.endsWith(")")			    // int Count()  
+								!code_line.endsWith(";") &&		// Count();  
+								code_line.endsWith(")")			// int Count()  
 							) {
 								let display_text = mapper.to_display_text(line);
-
-								if (firstIndent == -1)
-									firstIndent = display_text.length - display_text.trimStart().length;
-								if (firstIndent != 0)
-									display_text = display_text.substring(firstIndent);
-
-								members.push(`${display_text}|${line_num}|function`);
+								if(display_text.indexOf(".") == -1) { // dotnet_root.Split(Path.DirectorySeparatorChar)
+									if (firstIndent == -1)
+										firstIndent = display_text.length - display_text.trimStart().length;
+									if (firstIndent != 0)
+										display_text = display_text.substring(firstIndent);
+	
+									members.push(`${display_text}|${line_num}|function`);
+								}
 							}
 						}
 					}
