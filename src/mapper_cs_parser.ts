@@ -55,6 +55,10 @@ export class mapper {
 			let image_index = 1;
 			let firstIndent = -1;
 
+
+			let classRegex = /.*(class|interface).*/gm;
+			let methodRegex = /.*\(.*\)s*/gm;
+
 			mapper
 				.read_all_lines(file)
 				.forEach(line => {
@@ -67,7 +71,7 @@ export class mapper {
 						&& !code_line.endsWith("]")
 					) {
 
-						if (/.*(class|interface).*/gm.test(line)) {
+						if (classRegex.test(line)) {
 							let display_text = mapper.to_display_text(line);
 
 							if (firstIndent == -1)
@@ -78,13 +82,13 @@ export class mapper {
 							members.push(`${display_text}|${line_num}|class`);
 						}
 
-						if (/.*\(.*\)s*/gm.test(code_line)) {
+						if (methodRegex.test(code_line)) {
 							if (!code_line.startsWith("if") &&  	// if (...) {
 								code_line.indexOf("else if ") == -1 && 	// else if (item is File)
 								code_line.indexOf("new ") == -1 && 	// return new Message() 
 								code_line.indexOf(" (") == -1 && 	// The MIT License (MIT) 
-							       !code_line.startsWith(".") &&            // .Select(x=>x)
-							       !code_line.indexOf("=>") == -1 &&        // .Select(x=>x)
+								!code_line.startsWith(".") &&            // .Select(x=>x)
+								code_line.indexOf("=>") == -1 &&        // .Select(x=>x)
 								code_line.indexOf(" = ") == -1 && 	// var sum = Count(); 
 								code_line.indexOf("while") == -1 &&     // while (result != null)
 								!code_line.startsWith("for") &&		// for (int i=0; i!=len; ++i) 
@@ -92,12 +96,12 @@ export class mapper {
 								code_line.endsWith(")")			// int Count()  
 							) {
 								let display_text = mapper.to_display_text(line);
-								if(display_text.indexOf(".") == -1) { // dotnet_root.Split(Path.DirectorySeparatorChar)
+								if (display_text.indexOf(".") == -1) { // dotnet_root.Split(Path.DirectorySeparatorChar)
 									if (firstIndent == -1)
 										firstIndent = display_text.length - display_text.trimStart().length;
 									if (firstIndent != 0)
 										display_text = display_text.substring(firstIndent);
-	
+
 									members.push(`${display_text}|${line_num}|function`);
 								}
 							}
