@@ -590,6 +590,7 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand("codemap.sort_desc", () => sort(SortDirection.Desc));
 
     vscode.commands.registerCommand("codemap.allow_all", () => allow_all());
+    vscode.commands.registerCommand("codemap.toggle_csharp_mapper", () => cs.toggle_csharp_mapper(true));
 
     vscode.commands.registerCommand("codemap.mappers", () => {
         let mappers = vscode.workspace.getConfiguration("codemap");

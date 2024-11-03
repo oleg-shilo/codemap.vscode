@@ -23,14 +23,105 @@ let map_last_source = "";
 let SYNTAXER_VERSION = "3.1.2.0";
 
 // will be set at the end of this file
-let SEVER = "";
+let SERVER = "";
 let SEVER_CLI = "";
 
 let HOST = '127.0.0.1';
 let PORT = 18002;
 
-function startServer(): void {
-    child_process.execFile("dotnet", [SEVER, "-port:" + PORT, "-listen", "-client:" + process.pid, "-timeout:60000"]);
+function getDotnetVersion(): string {
+    try {
+        let version = execSync("dotnet --version").toString().trim();
+        version = version.split(".")[0];
+        // check if version is a number
+        if (isNaN(parseInt(version))) {
+            return "";
+        }
+
+        return version;
+    } catch (error) {
+        return "";
+    }
+}
+
+export function toggle_csharp_mapper(): void {
+
+    let config = vscode.workspace.getConfiguration("codemap");
+    let useNoDependencyCSharpMapper = config.get('useNoDependencyCSharpMapper', false);
+    useNoDependencyCSharpMapper = !useNoDependencyCSharpMapper;
+    config.update('useNoDependencyCSharpMapper', useNoDependencyCSharpMapper, vscode.ConfigurationTarget.Global);
+
+    vscode.window.showInformationMessage('Setting updated successfully!', 'Reload')
+        .then((selection) => {
+            if (selection === 'Reload') {
+                vscode.commands.executeCommand('workbench.action.reloadWindow');
+            }
+        });
+}
+
+
+function updateSyntaxerTargetRuntimeVersion(): void {
+    let configFile = SERVER.replace(".dll", ".runtimeconfig.json");
+    let version = getDotnetVersion();
+    if (version == "") {
+        vscode.window.showErrorMessage("No .NET Core SDK found. Please install .NET Core SDK.");
+        return;
+    }
+
+    version = version.split(".")[0]; // we need the major version only
+
+    let lines = Utils.read_all_lines(configFile);
+
+    for (let i = 0; i < lines.length; i++) {
+        if (lines[i].includes('"tfm": "net')) {
+            lines[i] = `    "tfm": "net${version}.0",`;
+        }
+        if (lines[i].includes('"version": "')) {
+            lines[i] = `    "version": "${version}.0.0"`;
+        }
+    }
+
+    Utils.write_all_lines(configFile, lines);
+}
+
+export function startServer(): void {
+    let proc = child_process.execFile("dotnet", [SERVER, "-port:" + PORT, "-listen", "-client:" + process.pid, "-timeout:60000"]);
+    proc.on('exit', (code) => {
+        console.log(`Child exited with code ${code}`);
+    });
+
+    let useNoDependencyCSharpMapper = vscode.workspace.getConfiguration("codemap").get('useNoDependencyCSharpMapper', false);
+
+    if (!useNoDependencyCSharpMapper) {
+        setTimeout(() => {
+            if (proc.exitCode != null) { // detect if proc is running
+
+                let version = getDotnetVersion();
+                if (version == "") {
+                    vscode.window.showErrorMessage("No .NET SDK found. Please install it or switch to the limited C# mapper with no .NET dependency.", 'Switch')
+                        .then((selection) => {
+                            if (selection === 'Switch') {
+                                vscode.commands.executeCommand('codemap.toggle_csharp_mapper');
+                            }
+                        });
+                    return;
+                }
+
+                vscode.window.showErrorMessage(
+                    `CodeMap C# (Roslyn-based) mapper failed to start ${SERVER}. 
+                     You can try to fix it or switch to the limited C# mapper with no .NET dependency. Reload will be required to take effect.`, "Try to fix", "Switch")
+                    .then((selection) => {
+                        if (selection === 'Switch') {
+                            toggle_csharp_mapper();
+                        } else if (selection === 'Try to fix') {
+                            updateSyntaxerTargetRuntimeVersion();
+                            startServer();
+                            vscode.commands.executeCommand('workbench.action.reloadWindow');
+                        }
+                    });
+            }
+        }, 3000);
+    }
 }
 
 function copy_dir_to_sync(srcDir: string, destDir: string): void {
@@ -133,7 +224,7 @@ function DeploySyntaxer() {
     let destRootDir = path.join(user_dir(), 'syntaxer');
     let destDir = path.join(destRootDir, SYNTAXER_VERSION);
 
-    SEVER = path.join(destDir, fileName);
+    SERVER = path.join(destDir, fileName);
     SEVER_CLI = path.join(destDir, cliFileName);
 
     fs.readdir(destRootDir, (err, items) => {
@@ -168,8 +259,9 @@ function DeploySyntaxer() {
         });
     }
 
-    if (fs.existsSync(SEVER)) {
+    if (fs.existsSync(SERVER)) {
         startServer();
+        console.log("##### Syntaxer server started: " + SERVER);
     }
 }
 
