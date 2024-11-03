@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.26.5 (??? 2024)
+
+- Added detection of the faulty C# syntaxer and prompt with the suggested workaround.
+- Added command `codemap.toggle_csharp_mapper`
+
 ## 1.26.4 (2 November 2024)
 
 - Added missing icon for `Field` items

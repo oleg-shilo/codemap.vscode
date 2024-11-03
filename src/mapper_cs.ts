@@ -23,14 +23,30 @@ let map_last_source = "";
 let SYNTAXER_VERSION = "3.1.2.0";
 
 // will be set at the end of this file
-let SEVER = "";
+let SERVER = "";
 let SEVER_CLI = "";
 
 let HOST = '127.0.0.1';
 let PORT = 18002;
 
-function startServer(): void {
-    child_process.execFile("dotnet", [SEVER, "-port:" + PORT, "-listen", "-client:" + process.pid, "-timeout:60000"]);
+export function startServer(showWarning): void {
+    let proc = child_process.execFile("dotnet", [SERVER, "-port:" + PORT, "-listen", "-client:" + process.pid, "-timeout:60000"]);
+    proc.on('exit', (code) => {
+        console.log(`Child exited with code ${code}`);
+    });
+
+    let useNoDependencyCSharpMapper = vscode.workspace.getConfiguration("codemap").get('useNoDependencyCSharpMapper', false);
+
+    if (!useNoDependencyCSharpMapper && showWarning)
+        setTimeout(() => {
+            if (proc.exitCode != null) {            // detect if proc is running
+                vscode.window.showErrorMessage(`CodeMap C# (Roslyn-based) mapper failed to start ${SERVER}. 
+                This can happen because it's build for .NET that is not present on your system. 
+                To fix the problem either update 'syntaxer.runtimeconfig.json' or install the required .NET version. 
+                Alternatively, you can switch to the C# mapper with no .NET dependency either in the 'codemap.useNoDependencyCSharpMapper' 
+                settings or by executing 'Toggle C# Mapper Type' command, which toggles this setting for you.`);
+            }
+        }, 3000);
 }
 
 function copy_dir_to_sync(srcDir: string, destDir: string): void {
@@ -133,7 +149,7 @@ function DeploySyntaxer() {
     let destRootDir = path.join(user_dir(), 'syntaxer');
     let destDir = path.join(destRootDir, SYNTAXER_VERSION);
 
-    SEVER = path.join(destDir, fileName);
+    SERVER = path.join(destDir, fileName);
     SEVER_CLI = path.join(destDir, cliFileName);
 
     fs.readdir(destRootDir, (err, items) => {
@@ -168,8 +184,9 @@ function DeploySyntaxer() {
         });
     }
 
-    if (fs.existsSync(SEVER)) {
-        startServer();
+    if (fs.existsSync(SERVER)) {
+        startServer(true);
+        console.log("##### Syntaxer server started: " + SERVER);
     }
 }
 

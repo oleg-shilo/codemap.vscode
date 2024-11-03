@@ -560,6 +560,22 @@ function allow_all() {
         }
     }
 }
+function toggle_csharp_mapper() {
+
+    let config = vscode.workspace.getConfiguration("codemap");
+    let useNoDependencyCSharpMapper = config.get('useNoDependencyCSharpMapper', false);
+    useNoDependencyCSharpMapper = !useNoDependencyCSharpMapper;
+    config.update('useNoDependencyCSharpMapper', useNoDependencyCSharpMapper, vscode.ConfigurationTarget.Global);
+
+    // vscode.window.showErrorMessage('You need to reload window for the changes to take effect.');
+
+    vscode.window.showInformationMessage('Setting updated successfully! Reload required to take effect.', 'Reload')
+        .then((selection) => {
+            if (selection === 'Reload') {
+                vscode.commands.executeCommand('workbench.action.reloadWindow');
+            }
+        });
+}
 
 let mapInfo: MapInfo;
 
@@ -590,6 +606,7 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand("codemap.sort_desc", () => sort(SortDirection.Desc));
 
     vscode.commands.registerCommand("codemap.allow_all", () => allow_all());
+    vscode.commands.registerCommand("codemap.toggle_csharp_mapper", () => toggle_csharp_mapper());
 
     vscode.commands.registerCommand("codemap.mappers", () => {
         let mappers = vscode.workspace.getConfiguration("codemap");
