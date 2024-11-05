@@ -4,7 +4,7 @@ import * as vscode from "vscode";
 import * as os from "os";
 import * as path from "path";
 import * as fs from "fs";
-import { FavoritesTreeProvider, MapItem, MapInfo, SortDirection, SettingsTreeProvider, SettingsItem } from "./tree_view";
+import { DocumentTreeProvider, MapItem, MapInfo, SortDirection, SettingsTreeProvider, SettingsItem, noteNodeState } from "./tree_view";
 import { Uri, commands, TextDocument, TextEditor } from "vscode";
 import * as ts from "./mapper_ts";
 import * as cs from "./mapper_cs";
@@ -17,8 +17,8 @@ import { fileURLToPath } from "url";
 import { Console } from "console";
 
 const defaults = new config_defaults();
-let treeViewProvider1: FavoritesTreeProvider;
-let treeViewProvider2: FavoritesTreeProvider;
+let treeViewProvider1: DocumentTreeProvider;
+let treeViewProvider2: DocumentTreeProvider;
 let settingsTreeViewProvider: SettingsTreeProvider;
 let lastGeneratedMap = { file: "", items: [], date: new Date() };
 let moduleModDates = {};
@@ -83,7 +83,9 @@ function get_map_items(): MapInfo {
                 if (typeof mapper == "string") {
                     // custom dedicated mapper
                     // process.env.VSCODE_USER
-                    var dynamic_mapper = requireWithHotReload(mapper as string).mapper;
+
+                    let file = mapper as string;
+                    var dynamic_mapper = requireWithHotReload(file).mapper;
                     result.items = dynamic_mapper.generate(document)
                 } else {
                     // generic built-in mapper
@@ -561,19 +563,15 @@ function allow_all() {
     }
 }
 
-let mapInfo: MapInfo;
-
 export function activate(context: vscode.ExtensionContext) {
     Utils.init();
-
-    // console.log(data1);
 
     settingsTreeViewProvider = new SettingsTreeProvider(get_map_items);
     let settingsTree1 = vscode.window.createTreeView("codemap-settings-own-view", { treeDataProvider: settingsTreeViewProvider, showCollapseAll: true });
     let settingsTree2 = vscode.window.createTreeView("codemap-settings-explorer-view", { treeDataProvider: settingsTreeViewProvider, showCollapseAll: true });
 
-    treeViewProvider1 = new FavoritesTreeProvider(get_map_items, settingsTreeViewProvider);
-    treeViewProvider2 = new FavoritesTreeProvider(get_map_items, settingsTreeViewProvider);
+    treeViewProvider1 = new DocumentTreeProvider(get_map_items, settingsTreeViewProvider);
+    treeViewProvider2 = new DocumentTreeProvider(get_map_items, settingsTreeViewProvider);
     let treeView1 = vscode.window.createTreeView("codemap-own-view", { treeDataProvider: treeViewProvider1, showCollapseAll: true });
     let treeView2 = vscode.window.createTreeView("codemap-explorer-view", { treeDataProvider: treeViewProvider2, showCollapseAll: true });
 
@@ -590,7 +588,7 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand("codemap.sort_desc", () => sort(SortDirection.Desc));
 
     vscode.commands.registerCommand("codemap.allow_all", () => allow_all());
-    vscode.commands.registerCommand("codemap.toggle_csharp_mapper", () => cs.toggle_csharp_mapper(true));
+    vscode.commands.registerCommand("codemap.toggle_csharp_mapper", () => cs.toggle_csharp_mapper());
 
     vscode.commands.registerCommand("codemap.mappers", () => {
         let mappers = vscode.workspace.getConfiguration("codemap");
@@ -602,6 +600,14 @@ export function activate(context: vscode.ExtensionContext) {
         let autoReveal = vscode.workspace.getConfiguration("codemap").get('autoReveal', defaults.get('autoReveal'));
         if (autoReveal)
             vscode.commands.executeCommand("codemap.reveal");
+    });
+
+    treeView1.onDidCollapseElement(event => {
+        noteNodeState(event.element, true);
+    });
+
+    treeView1.onDidExpandElement(event => {
+        noteNodeState(event.element, false);
     });
 
     vscode.commands.registerCommand("codemap.navigate_to_selected", navigate_to_selected);
