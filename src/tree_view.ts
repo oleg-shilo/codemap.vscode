@@ -277,6 +277,7 @@ export class DocumentTreeProvider implements vscode.TreeDataProvider<MapItem> {
     public static parseScriptItems(items: string[], sourceFile: string, nodeTypesToKeep: string[]): MapItem[] {
 
         let nodes = [];
+        let keysToKeep = [];
 
         if (!treeStateMap.has(sourceFile))
             treeStateMap.set(sourceFile, new Map());
@@ -398,11 +399,19 @@ export class DocumentTreeProvider implements vscode.TreeDataProvider<MapItem> {
 
                 let nodeStates = treeStateMap.get(sourceFile);
                 let nodeKey = `${node.title}|${node.nesting_level}`;
-                if (nodeStates.has(nodeKey))
-                    node.collapsibleState = nodeStates.get(nodeKey);
-                else
-                    nodeStates.set(nodeKey, node.collapsibleState);
+                keysToKeep.push(nodeKey);
 
+                if (nodeStates.has(nodeKey)) {
+
+                    node.collapsibleState = nodeStates.get(nodeKey);
+                    // to avoid children to be hidden because of plainTextMode change
+                    if (!plainTextMode && node.context === 'file' && node.collapsibleState == vscode.TreeItemCollapsibleState.None) {
+                        node.collapsibleState = vscode.TreeItemCollapsibleState.Expanded;
+                    }
+                }
+                else {
+                    nodeStates.set(nodeKey, node.collapsibleState);
+                }
                 map[node.nesting_level] = node;
             }
         });
@@ -410,6 +419,14 @@ export class DocumentTreeProvider implements vscode.TreeDataProvider<MapItem> {
         let sortingEnabled = Config.get('sortingEnabled');
         if (sortingEnabled && !plainTextMode) {
             nodes.sort(MapItem.compareByTitle);
+        }
+
+        let nodeStates = treeStateMap.get(sourceFile);
+
+        for (let key of nodeStates.keys()) {
+            if (!keysToKeep.includes(key)) {
+                nodeStates.delete(key);
+            }
         }
 
         return nodes;
