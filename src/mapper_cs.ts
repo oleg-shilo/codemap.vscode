@@ -94,7 +94,7 @@ export function startServer(): void {
 
     if (!useNoDependencyCSharpMapper) {
         setTimeout(() => {
-            if (proc.exitCode != null) { // detect if proc is running
+            if (proc.exitCode != null && proc.exitCode != 0) { // detect if proc is running
 
                 let version = getDotnetVersion();
                 if (version == "") {

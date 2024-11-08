@@ -85,6 +85,9 @@ function get_map_items(): MapInfo {
                     // process.env.VSCODE_USER
 
                     let file = mapper as string;
+
+                    file = Utils.expand(file);
+
                     var dynamic_mapper = requireWithHotReload(file).mapper;
                     result.items = dynamic_mapper.generate(document)
                 } else {

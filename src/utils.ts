@@ -168,6 +168,18 @@ export class Config {
 
 export class Utils {
 
+    public static expand(pathString: string): string {
+        // Should support both Windows and Linux style environment variables.
+        //      Utils.expand("%username%");
+        //      Utils.expand("${username}");
+        //      Utils.expand("$username");
+        // It is important to do both conversions regardless of the platform because the string may come from the 
+        // synchronized VSCode settings created on another platform.
+        return pathString
+            .replace(/%([^%]+)%/g, (_, n) => process.env[n]) // Windows style: %MY_VAR%
+            .replace(/\$([A-Z_]+[A-Z0-9_]*)|\${([A-Z0-9_]*)}/ig, (_, a, b) => process.env[a || b]); // Linux style: ${MY_VAR} and $MY_VAR 
+    }
+
     public static read_all_text(file: string): string {
         let text = fs.readFileSync(file, 'utf8');
         return text;

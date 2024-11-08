@@ -39,7 +39,7 @@ class mapper {
                     parse_as_tag('html', '🚪');
                     parse_as_tag('head', '📝');
                     parse_as_tag('script type=', '📜');
-                    parse_as_tag('style', '✏️');
+                    parse_as_tag('style', '🖌️');
                     parse_as_tag('body', '📄');
                     {
                         parse_as_tag('div', '🔖', true);
