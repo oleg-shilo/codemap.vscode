@@ -102,7 +102,14 @@ export class SettingsTreeProvider implements vscode.TreeDataProvider<SettingsIte
 
         let codeMapTypes: Set<string> = new Set<string>();
         codeMapTree['items'].filter((strItem) => strItem != '').forEach(
-            (x) => { codeMapTypes.add(x.trimStart().split("|")[2]); }
+            (x) => {
+                let type_args = x.trimStart().split("|")
+                let name = type_args[2]
+                if (type_args.length > 3)
+                    name = type_args[3]
+
+                codeMapTypes.add(name)
+            }
         );
 
         let ArrCodeMapTypes = Array.from(codeMapTypes);
@@ -301,6 +308,7 @@ export class DocumentTreeProvider implements vscode.TreeDataProvider<MapItem> {
                 let tokens = item.split('|');
                 let lineNumber = 0;
                 let icon = 'document';
+                let name = icon;
 
                 let title: string = item;
 
@@ -317,8 +325,12 @@ export class DocumentTreeProvider implements vscode.TreeDataProvider<MapItem> {
                         title = tokens[0];
                         lineNumber = Number(tokens[1]) - 1;
                         icon = tokens[2];
+                        name = icon;
+                        if (tokens.length > 3)
+                            name = tokens[3]
                     } catch (error) {
                     }
+
                 }
                 else
                     source_file = null;
@@ -357,7 +369,7 @@ export class DocumentTreeProvider implements vscode.TreeDataProvider<MapItem> {
                     lineNumber
                 );
 
-                if (nodeTypesToKeep.includes(icon)) {
+                if (nodeTypesToKeep.includes(name)) {
                     if (plainTextMode) {
                         node.collapsibleState = vscode.TreeItemCollapsibleState.None;
                         node.label = non_whitespace_empty_char.repeat(nesting_level) + title;

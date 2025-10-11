@@ -13,6 +13,7 @@ export interface SyntaxMapping {
     levelIndent: number;
     role: string;
     icon: string;
+    name: string;
 }
 
 export class mapper {
@@ -98,7 +99,10 @@ export class mapper {
                             if (item.prefix)
                                 match = item.prefix + match;
 
-                            members.push([line_num, item.role, match, level_indent, item.icon]);
+                            if (! item.name)
+                                item.name = item.icon
+
+                            members.push([line_num, item.role, match, level_indent, item.icon, item.name]);
                             break;
                         }
                     }
@@ -120,6 +124,7 @@ export class mapper {
                 let content = item[2];
                 let indent = item[3];
                 let icon = item[4];
+                let type_name = item[5];
                 let extra_line = '';
 
                 if (indent == last_indent && content_type != last_type)
@@ -128,7 +133,7 @@ export class mapper {
                 let prefix = ' '.repeat(indent);
                 let lean_content = content.trimStart();
 
-                map = map + extra_line + prefix + lean_content + '|' + String(line) + '|' + icon + '\n';
+                map = map + extra_line + prefix + lean_content + '|' + String(line) + '|' + icon + '|' + type_name + '\n';
 
                 last_indent = indent;
                 last_type = content_type;
