@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.26.7 (12 October 2025)
+
+-#108: Add "name" parameter to generic mappers so it shows in the "Codemap Settings" Tree View
+
 ## 1.26.6 (8 November 2024)
 
 - Added expanding envars in the custom dedicated mapper from settings
