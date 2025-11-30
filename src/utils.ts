@@ -74,6 +74,34 @@ export class config_defaults {
         }
     ];
 
+    public rs = [
+        {
+            "pattern": "impl\\s+(.*?)[\\{]",
+            "clear": "impl|\\{|pub",
+            "role": "class",
+            "icon": "class"
+        },
+        {
+            "pattern": "(struct|enum|trait|mod)\\s+(.*?)[\\{]",
+            "clear": "struct|enum|trait|mod|\\{|pub",
+            "role": "class",
+            "icon": "class"
+        },
+        {
+            "pattern": "macro_rules!\\s+(.*?)[\\{]",
+            "clear": "macro_rules!|\\{",
+            "role": "function",
+            "icon": "function"
+        },
+        {
+            "pattern": "fn\\s+(.*?)[\\(\\<]",
+            "clear": "fn|\\(|<|pub|async|unsafe|extern",
+            "suffix": "()",
+            "role": "function",
+            "icon": "function"
+        }
+    ];
+
     public svg = "config:codemap.xml";
     public xaml = "config:codemap.xml";
     public xml = [
@@ -123,6 +151,7 @@ export class config_defaults {
         else if (name == 'xaml') return this.xaml;
         else if (name == 'svg') return this.svg;
         else if (name == 'py') return this.py;
+        else if (name == 'rs') return this.rs;
         else if (name == 'sortingEnabled') return this.sortingEnabled;
         else if (name == 'defaultSortDirection') return this.defaultSortDirection;
         else if (name == 'json') return this.json;
