@@ -328,6 +328,37 @@
                     ],
                     "description": "Regex-based definition of the mapping rules for Python syntax."
                 },
+                "codemap.rs": {
+                    "type": "array",
+                    "default": [
+                        {
+                            "pattern": "impl\\s+(.*?)[\\{]",
+                            "clear": "impl|\\{|pub",
+                            "role": "class",
+                            "icon": "class"
+                        },
+                        {
+                            "pattern": "(struct|enum|trait|mod)\\s+(.*?)[\\{]",
+                            "clear": "struct|enum|trait|mod|\\{|pub",
+                            "role": "class",
+                            "icon": "class"
+                        },
+                        {
+                            "pattern": "macro_rules!\\s+(.*?)[\\{]",
+                            "clear": "macro_rules!|\\{",
+                            "role": "function",
+                            "icon": "function"
+                        },
+                        {
+                            "pattern": "fn\\s+(.*?)[\\(\\<]",
+                            "clear": "fn|\\(|<|pub|async|unsafe|extern",
+                            "suffix": "()",
+                            "role": "function",
+                            "icon": "function"
+                        }
+                    ],
+                    "description": "Regex-based definition of the mapping rules for Rust syntax."
+                },
                 "codemap.pdl": {
                     "type": "array",
                     "default": [

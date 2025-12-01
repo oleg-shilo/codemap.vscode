@@ -20,25 +20,26 @@ The extension functionality is straightforward. Just click the code map item and
 _Features_:
 * Supported syntaxes:
   * C#
-  * TypeScript
-  * JavaScript
-  * React (TSX/JSX)
-  * Python
-  * Java
   * Erlang
-  * Markdown
-  * PowerShell
-  * R
   * GO
+  * Java
+  * JavaScript
   * JSON
-  * XML
-  * SVG
-  * XAML  
-  * TCL
-  * VB.NET
-  * PDL2 (Comau Robot Language)
   * LScript
+  * Markdown
+  * PDL2 (Comau Robot Language)
+  * PowerShell
+  * Python
+  * R
+  * React (TSX/JSX)
+  * Rust
+  * SVG
+  * TCL
+  * TypeScript
+  * VB.NET
   * Vericode
+  * XAML
+  * XML
 * [Customization by adding support for new syntaxes via:](https://github.com/oleg-shilo/codemap.vscode/wiki/Adding-custom-mappers)
   * A generic mapper that is a set of Regex expressions in user settings
   * A dedicated simple mapper JS script file.
