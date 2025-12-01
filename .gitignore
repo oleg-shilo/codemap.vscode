@@ -5,3 +5,4 @@ node_modules
 *.py
 test.cs 
 test.r
+.vscode/*

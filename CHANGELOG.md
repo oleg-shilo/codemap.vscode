@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.27.0 (1 Dec, 2025)
+
+- Added support for Rust syntax (*.rs files)
+
 ## 1.26.8 (14 Oct, 2025)
 
 - Updated extension logo icon
