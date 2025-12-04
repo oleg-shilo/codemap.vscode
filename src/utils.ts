@@ -147,19 +147,19 @@ export class config_defaults {
     public yaml = "config:codemap.yml";
     public yml = [
         {
-            "pattern": "^[^:\\s]+:(?![\\s\\S]*^[^:\\s]+:)",
+            "pattern": "^(\\s*)-\\s+(.*)",
+            "clear": "- ",
+            "icon": "level3"
+        },
+        {
+            "pattern": "^([^#\\s-].*?):\\s*",
             "clear": ":",
             "icon": "class"
         },
         {
-            "pattern": "^\\s\\s[^:\\s]+:",
+            "pattern": "^(\\s+)([^#\\s-].*?):\\s*",
             "clear": ":",
             "icon": "property"
-        },
-        {
-            "pattern": "^\\s*-\\s+.*",
-            "clear": "- ",
-            "icon": "level3"
         }
     ];
 
