@@ -144,9 +144,29 @@ export class config_defaults {
             "icon": "none"
         }
     ];
+    public yaml = "config:codemap.yml";
+    public yml = [
+        {
+            "pattern": "^(\\s*)-\\s+(.*)",
+            "clear": "- ",
+            "icon": "level3"
+        },
+        {
+            "pattern": "^([^#\\s-].*?):\\s*",
+            "clear": ":",
+            "icon": "class"
+        },
+        {
+            "pattern": "^(\\s+)([^#\\s-].*?):\\s*",
+            "clear": ":",
+            "icon": "property"
+        }
+    ];
 
     public get(name: string): any {
         if (name == 'md') return this.md;
+        else if (name == 'yml') return this.yml;
+        else if (name == 'yaml') return this.yaml;
         else if (name == 'xml') return this.xml;
         else if (name == 'xaml') return this.xaml;
         else if (name == 'svg') return this.svg;

@@ -457,6 +457,32 @@
                     ],
                     "description": "Regex-based definition of the mapping rules for Markup syntax."
                 },
+                "codemap.yaml": {
+                    "type": "string",
+                    "default": "config:codemap.yml",
+                    "description": "Redirected (to YML) mapper."
+                },
+                "codemap.yml": {
+                    "type": "array",
+                    "default": [
+                        {
+                            "pattern": "^(\\s*)-\\s+(.*)",
+                            "clear": "- ",
+                            "icon": "level3"
+                        },
+                        {
+                            "pattern": "^([^#\\s-].*?):\\s*",
+                            "clear": ":",
+                            "icon": "class"
+                        },
+                        {
+                            "pattern": "^(\\s+)([^#\\s-].*?):\\s*",
+                            "clear": ":",
+                            "icon": "property"
+                        }
+                    ],
+                    "description": "Regex-based definition of the mapping rules for YAML syntax."
+                },
                 "codemap.location": {
                     "type": "string",
                     "default": "codemap",
