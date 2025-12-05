@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.28.0 (5 Dec, 2025)
+
+- Added support for YAML syntax (*.yaml and *.yml files). Courtesy of Benoit Brummer.
+
 ## 1.27.0 (1 Dec, 2025)
 
 - Added support for Rust syntax (*.rs files)
