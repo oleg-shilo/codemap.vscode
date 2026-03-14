@@ -14,7 +14,7 @@ import * as md from "./mapper_md";
 import { SyntaxMapping } from "./mapper_generic";
 import { Utils, config_defaults } from "./utils";
 import { fileURLToPath } from "url";
-import { Console } from "console";
+import { Console, time } from "console";
 
 const defaults = new config_defaults();
 let treeViewProvider1: DocumentTreeProvider;
@@ -234,10 +234,10 @@ function reveal_current_line_in_tree(treeView1: vscode.TreeView<MapItem>, treeVi
 
         let currentLine = editor.selection.active.line;
 
-        if (treeView1.visible)
+        if (treeView1.visible && treeViewProvider1.currentDocLine != currentLine)
             treeViewProvider1.revealNodeOf(treeView1, currentLine);
 
-        if (treeView2.visible)
+        if (treeView2.visible && treeViewProvider2.currentDocLine != currentLine)
             treeViewProvider2.revealNodeOf(treeView2, currentLine);
     }
 }
@@ -611,6 +611,12 @@ export function activate(context: vscode.ExtensionContext) {
             .then(doc => vscode.window.showTextDocument(doc));
     });
 
+    vscode.window.onDidChangeActiveTextEditor(editor => {
+        let autoReveal = vscode.workspace.getConfiguration("codemap").get('autoReveal', defaults.get('autoReveal'));
+        if (autoReveal)
+            setTimeout(() => vscode.commands.executeCommand("codemap.reveal"), 100); // delay to allow the tree to render after file switch
+    });
+
     vscode.window.onDidChangeTextEditorSelection(editor => {
         let autoReveal = vscode.workspace.getConfiguration("codemap").get('autoReveal', defaults.get('autoReveal'));
         if (autoReveal)
@@ -623,6 +629,18 @@ export function activate(context: vscode.ExtensionContext) {
 
     treeView1.onDidExpandElement(event => {
         noteNodeState(event.element, false);
+    });
+
+    treeView1.onDidChangeVisibility(event => {
+        if (event.visible) {
+            setTimeout(() => vscode.commands.executeCommand("codemap.reveal"), 100); // delay to allow the tree to render after file switch
+        }
+    });
+
+    treeView2.onDidChangeVisibility(event => {
+        if (event.visible) {
+            setTimeout(() => vscode.commands.executeCommand("codemap.reveal"), 100); // delay to allow the tree to render after file switch
+        }
     });
 
     vscode.commands.registerCommand("codemap.navigate_to_selected", navigate_to_selected);

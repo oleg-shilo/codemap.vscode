@@ -192,6 +192,7 @@ export class DocumentTreeProvider implements vscode.TreeDataProvider<MapItem> {
     readonly onDidChangeTreeData: vscode.Event<MapItem | undefined> = this._onDidChangeTreeData.event;
     private MapSettingsTreeProvider: SettingsTreeProvider;
     public Items: MapItem[];
+    public currentDocLine:number = -1;
 
     constructor(private aggregateItems: () => MapInfo, MapSettingsTreeProvider: SettingsTreeProvider) {
         // codemap tree is triggered once settings are generated:
@@ -231,11 +232,14 @@ export class DocumentTreeProvider implements vscode.TreeDataProvider<MapItem> {
                 items.forEach(x => x.updateState());
                 resolve(items);
             }
+            this.currentDocLine = -1;
+            setTimeout(() => vscode.commands.executeCommand("codemap.reveal"), 100); // delay to allow the tree to render after file switch
         });
     }
-
+    
     public revealNodeOf(treeView: vscode.TreeView<MapItem>, lineNumber: number): void {
         treeView.reveal(this.getItemOf(lineNumber), { select: true, focus: false, expand: true })
+        this.currentDocLine = lineNumber;
     }
 
     public getAllItems(): MapItem[] {

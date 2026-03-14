@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.29.3 (14 Mar, 2026)
+
+- #116: Sync to cursor position when view becomes visible
+- Optimized auto-reveal on text cursor position change. Do it only if the line is changed since the last reveal action.
+  
 ## 1.29.2 (26 Feb, 2026)
 
 - #114: Fixed config problem with VB.NET mapper("Updated file reference for VB mapper")
