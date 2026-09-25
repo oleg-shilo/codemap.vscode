@@ -23,7 +23,7 @@
 
 ## 1.28.0 (5 Dec, 2025)
 
-- Added support for YAML syntax (*.yaml and *.yml files). Courtesy of Benoit Brummer.
+- Added support for YAML syntax (`*.yaml and` `*.yml` files). Courtesy of Benoit Brummer.
 
 ## 1.27.0 (1 Dec, 2025)
 
@@ -46,7 +46,7 @@
 
 - Added detection of the faulty C# syntaxer and prompt with the suggested workaround.
 - Added command `codemap.toggle_csharp_mapper`
-- Added persistance of the nodes collapsible state (per session)
+- Added persistence of the nodes collapsible state (per session)
 
 ## 1.26.4 (2 November 2024)
 
@@ -67,7 +67,6 @@
 - Fixed problem with the extension startup crash if the last state file for `Codemap Settings` contains corrupted data.
 - Issue #98: Make icon as simple additional string
   Not you can specify an emoji character as a node icon in the config section of the generic mapper.
-
 
 ## 1.26.0 (28 June 2024)
 
@@ -111,7 +110,7 @@
 ## 1.20.3 (19 June 2023)
 
 - Added Support PDL2 Files(Comau Robot Language)
- _Curtesy of Marco Caputo_
+  *Curtesy of Marco Caputo*
 
 ## 1.20.1 (19 March 2023)
 
@@ -132,7 +131,7 @@
 
 ## 1.19.0 (2 December 2022)
 
-- PR #80: Add sorting option (include/exclude) by node type (e.g. class, functions) 
+- PR #80: Add sorting option (include/exclude) by node type (e.g. class, functions)
   The option is available in the [explorer view](https://github.com/oleg-shilo/codemap.vscode/pull/80).
 - Incorporated GitHub suggested vulnerability patches  
 

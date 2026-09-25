@@ -8,8 +8,17 @@
     },
     "typescript.tsdk": "./node_modules/typescript/lib",
     "cSpell.words": [
+        "andreabenini",
+        "angelotodaro",
+        "Benoit",
+        "Brummer",
+        "Caputo",
+        "codedom",
         "codemap",
-        "Comau"
+        "Comau",
+        "mapitems",
+        "Timhobson",
+        "Verilog"
     ],
     "debug.javascript.suggestPrettyPrinting": false,
     "cSpell.ignoreWords": [

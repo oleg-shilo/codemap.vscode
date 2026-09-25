@@ -47,7 +47,7 @@ export class mapper {
 	public static generate(file: string): string[] {
 
 		let item_max_length = 0;
-		let members = [];
+		let members:string[] = [];
 
 		try {
 

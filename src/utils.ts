@@ -15,6 +15,28 @@ declare global {
     }
 }
 
+// export class StringUtils {
+//     public static trimStart(text: string): string {
+//         if (text.length == 0)
+//             return text;
+//         let c = ' ';
+//         var i = 0;
+//         for (; text.charAt(i) == c && i < text.length; i++);
+//         return text.substring(i);
+//     }
+//     public static trimEnd(text: string): string {
+//         return text.replace(/ +$/, "");
+//     }
+
+//     public static replaceAll(text: string, search: string, replacement: string): string {
+//         return text.replace(new RegExp(search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), replacement);
+//     }
+
+//     public static lines(text: string, limit?: number): string[] {
+//         return text.split(/\r?\n/g, limit);
+//     }
+// }
+
 String.prototype.trimStart = function () {
     if (this.length == 0)
         return this;
@@ -195,7 +217,7 @@ export class Config {
     }
 
     public static getLastSessionState(): any {
-        let file = path.join(process.env.VSCODE_USER, "codemap.user", "codemap.state.json");
+        let file = path.join(process.env.VSCODE_USER ?? "", "codemap.user", "codemap.state.json");
         if (fs.existsSync(file)) {
             let stateBack = Utils.read_all_text(file);
             try {
@@ -209,7 +231,7 @@ export class Config {
     }
 
     public static setLastSessionState(state: any): void {
-        let file = path.join(process.env.VSCODE_USER, "codemap.user", "codemap.state.json");
+        let file = path.join(process.env.VSCODE_USER ?? "", "codemap.user", "codemap.state.json");
         fs.writeFile(file, JSON.stringify(state), (err) => {
             if (err) {
                 console.error(err);
@@ -228,8 +250,8 @@ export class Utils {
         // It is important to do both conversions regardless of the platform because the string may come from the 
         // synchronized VSCode settings created on another platform.
         return pathString
-            .replace(/%([^%]+)%/g, (_, n) => process.env[n]) // Windows style: %MY_VAR%
-            .replace(/\$([A-Z_]+[A-Z0-9_]*)|\${([A-Z0-9_]*)}/ig, (_, a, b) => process.env[a || b]); // Linux style: ${MY_VAR} and $MY_VAR 
+            .replace(/%([^%]+)%/g, (_, n) => process.env[n] ?? "") // Windows style: %MY_VAR%
+            .replace(/\$([A-Z_]+[A-Z0-9_]*)|\${([A-Z0-9_]*)}/ig, (_, a, b) => process.env[a || b] ?? ""); // Linux style: ${MY_VAR} and $MY_VAR 
     }
 
     public static read_all_text(file: string): string {
@@ -252,9 +274,11 @@ export class Utils {
 
     public static editor_go_to_line(line: number): void {
         let editor = vscode.window.activeTextEditor;
-        let range = editor.document.lineAt(line - 1).range;
-        editor.selection = new vscode.Selection(range.start, range.end);
-        editor.revealRange(range);
+        if(editor){
+            let range = editor.document.lineAt(line - 1).range;
+            editor.selection = new vscode.Selection(range.start, range.end);
+            editor.revealRange(range);
+        }
     }
 
     public static init(): void {
@@ -273,11 +297,11 @@ export class Utils {
             process.env.VSCODE_USER = path.join(dataRoot, 'user-data', 'User', 'globalStorage');
         } else {
             if (os.platform() == 'win32')
-                process.env.VSCODE_USER = path.join(process.env.APPDATA, 'Code', 'User');
+                process.env.VSCODE_USER = path.join(process.env.APPDATA??"", 'Code', 'User');
             else if (os.platform() == 'darwin')
-                process.env.VSCODE_USER = path.join(process.env.HOME, 'Library', 'Application Support', 'Code', 'User');
+                process.env.VSCODE_USER = path.join(process.env.HOME??"", 'Library', 'Application Support', 'Code', 'User');
             else
-                process.env.VSCODE_USER = path.join(process.env.HOME, '.config', 'Code', 'User');
+                process.env.VSCODE_USER = path.join(process.env.HOME??"", '.config', 'Code', 'User');
         }
     }
 }
