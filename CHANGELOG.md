@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.29.5 (25 Sep, 2026)
+
+- #119:Conflict with Prettier ( part 2)
+
 ## 1.29.4 (22 Jul, 2026)
 
 - #119:Conflict with Prettier
