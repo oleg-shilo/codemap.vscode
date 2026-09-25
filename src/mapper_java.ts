@@ -3,6 +3,7 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Uri, commands } from "vscode";
+import { StringUtils } from './utils';
 
 export class mapper {
 
@@ -13,13 +14,14 @@ export class mapper {
 
 	static to_display_text(text: string): string {
 
-		let indent_level = text.length - text.trimStart().length;
+		let indent_level = text.length - StringUtils.trimStart(text).length;
 
-		return " ".repeat(indent_level) + text
-			.replaceAll("static", "")
-			.replaceAll("public", "")
-			.replaceAll("private", "")
-			.trimStart();
+		let result = 		" ".repeat(indent_level) + text;
+		result = StringUtils.replaceAll(result, "static", "");
+		result = StringUtils.replaceAll(result, "public", "");
+		result = StringUtils.replaceAll(result, "private", "");
+		result = StringUtils.trimStart(result);
+		return result;
 	}
 
 	public static generate(file: string): string[] {
@@ -37,7 +39,7 @@ export class mapper {
 				.forEach(line => {
 
 					line_num++;
-					let code_line = line.trimStart();
+					let code_line = StringUtils.trimStart(line);
 
 					if (!code_line.startsWith("//")) {
 

@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Uri, commands } from "vscode";
-import { Config, config_defaults, Utils } from './utils';
+import { Config, config_defaults, Utils, StringUtils} from './utils';
 
 export interface SyntaxMapping {
     pattern: string;
@@ -66,7 +66,7 @@ export class mapper {
 
                 if (line != '') {
 
-                    let code_line = line.trimStart();
+                    let code_line = StringUtils.trimStart(line);
 
                     for (let item of mappings) {
 
@@ -143,6 +143,6 @@ export class mapper {
             }
         });
 
-        return map.trim().lines();
+        return StringUtils.lines(map.trim());
     }
 }

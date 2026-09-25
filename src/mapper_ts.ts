@@ -7,7 +7,7 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Uri, commands } from "vscode";
-import { Utils } from './utils';
+import { StringUtils, Utils } from './utils';
 
 export class mapper {
 
@@ -29,7 +29,7 @@ export class mapper {
 
                 line = line.replace('\t', '    ');
                 line_num = line_num + 1;
-                let code_line = line.trimStart();
+                let code_line = StringUtils.trimStart(line);
 
                 let info = null;
                 let icon = '';
@@ -49,7 +49,7 @@ export class mapper {
                         if (!display_line)
                             display_line = line.split('{')[0];
                         if (!display_line)
-                            display_line = line.trimEnd();
+                            display_line = StringUtils.trimEnd(line);
                         if (display_line)
                             display_line = display_line.replace(/{+$/, "");
 
@@ -61,7 +61,7 @@ export class mapper {
                         // class CSScriptHoverProvider implements HoverProvider {     
                         info = [line_num,
                             keyword,
-                            display_line.split('(')[0].split(':')[0].trimEnd(),
+                            StringUtils.trimEnd(display_line.split('(')[0].split(':')[0]),
                             indent_level,
                             icon]
                         return info
@@ -72,7 +72,7 @@ export class mapper {
                     let accessor_name = accessor + ' ';
                     last_type = accessor_name;
                     last_indent = indent_level;
-                    let content = line.replace(accessor_name, '').split('(')[0].trimEnd();
+                    let content = StringUtils.trimEnd(line.replace(accessor_name, '').split('(')[0]);
                     let icon = "property";
 
                     if (code_line.indexOf('(') != -1) {
@@ -106,14 +106,14 @@ export class mapper {
                     last_indent = indent_level;
                     info = [line_num,
                         'function',
-                        line.split('(')[0].trimEnd() + '()',
+                        StringUtils.trimEnd(line.split('(')[0]) + '()',
                         indent_level,
                         'function'];
                 }
 
                 if (!info && code_line.match(/^(\s*)\w+\(.*\)\s*{/g) != null) { // catch pure JS class functions without access modifiers or `function` keyword
 
-                    let name = line.split('(')[0].trimEnd();
+                    let name = StringUtils.trimEnd(line.split('(')[0]);
 
                     // just to avoid misinterpreting control statements as class functions (e.g. `for`)
                     if (name != 'if' && name != 'do' && name != 'while' && name != 'for' && name != 'switch') {
@@ -172,6 +172,6 @@ export class mapper {
             last_type = content_type;
         });
 
-        return map.trim().lines();
+        return StringUtils.lines(map.trim());
     }
 }

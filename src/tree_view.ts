@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
-import { Config, Utils, config_defaults } from './utils';
+import { Config, StringUtils, Utils, config_defaults } from './utils';
 
 const defaults = new config_defaults();
 
@@ -9,26 +9,6 @@ export interface MapInfo {
     sourceFile: string;
     items: string[];
 };
-
-declare global {
-    interface String {
-        trimStart(): string;
-        trimEnd(): string;
-    }
-}
-
-String.prototype.trimStart = function () {
-    if (this.length == 0)
-        return this;
-    let c = ' ';
-    var i = 0;
-    for (; this.charAt(i) == c && i < this.length; i++);
-    return this.substring(i);
-}
-
-String.prototype.trimEnd = function () {
-    return this.replace(/ +$/, "");
-}
 
 export class SettingsTreeProvider implements vscode.TreeDataProvider<SettingsItem> {
     private _onDidChangeTreeData: vscode.EventEmitter<SettingsItem | undefined> = new vscode.EventEmitter<SettingsItem | undefined>();
@@ -103,7 +83,7 @@ export class SettingsTreeProvider implements vscode.TreeDataProvider<SettingsIte
         let codeMapTypes: Set<string> = new Set<string>();
         codeMapTree['items'].filter((strItem) => strItem != '').forEach(
             (x) => {
-                let type_args = x.trimStart().split("|")
+                let type_args = StringUtils.trimStart(x).split("|")
                 let name = type_args[2]
                 if (type_args.length > 3)
                     name = type_args[3]
@@ -328,7 +308,7 @@ export class DocumentTreeProvider implements vscode.TreeDataProvider<MapItem> {
 
                 let title: string = item;
 
-                let nesting_level = item.length - item.trimStart().length;
+                let nesting_level = item.length - StringUtils.trimStart(item).length;
 
                 if (nesting_level != 0) {
                     if (!levelUnit)
@@ -358,7 +338,7 @@ export class DocumentTreeProvider implements vscode.TreeDataProvider<MapItem> {
                 let non_whitespace_empty_char = levelUnitChar;
 
                 if (!plainTextMode)
-                    title = title.trimStart();
+                    title = StringUtils.trimStart(title);
 
                 let on_click_command = 'codemap.navigate_to';
                 if (lineNumber == -1)

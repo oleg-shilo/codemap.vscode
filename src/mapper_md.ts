@@ -6,6 +6,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
+import { StringUtils } from './utils';
 
 export class mapper {
 
@@ -29,7 +30,7 @@ export class mapper {
                 .forEach(line => {
 
                     line_num++;
-                    line = line.trimStart();
+                    line = StringUtils.trimStart(line);
 
                     if (line.startsWith("### "))
                         members.push(`${line.substr(4)}|${line_num}|level3`);

@@ -7,6 +7,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 import * as fs from 'fs';
 import * as vscode from 'vscode';
+import { StringUtils } from './utils';
 
 const utils_1 = require("./utils");
 const defaults = new utils_1.config_defaults();
@@ -70,7 +71,7 @@ class mapper {
  
   static to_display_text(text: string): string {
     let first_line = text.split(/\r?\n/, 1)[0]
-    let indent_level = first_line.length - first_line.trimStart().length;
+    let indent_level = first_line.length - StringUtils.trimStart(first_line).length;
 
     text
       .replace(/\r?\n\s*/g, " ") // Collapse embedded new lines
@@ -80,7 +81,7 @@ class mapper {
     if(show_function_type) text.replace(/\)\s+[Aa]s\b[^\n]*$/gm, ")") // Toggle showing function return types
     if(show_var_type) text.replace(/(\b(?:Dim|Const)\b[^\n]*?)\s+[Aa]s\b[^\n]*$/gm, "$1") // Toggle showing variable return types
     
-    let cleaned = text.trimStart();
+    let cleaned = StringUtils.trimStart(text);
 
     return " ".repeat(indent_level) + cleaned;
   }
@@ -99,7 +100,7 @@ class mapper {
         if (idx <= cursorSkip) return;
 
         let line_num = idx + 1;
-        let code_line = (line ?? "").trimStart();
+        let code_line = StringUtils.trimStart(line ?? "");
 
         // Skip full-line comments
         if (code_line.startsWith("'")) return;

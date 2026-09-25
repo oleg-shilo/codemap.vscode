@@ -13,7 +13,7 @@ import * as mkdirp from "mkdirp";
 import * as process from "process";
 import * as child_process from "child_process"
 import { Uri, commands } from "vscode";
-import { Utils } from './utils';
+import { StringUtils, Utils } from './utils';
 
 let exec = require('child_process').exec;
 let execSync = require('child_process').execSync;
@@ -185,7 +185,7 @@ export class mapper {
                 console.log(error);
             }
         }
-        return map.lines();
+        return StringUtils.lines(map);
     }
 }
 

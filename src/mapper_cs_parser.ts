@@ -3,6 +3,7 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Uri, commands } from "vscode";
+import { StringUtils } from './utils';
 
 // TODO: cleanup and refactoring
 
@@ -15,33 +16,36 @@ export class mapper {
 
 	static to_display_text(text: string): string {
 
-		let indent_level = text.length - text.trimStart().length;
+		let indent_level = text.length - StringUtils.trimStart(text).length;
 
 		let parts = text.split('(', 2)
 
 		// class
 		if (parts.length < 2)
-			return " ".repeat(indent_level) + text
-				.replaceAll("static", "")
-				.replaceAll("partial", "")
-				.replaceAll("public", "")
-				.replaceAll("internal", "")
-				.replaceAll("private", "")
-				.trimStart()
+		{
+			let result = " ".repeat(indent_level) + text;
+			result = StringUtils.replaceAll(result, "static", "");
+			result = StringUtils.replaceAll(result, "partial", "");
+			result = StringUtils.replaceAll(result, "public", "");
+			result = StringUtils.replaceAll(result, "internal", "");
+			result = StringUtils.replaceAll(result, "private", "");
+			result = StringUtils.trimStart(result);
+			result = result;
+		}
 
 		// method
 		let leftPart = parts[0].split(' ');
 		let numOfParams = parts[1].split(',').length;
 
 		let display_text = leftPart[leftPart.length - 1];
-
-		return " ".repeat(indent_level) + display_text
-			.replaceAll("static", "")
-			.replaceAll("public", "")
-			.replaceAll("internal", "")
-			.replaceAll("private", "")
-			.trimStart()
-			+ `(${", ".repeat(numOfParams).trimEnd()})`;
+		let result = " ".repeat(indent_level) + display_text;
+		result = StringUtils.replaceAll(result, "static", "");
+		result = StringUtils.replaceAll(result, "public", "");
+		result = StringUtils.replaceAll(result, "internal", "");
+		result = StringUtils.replaceAll(result, "private", "");
+        result = StringUtils.trimStart(result);
+		result = result +  `(${StringUtils.trimEnd(", ".repeat(numOfParams))})`;
+	    return result;
 	}
 
 	public static generate(file: string): string[] {
@@ -75,7 +79,7 @@ export class mapper {
 							let display_text = mapper.to_display_text(line);
 
 							if (firstIndent == -1)
-								firstIndent = display_text.length - display_text.trimStart().length;
+								firstIndent = display_text.length - StringUtils.trimStart(display_text).length;
 							if (firstIndent != 0)
 								display_text = display_text.substring(firstIndent);
 
@@ -98,7 +102,7 @@ export class mapper {
 								let display_text = mapper.to_display_text(line);
 								if (display_text.indexOf(".") == -1) { // dotnet_root.Split(Path.DirectorySeparatorChar)
 									if (firstIndent == -1)
-										firstIndent = display_text.length - display_text.trimStart().length;
+										firstIndent = display_text.length - StringUtils.trimStart(display_text).length;
 									if (firstIndent != 0)
 										display_text = display_text.substring(firstIndent);
 

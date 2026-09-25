@@ -12,7 +12,7 @@ import * as cs_parser from "./mapper_cs_parser";
 import * as generic from "./mapper_generic";
 import * as md from "./mapper_md";
 import { SyntaxMapping } from "./mapper_generic";
-import { Utils, config_defaults } from "./utils";
+import { StringUtils, Utils, config_defaults } from "./utils";
 import { fileURLToPath } from "url";
 import { Console, time } from "console";
 
@@ -121,7 +121,7 @@ function get_map_items(): MapInfo {
                 Utils
                     .read_all_lines(document)
                     .forEach(line => {
-                        if (line.trimStart().startsWith("@code {")) {
+                        if (StringUtils.trimStart(line).startsWith("@code {")) {
 
                             started = true;
                             code.push("class @code {");

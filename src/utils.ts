@@ -4,60 +4,55 @@ import * as os from 'os';
 import * as path from 'path';
 import { Uri, commands } from "vscode";
 
+export class StringUtils {
+    // deliberately leaves non-standard white characters to create visual indentation
+    public static trimStart(text: string): string { 
+        if (text.length == 0)
+            return text;
+        let c = ' ';
+        var i = 0;
+        for (; text.charAt(i) == c && i < text.length; i++);
+        return text.substring(i);
+    }
 
+    // Similarly to trimStart, it only removes standard literal space characters (' '), whereas a native trimEnd() removes all 
+    // whitespace characters (like tabs, newlines, and carriage returns).
+    public static trimEnd(text: string): string { 
+        return text.replace(/ +$/, "");
+    }
 
-declare global {
-    interface String {
-        trimStart(): string;
-        trimEnd(): string;
-        replaceAll(search: string, replacement: string): string;
-        lines(limit?: number): string[];
+    // a plain Regular Expression (RegExp) search, it forces everything into an escaped global regex string
+    public static replaceAll(text: string, search: string, replacement: string): string { 
+        return text.replace(new RegExp(search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), replacement);
+    }
+
+    // just a convenience method to split a string into lines
+    public static lines(text: string, limit?: number): string[] {
+        return text.split(/\r?\n/g, limit);
     }
 }
 
-// export class StringUtils {
-//     public static trimStart(text: string): string {
-//         if (text.length == 0)
-//             return text;
-//         let c = ' ';
-//         var i = 0;
-//         for (; text.charAt(i) == c && i < text.length; i++);
-//         return text.substring(i);
-//     }
-//     public static trimEnd(text: string): string {
-//         return text.replace(/ +$/, "");
-//     }
-
-//     public static replaceAll(text: string, search: string, replacement: string): string {
-//         return text.replace(new RegExp(search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), replacement);
-//     }
-
-//     public static lines(text: string, limit?: number): string[] {
-//         return text.split(/\r?\n/g, limit);
-//     }
+// String.prototype.trimStart = function () {
+//     if (this.length == 0)
+//         return this;
+//     let c = ' ';
+//     var i = 0;
+//     for (; this.charAt(i) == c && i < this.length; i++);
+//     return this.substring(i);
 // }
 
-String.prototype.trimStart = function () {
-    if (this.length == 0)
-        return this;
-    let c = ' ';
-    var i = 0;
-    for (; this.charAt(i) == c && i < this.length; i++);
-    return this.substring(i);
-}
+// String.prototype.trimEnd = function () {
+//     return this.replace(/ +$/, "");
+// }
 
-String.prototype.trimEnd = function () {
-    return this.replace(/ +$/, "");
-}
+// String.prototype.lines = function (limit?: number) {
+//     return this.split(/\r?\n/g, limit);
+// }
 
-String.prototype.lines = function (limit?: number) {
-    return this.split(/\r?\n/g, limit);
-}
-
-String.prototype.replaceAll = function (search, replacement) {
-    var target = this;
-    return target.replace(new RegExp(search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), replacement);
-};
+// String.prototype.replaceAll = function (search, replacement) {
+//     var target = this;
+//     return target.replace(new RegExp(search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), replacement);
+// };
 
 export class config_defaults {
 
